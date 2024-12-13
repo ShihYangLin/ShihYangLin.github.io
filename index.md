@@ -55,8 +55,3 @@ I am a Ph.D. student in Economics at National Taiwan University. My research foc
 - Basic Macroeconomics - Teaching Assistant (Summer 2022)
 - Basic Quantitative Method - Teaching Assistant (Summer 2020-2022)
 - Principle of Economics (I & II) - Teaching Assistant (2019-2020)
-
-## Contact
-- Email: d07323003@ntu.edu.tw
-- Phone: 0982-031-228
-- Address: Department of Economics, National Taiwan University, No.1, Sec 4, Roosevelt Rd., Taipei 10617, Taiwan
