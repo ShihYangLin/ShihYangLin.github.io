@@ -39,16 +39,6 @@ I am a Ph.D. student in Economics at National Taiwan University. My research foc
    *Quarterly Bulletin, Central Bank of the Republic of China (Taiwan)*, 2022, 44(2): 27-70  
    [Link to paper](https://www.cbc.gov.tw/dl-191344-3ea494656eea4c00823226f85f309220.html)
 
-## Working Papers
-1. "Financial Frictions and Uncertainty Shocks"  
-   with Yi-Chan Tsai and Po-Yuan Wang
-
-2. "The Labor Supply of Married Women and Spousal Tax Deductions in Japan"  
-   with Minchung Hsu, Pei-Ju Liao, and Yi-Chan Tsai
-
-3. "A Two-Stage Pseudo-Maximum Likelihood Method for Poisson Models with Two Binary Endogenous Explanatory Variables: An Application to Trade and Investment Agreements"  
-   with Chingmu Chen, Shin-Kun Peng, and Wen-Jen Tsay
-
 ## Grants and Awards
 - Doctoral Dissertation Fellowships of the Humanities and Social Sciences, National Science and Technology Council (2023)
 - Asia Bank Scholarship, National Taiwan University (2022)
