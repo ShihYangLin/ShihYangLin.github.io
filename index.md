@@ -1,4 +1,10 @@
-# Shih-Yang Lin
+---
+layout: default
+---
+
+[Home](index.md) | [Research](research.md)
+
+# Shih-Yang Lin 林世揚
 
 ## About Me
 I am a Ph.D. student in Economics at National Taiwan University. My research focuses on economic modeling, financial frictions, and empirical methods in economics.
