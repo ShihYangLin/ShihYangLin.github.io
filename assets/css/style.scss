@@ -2,11 +2,12 @@
 ---
 
 @import "{{ site.theme }}";
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC&family=Noto+Serif+TC&display=swap');
 
 body {
-    font-family: Georgia, "Times New Roman", serif;
+    font-family: 'Noto Serif TC', Georgia, serif;
 }
 
 h1, h2, h3, h4, h5, h6 {
-    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-family: 'Noto Sans TC', "Helvetica Neue", Arial, sans-serif;
 }
