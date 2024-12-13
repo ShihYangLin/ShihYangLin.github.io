@@ -25,11 +25,13 @@ I am a Ph.D. student in Economics at National Taiwan University. My research foc
 1. "Estimating the Willingness to Pay for Voting when Absentee Voting is not Allowed"  
    with C.Y. Cyrus Chu and Wen-Jen Tsay  
    *Social Science Quarterly*, 2021, 102(4): 1380-1393
+   [DOI: 10.1111/ssqu.13014](https://doi.org/10.1111/ssqu.13014)
 
 ### Non-refereed Journal Articles
 1. "Constructing the DSGE-VAR Model-Taiwan's Medium-to Long-Term Economic Growth Rate Forecast"  
    with Yi-Chan Tsai, Ruey Yau, Kuo-Hsan Chin  
    *Quarterly Bulletin, Central Bank of the Republic of China (Taiwan)*, 2022, 44(2): 27-70
+   [Link to paper](https://www.cbc.gov.tw/dl-191344-3ea494656eea4c00823226f85f309220.html)
 
 ## Working Papers
 1. "Financial Frictions and Uncertainty Shocks"  
