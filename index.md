@@ -7,10 +7,10 @@ layout: default
 # Shih-Yang Lin 林世揚
 
 ## About Me
-I am a Ph.D. student in Economics at National Taiwan University. My research focuses on economic modeling, financial frictions, and empirical methods in economics.
+I am an Assistant Professor in the Department of Economics at National Dong Hwa University. My research focuses on macroeconomics and econometrics.
 
 ## Education
-- **Ph.D. Student in Economics** (2018-2024 expected)  
+- **Ph.D. in Economics** (2025)  
   National Taiwan University
 
 - **M.A. in Economics** (2016)  
@@ -47,6 +47,11 @@ I am a Ph.D. student in Economics at National Taiwan University. My research foc
 - Chu, Cyrus C. Y. and Chen, Tain-Jy Scholarship, National Taiwan University (2018)
 
 ## Teaching Experience
+
+### National Dong Hwa University
+- Financial Markets - (Spring 2025)
+- Financial Economics (I) - (Sprint 2025)
+
 ### National Taiwan University
 - Macroeconomic Theory (I) - Teaching Assistant (Fall 2019-2022)
 - Macroeconomic Theory (II) - Teaching Assistant (Spring 2020-2021, 2024)
