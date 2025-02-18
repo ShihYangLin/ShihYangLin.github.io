@@ -50,7 +50,7 @@ I am an Assistant Professor in the Department of Economics at National Dong Hwa 
 
 ### National Dong Hwa University
 - Financial Markets - (Spring 2025)
-- Financial Economics (I) - (Sprint 2025)
+- Financial Economics (I) - (Spring 2025)
 
 ### National Taiwan University
 - Macroeconomic Theory (I) - Teaching Assistant (Fall 2019-2022)
