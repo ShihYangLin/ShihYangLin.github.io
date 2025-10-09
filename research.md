@@ -11,24 +11,23 @@ title: Research
 
 ### Refereed Journal Articles
 
-1. "Estimating the Willingness to Pay for Voting when Absentee Voting is not Allowed"  
+1. "Financial Frictions and Uncertainty Shocks"
+   with Yi-Chan Tsai and Po-Yuan Wang
+   *Macroeconomic Dynamics*, 2025, 29: e143
+   [DOI: 10.1017/S1365100525100497](https://doi.org/10.1017/S1365100525100497)
+   
+2. "Estimating the Willingness to Pay for Voting when Absentee Voting is not Allowed"  
    with C.Y. Cyrus Chu and Wen-Jen Tsay  
    *Social Science Quarterly*, 2021, 102(4): 1380-1393  
    [DOI: 10.1111/ssqu.13014](https://doi.org/10.1111/ssqu.13014)
 
 ### Non-refereed Journal Articles
 
-1. "Constructing the DSGE-VAR Model-Taiwan's Medium-to Long-Term Economic Growth Rate Forecast"  
-   with Yi-Chan Tsai, Ruey Yau, Kuo-Hsan Chin  
+1. "Constructing the DSGE-VAR Model-Taiwan's Medium-to Long-Term Economic Growth Rate Forecast"    with Yi-Chan Tsai, Ruey Yau, Kuo-Hsan Chin  
    *Quarterly Bulletin, Central Bank of the Republic of China (Taiwan)*, 2022, 44(2): 27-70  
    [Link to paper](https://www.cbc.gov.tw/dl-191344-3ea494656eea4c00823226f85f309220.html)
 
 ## Working Papers
-
-### Financial Frictions and Uncertainty Shocks
-with Yi-Chan Tsai and Po-Yuan Wang
-
-This paper investigates the role of credit constraints in the propagation of uncertainty shocks within a business cycle framework. Traditional business cycle models struggle to account for observed declines in output, consumption, investment, and labor hours in response to heightened uncertainty. To address this gap, we introduce a collateral-based credit constraint for both impatient households and entrepreneurs, with borrowing limitations connected to the value of their collateral assets. As uncertainty escalates, households and entrepreneurs demand a higher risk premium for collateral, leading to a decrease in its overall demand. This reduced demand, in turn, prompts households to curtail their labor supply, leading to a decrease in output. Our study emphasizes that collateral adjustments following uncertainty shocks can induce macroeconomic co-movements in a real business cycle model, even in the absence of nominal rigidities. Furthermore, we discover that a lower loan-to-value (LTV) ratio can help alleviate the adverse impacts of uncertainty shocks.
 
 ### The Labor Supply of Married Women and Spousal Tax Deductions in Japan
 with Minchung Hsu, Pei-Ju Liao, and Yi-Chan Tsai
