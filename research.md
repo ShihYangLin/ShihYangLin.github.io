@@ -12,11 +12,8 @@ title: Research
 ### Refereed Journal Articles
 
 1. "Financial Frictions and Uncertainty Shocks"
-
    with Yi-Chan Tsai and Po-Yuan Wang
-
    *Macroeconomic Dynamics*, 2025, 29: e143
-
    [DOI: 10.1017/S1365100525100497](https://doi.org/10.1017/S1365100525100497)
    
 3. "Estimating the Willingness to Pay for Voting when Absentee Voting is not Allowed"  
