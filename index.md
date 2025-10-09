@@ -49,6 +49,8 @@ I am an Assistant Professor in the Department of Economics at National Dong Hwa 
 ## Teaching Experience
 
 ### National Dong Hwa University
+- Introduction to Big Data Analytics - (Fall 2025)
+- Development Economics - (Fall 2025)
 - Financial Markets - (Spring 2025)
 - Financial Economics (I) - (Spring 2025)
 
