@@ -40,9 +40,23 @@ with Chingmu Chen, Shin-Kun Peng, and Wen-Jen Tsay
 
 This paper introduces a novel estimator for the Poisson model with dual binary endogenous explanatory variables, addressing the need to quantify the effects of preferential economic integration agreements. We develop a two-stage pseudo-maximum likelihood estimator and derive analytical gradient matrices as well as Hessian matrices. These exact formulas improve computational speed significantly. Applying our approach to trade data, we find that preferential trade agreements have a positive impact on bilateral trade flows, while bilateral investment treaties have a negative effect. Additionally, the positive interaction term between these two treaties suggests that preferential trade agreements promote horizontal foreign direct investment.
 
-### A Simple Inference Method for the Interrupted Time Series Analysis with Dependent Errors
+### Asymptotic Distribution of OLS Estimator for Interrupted Time Series Model
 
-This paper addresses a critical gap in the statistical foundations of interrupted time series (ITS) analysis. We demonstrate that ordinary least squares (OLS) estimators in ITS models are inherently superconsistent due to deterministic time trends, converging faster than the usual square root rate and requiring proper rescaling. We propose an invertible scaling matrix and derive the asymptotic distribution of the OLS estimator for a standard single-treatment-group ITS model with serially dependent errors. Monte Carlo simulations show that our approach, accounting for superconsistency of the time trend coefficient, yields more accurate hypothesis tests than conventional methods across various autocorrelation levels.
+This paper considers inference problems related to the widely known interrupted
+time series (ITS) model, which is used as a quasi-experimental approach for evaluating
+policy intervention effects over time. Under a single-treatment-group design with serially
+correlated errors, we are the first to establish the asymptotic distribution of the ordinary
+least squares (OLS) estimators, which involves Brownian motion functionals and reveals
+a superconsistency property for the trending variables when the estimation error of the
+OLS estimator relative to the true coefficients is properly rescaled. Interestingly, the
+asymptotic covariance matrix of the rescaled estimator is proved to be invertible, even
+though the convergence rates of the OLS estimator for the level and trending variables
+differ, and the trending variables have different observation lengths. Combining the
+bootstrap approach suggested in this paper, the simulations show that the inference
+method derived from our asymptotic analysis performs well, even when the sample size
+is moderate.  
+
+[DOI: 10.2139/ssrn.5486489](https://dx.doi.org/10.2139/ssrn.5486489)
 
 ### Estimating Count Data Models with k Endogenous Switching Variables
 
