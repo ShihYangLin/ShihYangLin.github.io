@@ -40,7 +40,8 @@ with Chingmu Chen, Shin-Kun Peng, and Wen-Jen Tsay
 
 This paper introduces a novel estimator for the Poisson model with dual binary endogenous explanatory variables, addressing the need to quantify the effects of preferential economic integration agreements. We develop a two-stage pseudo-maximum likelihood estimator and derive analytical gradient matrices as well as Hessian matrices. These exact formulas improve computational speed significantly. Applying our approach to trade data, we find that preferential trade agreements have a positive impact on bilateral trade flows, while bilateral investment treaties have a negative effect. Additionally, the positive interaction term between these two treaties suggests that preferential trade agreements promote horizontal foreign direct investment.
 
-### Asymptotic Distribution of OLS Estimator for Interrupted Time Series Model
+### Asymptotic Distribution of OLS Estimator for Interrupted Time Series Model  
+with Wen-Jen Tsay and Hsin-Chieh Wong
 
 This paper considers inference problems related to the widely known interrupted
 time series (ITS) model, which is used as a quasi-experimental approach for evaluating
