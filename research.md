@@ -11,7 +11,11 @@ title: Research
 
 ### Refereed Journal Articles
 
-1. "Financial Frictions and Uncertainty Shocks"  
+1. "The U.S. Inflation Inequality between 2010 to 2023"  
+   with YiLi Chien and Yi-Chan Tsai  
+   *Federal Reserve Bank of St. Louis Review*, 2025. (Accepted)  
+
+2. "Financial Frictions and Uncertainty Shocks"  
    with Yi-Chan Tsai and Po-Yuan Wang  
    *Macroeconomic Dynamics*, 2025, 29: e143  
    [DOI: 10.1017/S1365100525100497](https://doi.org/10.1017/S1365100525100497)  
