@@ -45,7 +45,7 @@ I am an Assistant Professor in the Department of Economics at National Dong Hwa 
    [Link to paper](https://www.cbc.gov.tw/dl-191344-3ea494656eea4c00823226f85f309220.html)
 
 ## Grants and Awards
-- - Best Doctoral Dissertation Award (Sho-Chieh Tsiang Theoretical Economics), Taiwan Economic Association (2025)  
+- Best Doctoral Dissertation Award (Sho-Chieh Tsiang Theoretical Economics), Taiwan Economic Association (2025)  
 - Doctoral Dissertation Fellowship of the Humanities and Social Sciences, National Science and Technology Council (2023)
 - Asia Bank Scholarship, National Taiwan University (2022)
 - Liu Ta-Chung Scholarship, National Taiwan University (2020)
