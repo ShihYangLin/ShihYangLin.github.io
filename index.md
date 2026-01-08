@@ -59,9 +59,10 @@ I am an Assistant Professor in the Department of Economics at National Dong Hwa 
 ## Teaching Experience
 
 ### National Dong Hwa University
+- Econometric Analysis (II) - (Spring 2026)
 - Introduction to Big Data Analytics - (Fall 2025)
 - Development Economics - (Fall 2025)
-- Financial Markets - (Spring 2025)
+- Financial Markets - (Spring 2025-2026)
 - Financial Economics (I) - (Spring 2025)
 
 ### National Taiwan University
