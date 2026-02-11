@@ -44,22 +44,10 @@ with Chingmu Chen, Shin-Kun Peng, and Wen-Jen Tsay
 
 This paper introduces a novel estimator for the Poisson model with dual binary endogenous explanatory variables, addressing the need to quantify the effects of preferential economic integration agreements. We develop a two-stage pseudo-maximum likelihood estimator and derive analytical gradient matrices as well as Hessian matrices. These exact formulas improve computational speed significantly. Applying our approach to trade data, we find that preferential trade agreements have a positive impact on bilateral trade flows, while bilateral investment treaties have a negative effect. Additionally, the positive interaction term between these two treaties suggests that preferential trade agreements promote horizontal foreign direct investment.
 
-### Asymptotic Distribution of OLS Estimator for Interrupted Time Series Model  
+### Robust Inference for Interrupted Time Series Models with Serial Dependent Disturbances  
 with Wen-Jen Tsay and Hsin-Chieh Wong
 
-This paper considers inference problems related to the widely known interrupted
-time series (ITS) model, which is used as a quasi-experimental approach for evaluating
-policy intervention effects over time. Under a single-treatment-group design with serially
-correlated errors, we are the first to establish the asymptotic distribution of the ordinary
-least squares (OLS) estimators, which involves Brownian motion functionals and reveals
-a superconsistency property for the trending variables when the estimation error of the
-OLS estimator relative to the true coefficients is properly rescaled. Interestingly, the
-asymptotic covariance matrix of the rescaled estimator is proved to be invertible, even
-though the convergence rates of the OLS estimator for the level and trending variables
-differ, and the trending variables have different observation lengths. Combining the
-bootstrap approach suggested in this paper, the simulations show that the inference
-method derived from our asymptotic analysis performs well, even when the sample size
-is moderate.  
+This paper considers inference problems related to the widely known interrupted time series (ITS) model, which is used as a quasi-experimental approach for evaluating policy intervention effects over time. Under a single-treatment-group design with serially correlated errors, we are the first to establish the asymptotic distribution of the ordinary least squares (OLS) estimators, which involves Brownian motion functionals and reveals a superconsistency property for the trending variables when the estimation error of the OLS estimator relative to the true coefficients is properly rescaled. Interestingly, the asymptotic covariance matrix of the rescaled estimator is proved to be invertible, even though the convergence rates of the OLS estimator for the level and trending variables differ, and the trending variables have different observation lengths. We further develop a studentized sieve bootstrap procedure and establish its asymptotic validity, providing an implementable inference method for small samples. In simulation experiments, the proposed bootstrap-based inference performs well, particularly under strong serial dependence.  
 
 [DOI: 10.2139/ssrn.5486489](https://dx.doi.org/10.2139/ssrn.5486489)
 
