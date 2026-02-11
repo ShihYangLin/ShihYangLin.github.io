@@ -53,7 +53,7 @@ This paper considers inference problems related to the widely known interrupted 
 
 ### Estimating Count Data Models with <i>k</i> Endogenous Switching Variables
 
-This paper proposes a novel approach to address the estimation and inference problems concerning the count data models featuring k binary endogenous explanatory variables. The proposed estimator fills the gap in various economic domains where discussions involve endogenous dummy variables (treatment effects) and sample selection. Under the correct model specification the full information maximum likelihood approach to estimation is introduced. Additionally, we develop both a one-stage quasi-maximum likelihood estimator and a two-stage quasi-maximum likelihood estimator to offer relatively robust alternatives.
+This paper proposes a novel approach to address the estimation and inference problems concerning the count data models featuring <i>k</i> binary endogenous explanatory variables. The proposed estimator fills the gap in various economic domains where discussions involve endogenous dummy variables (treatment effects) and sample selection. Under the correct model specification the full information maximum likelihood approach to estimation is introduced. Additionally, we develop both a one-stage quasi-maximum likelihood estimator and a two-stage quasi-maximum likelihood estimator to offer relatively robust alternatives.
 
 ### Empirical Relevance of Collateral-based and Cash Flow-based Credit Constraints in the U.S. Economy
 
