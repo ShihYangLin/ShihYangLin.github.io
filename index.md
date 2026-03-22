@@ -28,9 +28,10 @@ I am an Assistant Professor in the Department of Economics at National Dong Hwa 
 ## Publications
 
 ### Refereed Journal Articles
-1. "The U.S. Inflation Inequality between 2010 to 2023"  
+1. "U.S. Inflation Inequality between 2010 and 2023"  
    with YiLi Chien and Yi-Chan Tsai  
-   *Federal Reserve Bank of St. Louis Review*, 2025. (Accepted)  
+   *Federal Reserve Bank of St. Louis Review*, 2026, 108(2): 1-22  
+   [DOI: 10.20955/r.2026.02](https://doi.org/10.20955/r.2026.02)  
    
 2. "Financial Frictions and Uncertainty Shocks"  
    with Yi-Chan Tsai and Po-Yuan Wang  
