@@ -11,17 +11,17 @@ title: Research
 
 ### Refereed Journal Articles
 
-1. "The U.S. Inflation Inequality between 2010 and 2023"  
+1. "U.S. Inflation Inequality between 2010 and 2023"  
    with YiLi Chien and Yi-Chan Tsai  
    *Federal Reserve Bank of St. Louis Review*, 2026, 108(2): 1-22  
-   [DOI: 10.20955/r.2026.02](https://doi.org/10.20955/r.2026.02)
+   [DOI: 10.20955/r.2026.02](https://doi.org/10.20955/r.2026.02)  
 
-3. "Financial Frictions and Uncertainty Shocks"  
+2. "Financial Frictions and Uncertainty Shocks"  
    with Yi-Chan Tsai and Po-Yuan Wang  
    *Macroeconomic Dynamics*, 2025, 29: e143  
    [DOI: 10.1017/S1365100525100497](https://doi.org/10.1017/S1365100525100497)  
    
-4. "Estimating the Willingness to Pay for Voting when Absentee Voting is not Allowed"  
+3. "Estimating the Willingness to Pay for Voting when Absentee Voting is not Allowed"  
    with C.Y. Cyrus Chu and Wen-Jen Tsay  
    *Social Science Quarterly*, 2021, 102(4): 1380-1393  
    [DOI: 10.1111/ssqu.13014](https://doi.org/10.1111/ssqu.13014)
