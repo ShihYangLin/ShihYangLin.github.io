@@ -1,0 +1,21 @@
+# OS files
+.DS_Store
+
+# Quarto temporary/build files
+/.quarto/
+/_site/
+**/*.quarto_ipynb
+
+# LaTeX auxiliary files (compiled files)
+cv/*.aux
+cv/*.log
+cv/*.out
+cv/*.synctex.gz
+cv/*.toc
+cv/*.pdf
+cv/archive/*.aux
+cv/archive/*.log
+cv/archive/*.out
+cv/archive/*.synctex.gz
+cv/archive/*.toc
+cv/archive/*.pdf
