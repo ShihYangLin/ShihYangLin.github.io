@@ -14,7 +14,7 @@ Assistant Professor · Economics
 Department of Economics, National Dong Hwa University
 :::
 
-::: {.lead}
+::: {.intro}
 I am an Assistant Professor in the Department of Economics at National Dong Hwa
 University. My research focuses on macroeconomics and econometrics — spanning
 financial frictions, inflation inequality, and the econometrics of policy
@@ -29,26 +29,29 @@ evaluation.
 
 ## Education
 
-::: {.entry}
+:::: {.entry}
 [2025]{.year}
+
 ::: {}
 [Ph.D. in Economics]{.role}<br>[National Taiwan University]{.org}
 :::
-:::
+::::
 
-::: {.entry}
+:::: {.entry}
 [2016]{.year}
+
 ::: {}
 [M.A. in Economics]{.role}<br>[National Taiwan University]{.org}
 :::
-:::
+::::
 
-::: {.entry}
+:::: {.entry}
 [2008]{.year}
+
 ::: {}
 [B.A. in Political Economy]{.role}<br>[National Sun Yat-Sen University]{.org}
 :::
-:::
+::::
 
 ## Research Interests
 
@@ -59,27 +62,31 @@ evaluation.
 [Labor Economics]{.tag}
 :::
 
+::: {.section-row}
 ## Selected Publications
+[All research →](research.qmd){.more}
+:::
 
-::: {.pub}
+:::: {.pub}
 [U.S. Inflation Inequality between 2010 and 2023]{.title}
+
 ::: {.meta}
 with YiLi Chien and Yi-Chan Tsai · *Federal Reserve Bank of St. Louis Review*, 2026
 :::
-:::
+::::
 
-::: {.pub}
+:::: {.pub}
 [Financial Frictions and Uncertainty Shocks]{.title}
+
 ::: {.meta}
 with Yi-Chan Tsai and Po-Yuan Wang · *Macroeconomic Dynamics*, 2025
 :::
-:::
+::::
 
-::: {.pub}
+:::: {.pub}
 [Estimating the Willingness to Pay for Voting when Absentee Voting is not Allowed]{.title}
+
 ::: {.meta}
 with C.Y. Cyrus Chu and Wen-Jen Tsay · *Social Science Quarterly*, 2021
 :::
-:::
-
-[All research →](research.qmd){.more}
+::::

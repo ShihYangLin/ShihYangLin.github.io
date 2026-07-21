@@ -3,93 +3,103 @@ pagetitle: "CV — Shih-Yang Lin"
 page-layout: article
 ---
 
-::: {.cv-head}
-::: {}
+:::::: {.cv-head}
+:::: {}
 ::: {.eyebrow}
 Curriculum Vitae
 :::
 # Shih-Yang Lin
-:::
+::::
 [↧ Download PDF](cv.pdf){.cv-download}
-:::
+::::::
 
-## Appointments
+## Appointments {.cv-h2}
 
-::: {.entry}
+:::: {.entry .cv-entry}
 [2025 –]{.year}
+
 ::: {}
 [Assistant Professor, Department of Economics]{.role}<br>[National Dong Hwa University]{.org}
 :::
-:::
+::::
 
-## Education
+## Education {.cv-h2}
 
-::: {.entry}
+:::: {.entry .cv-entry}
 [2025]{.year}
+
 ::: {}
 [Ph.D. in Economics]{.role}<br>[National Taiwan University]{.org}
 :::
-:::
+::::
 
-::: {.entry}
+:::: {.entry .cv-entry}
 [2016]{.year}
+
 ::: {}
 [M.A. in Economics]{.role}<br>[National Taiwan University]{.org}
 :::
-:::
+::::
 
-::: {.entry}
+:::: {.entry .cv-entry}
 [2008]{.year}
+
 ::: {}
 [B.A. in Political Economy]{.role}<br>[National Sun Yat-Sen University]{.org}
 :::
-:::
+::::
 
-## Grants & Awards
+## Grants & Awards {.cv-h2}
 
-::: {.entry}
+:::: {.entry .cv-entry}
 [2025]{.year}
+
 ::: {}
 Best Doctoral Dissertation Award (Sho-Chieh Tsiang Theoretical Economics), Taiwan Economic Association
 :::
-:::
+::::
 
-::: {.entry}
+:::: {.entry .cv-entry}
 [2023]{.year}
+
 ::: {}
 Doctoral Dissertation Fellowship of the Humanities and Social Sciences, National Science and Technology Council
 :::
-:::
+::::
 
-::: {.entry}
+:::: {.entry .cv-entry}
 [2022]{.year}
+
 ::: {}
 Asia Bank Scholarship, National Taiwan University
 :::
-:::
+::::
 
-::: {.entry}
+:::: {.entry .cv-entry}
 [2020]{.year}
+
 ::: {}
 Liu Ta-Chung Scholarship, National Taiwan University
 :::
-:::
+::::
 
-::: {.entry}
+:::: {.entry .cv-entry}
 [2019]{.year}
+
 ::: {}
 Harold H.C. Han Scholarship, National Taiwan University
 :::
-:::
+::::
 
-::: {.entry}
+:::: {.entry .cv-entry}
 [2018]{.year}
+
 ::: {}
 Chu, Cyrus C. Y. and Chen, Tain-Jy Scholarship, National Taiwan University
 :::
-:::
+::::
 
-## Selected Publications
+## Selected Publications {.cv-h2}
 
 1. U.S. Inflation Inequality between 2010 and 2023, *Federal Reserve Bank of St. Louis Review* (2026).
 2. Financial Frictions and Uncertainty Shocks, *Macroeconomic Dynamics* (2025).

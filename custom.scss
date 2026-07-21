@@ -2,26 +2,30 @@
 $font-family-sans-serif: "Libre Franklin", system-ui, -apple-system, sans-serif;
 $font-family-monospace: "IBM Plex Mono", monospace;
 
-$body-bg:        #f7f8fa;
-$body-color:     #34383f;
-$link-color:     #3a5aa6;
-$link-hover-color: #2c4a8f;
-$border-color:   #e3e6ea;
-$headings-color: #2b2f35;
+/* Colors below are exact sRGB conversions of the original design's oklch
+   tokens (oklch(0.55 0.10 255) accent, oklch(0.26 0.012 260) ink, etc.),
+   not hand-picked approximations -- the earlier hex guesses were visibly
+   off (esp. ink, which rendered noticeably lighter/grayer than intended). */
+$body-bg:        #f8fafd;
+$body-color:     #21242a;
+$link-color:     #4773ab;
+$link-hover-color: #3c6291;
+$border-color:   #dcdee2;
+$headings-color: #21242a;
 $headings-font-weight: 600;
 
-$navbar-bg: rgba(247, 248, 250, 0.86);
-$navbar-fg: #6c727b;
-$navbar-hl: #2b2f35;
+$navbar-bg: rgba(248, 250, 253, 0.86);
+$navbar-fg: #6d7279;
+$navbar-hl: #21242a;
 
-$footer-bg: #f7f8fa;
+$footer-bg: #f8fafd;
 
 /*-- scss:rules --*/
 :root {
-  --accent: #3a5aa6;
-  --ink:    #34383f;
-  --muted:  #71767e;
-  --faint:  #e3e6ea;
+  --accent: #4773ab;
+  --ink:    #21242a;
+  --muted:  #6d7279;
+  --faint:  #dcdee2;
   --panel:  #ffffff;
 }
 
@@ -30,7 +34,11 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-::selection { background: rgba(58, 90, 166, 0.18); }
+::selection { background: rgba(71, 115, 171, 0.22); }
+
+/* Each page's content starts 88px below the nav, matching the original
+   design's per-page <section style="padding-top:88px"> wrapper. */
+#quarto-document-content { padding-top: 88px; }
 
 /* --- Navbar --- */
 .navbar {
@@ -61,14 +69,18 @@ body {
 /* --- Headings --- */
 h1, .h1 {
   font-size: clamp(34px, 8.5vw, 52px);
-  line-height: 1.05;
+  line-height: 1.04;
   letter-spacing: -0.025em;
   font-weight: 600;
-  margin-bottom: 0.4em;
+  margin-top: 0;
+  margin-bottom: 18px;
 }
-.page-columns h1:first-of-type { margin-top: 40px; }
 
-/* Section labels (mono eyebrows) */
+/* Section labels (mono eyebrows).
+   Quarto ships its own global "h2, .h2 { border-bottom: ...; padding-bottom: .5rem }"
+   default. CSS cascades per-property, not per-rule, so simply not mentioning
+   border-bottom here does NOT cancel it -- that lower-specificity rule still
+   wins for that property. Must explicitly reset it. */
 main h2 {
   font-family: "IBM Plex Mono", monospace;
   font-size: 12px;
@@ -76,11 +88,32 @@ main h2 {
   text-transform: uppercase;
   color: var(--muted);
   font-weight: 500;
-  border-bottom: 1px solid var(--faint);
-  padding-bottom: 12px;
+  border-bottom: none;
+  padding-bottom: 0;
   margin-top: 72px;
   margin-bottom: 28px;
 }
+
+/* CV page section labels have a rule under them; other pages don't.
+   Quarto's section-divs put this class on both the <section> wrapper and
+   the <h2> itself, so scope to h2 only or the whole section gets a border. */
+h2.cv-h2 {
+  border-bottom: 1px solid var(--faint);
+  padding-bottom: 12px;
+}
+
+/* Section header row with a heading + link side-by-side (e.g. Selected Publications / All research) */
+.section-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 72px;
+  margin-bottom: 24px;
+}
+.section-row h2 { margin: 0; }
+.section-row .more { margin-top: 0; }
 
 /* Working-paper / entry titles */
 main h3 {
@@ -99,14 +132,17 @@ main h3 {
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--accent);
-  margin-bottom: 20px;
+  margin-bottom: 22px;
 }
 
-.affil { font-size: 18px; color: var(--muted); margin-bottom: 34px; }
-.lead  { font-size: 19px; line-height: 1.7; max-width: 600px; text-wrap: pretty; }
+.affil { font-size: 18px; line-height: 1.5; color: var(--muted); margin: 0 0 40px; max-width: 560px; }
+
+/* Named .intro, not .lead -- Bootstrap ships its own .lead (font-weight:300)
+   which was leaking in and making this paragraph look lighter than intended. */
+.intro { font-size: 19px; line-height: 1.7; max-width: 600px; text-wrap: pretty; margin: 0 0 44px; }
 
 /* --- Contact pills --- */
-.contact { display: flex; flex-wrap: wrap; gap: 10px; margin: 8px 0 24px; }
+.contact { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 24px; }
 a.pill {
   display: inline-flex; align-items: center; gap: 8px;
   font-family: "IBM Plex Mono", monospace; font-size: 13px;
@@ -116,17 +152,21 @@ a.pill {
 a.pill:hover { border-color: var(--accent); color: var(--accent) !important; }
 
 /* --- Interest tags --- */
-.tags { display: flex; flex-wrap: wrap; gap: 10px; }
+.tags { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
 .tags .tag {
   font-size: 15px; padding: 8px 16px;
   border: 1px solid var(--faint); border-radius: 8px; background: var(--panel);
 }
 
-/* --- Timeline entries (education / appointments / awards) --- */
+/* --- Timeline entries (education / appointments / awards) ---
+   Home page entries (short "2025") use a narrower label column than CV
+   page entries (which can hold "2025 –" or longer ranges); .cv-entry
+   widens it to match the original design's two different column widths. */
 .entry {
-  display: grid; grid-template-columns: 96px 1fr; gap: 20px;
+  display: grid; grid-template-columns: 64px 1fr; gap: 20px;
   align-items: baseline; padding: 14px 0;
 }
+.entry.cv-entry { grid-template-columns: 120px 1fr; }
 .entry .year { font-family: "IBM Plex Mono", monospace; font-size: 13px; color: var(--accent); }
 .entry .role { font-size: 17px; font-weight: 600; }
 .entry .org  { color: var(--muted); font-size: 15px; margin-top: 2px; }
@@ -139,7 +179,7 @@ a.pill:hover { border-color: var(--accent); color: var(--accent) !important; }
 .pub .meta em { font-family: "Newsreader", serif; font-style: italic; }
 a.doi {
   font-family: "IBM Plex Mono", monospace; font-size: 12.5px;
-  display: inline-block; margin-top: 10px;
+  display: inline-block; margin-top: 10px; text-decoration: none;
 }
 
 /* --- Working papers --- */
@@ -148,7 +188,18 @@ a.doi {
 .wp .authors { display: block; font-family: "Newsreader", serif; font-style: italic; color: var(--muted); font-size: 14.5px; margin: 8px 0 0; }
 .wp .abstract { font-family: "Newsreader", serif; font-size: 17px; line-height: 1.65; color: var(--ink); margin: 16px 0 0; text-wrap: pretty; }
 
-.more { font-family: "IBM Plex Mono", monospace; font-size: 12px; display: inline-block; margin-top: 14px; }
+/* Pandoc wraps loose lines (e.g. [2025]{.year}) in <p> tags; the original
+   design used bare spans/divs with no margin. Zero those out so spacing
+   is controlled only by .entry/.pub/.wp's own gap/padding/margin-top. */
+.entry p,
+.pub p,
+.wp > p,
+.wp .abstract p,
+.cv-head p {
+  margin: 0;
+}
+
+.more { font-family: "IBM Plex Mono", monospace; font-size: 12px; display: inline-block; margin-top: 14px; text-decoration: none; }
 
 /* --- Teaching tables --- */
 .teaching table { width: 100%; margin: 0; border-collapse: collapse; }
@@ -181,5 +232,6 @@ a.cv-download:hover { background: var(--accent); color: #fff !important; }
 
 @media (max-width: 560px) {
   .navbar .navbar-nav .nav-link { padding: 6px 8px; font-size: 12px; }
-  .entry { grid-template-columns: 76px 1fr; gap: 14px; }
+  .entry { grid-template-columns: 56px 1fr; gap: 14px; }
+  .entry.cv-entry { grid-template-columns: 90px 1fr; }
 }
