@@ -12,10 +12,3 @@ cv/*.log
 cv/*.out
 cv/*.synctex.gz
 cv/*.toc
-cv/*.pdf
-cv/archive/*.aux
-cv/archive/*.log
-cv/archive/*.out
-cv/archive/*.synctex.gz
-cv/archive/*.toc
-cv/archive/*.pdf
