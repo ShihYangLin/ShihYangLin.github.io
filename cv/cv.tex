@@ -11,16 +11,16 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage[full]{textcomp}
-\usepackage{CJKutf8}
 \usepackage[lf]{ebgaramond}
 % \usepackage[scaled,swashQ]{garamondx}
 \usepackage[T1]{fontenc}
 
 \usepackage{enumitem}
-\usepackage[a4paper,left=.9in, right=.9in, top=1.5in, bottom=1.5in]{geometry}
+\usepackage[a4paper,left=.9in, right=.9in, top=.85in, bottom=.85in]{geometry}
 \usepackage{url}
 \usepackage[dvipsnames]{xcolor}
 \usepackage{amsmath}
+\usepackage{titlesec}
 
 % package settings
 \usepackage[
@@ -34,12 +34,21 @@
 \markright{\textbf{Shih-Yang Lin}}
 
 \setlength\parindent{2em}
+\setlength{\parskip}{2pt}
 
 \thispagestyle{empty}
 
-% define cv section
-\newcommand{\cvsection}[1]{\section*{\rmfamily#1}}
+% section headings: bold caps + thin rule beneath, tightened spacing
+\titleformat{\section}{\rmfamily\bfseries\large}{}{0pt}{}[{\titlerule[0.4pt]}]
+\titlespacing{\section}{0pt}{10pt}{6pt}
+\titlespacing{\subsection}{0pt}{8pt}{4pt}
+
+\newcommand{\cvsection}[1]{\section*{\MakeUppercase{#1}}}
 \newcommand{\cvsubsection}[1]{\subsection*{\rmfamily\hspace{1.6em}#1}}
+
+% shared hanging-indent list style used by every entry list in this CV
+\newlist{cvlist}{itemize}{1}
+\setlist[cvlist]{leftmargin=2em, topsep=2pt, itemsep=3pt, label={}}
 
 % begin
 \begin{document}
@@ -153,7 +162,7 @@ Harold H.C. Han Scholarship, National Taiwan University, 2019
 Chu, Cyrus C. Y. and Chen, Tain-Jy Scholarship, National Taiwan University, 2018
 
 % publication
-\section*{Publication}
+\section*{\MakeUppercase{Publication}}
 
 \cvsubsection{Refereed Journal Articles}
 
@@ -170,7 +179,7 @@ Chu, Cyrus C. Y. and Chen, Tain-Jy Scholarship, National Taiwan University, 2018
     \item \textbf{“Constructing the DSGE-VAR Model — Taiwan's Medium-to-Long-Term Economic Growth Rate Forecast.”} Coauthored with Yi-Chan Tsai, Ruey Yau, and Kuo-Hsuan Chin, 2022. \textit{Quarterly Bulletin, Central Bank of the Republic of China (Taiwan)}, 44: (2), pp. 27-70.
 \end{enumerate}
 
-\section*{Working Paper}
+\section*{\MakeUppercase{Working Paper}}
 
 \begin{enumerate}
     \item \textbf{“The Labor Supply of Married Women and Spousal Tax Deductions in Japan.”} Coauthored with Minchung Hsu, Pei-Ju Liao, and Yi-Chan Tsai.
