@@ -1,0 +1,34 @@
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "Shih-Yang Lin 林世揚"
+  site-url: "https://shihyanglin.github.io"
+  navbar:
+    pinned: true
+    left:
+      - text: "Home"
+        href: index.qmd
+      - text: "Research"
+        href: research.qmd
+      - text: "Teaching"
+        href: teaching.qmd
+      - text: "CV"
+        href: cv.qmd
+  page-footer:
+    left: "Shih-Yang Lin · National Dong Hwa University"
+    right: "© 2026"
+
+format:
+  html:
+    theme:
+      - cosmo
+      - custom.scss
+    toc: false
+    anchor-sections: false
+    include-in-header: _include.html
+    grid:
+      body-width: 760px
+      sidebar-width: 0px
+      margin-width: 0px

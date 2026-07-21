@@ -1,0 +1,85 @@
+---
+pagetitle: "Shih-Yang Lin 林世揚"
+description: "Assistant Professor of Economics, National Dong Hwa University"
+page-layout: article
+---
+
+::: {.eyebrow}
+Assistant Professor · Economics
+:::
+
+# Shih-Yang Lin [林世揚]{.cjk}
+
+::: {.affil}
+Department of Economics, National Dong Hwa University
+:::
+
+::: {.lead}
+I am an Assistant Professor in the Department of Economics at National Dong Hwa
+University. My research focuses on macroeconomics and econometrics — spanning
+financial frictions, inflation inequality, and the econometrics of policy
+evaluation.
+:::
+
+::: {.contact}
+[✉ Email](mailto:linsy@gms.ndhu.edu.tw){.pill}
+[◎ ORCID](https://orcid.org/0000-0003-0864-0187){.pill}
+[↧ CV](cv.qmd){.pill}
+:::
+
+## Education
+
+::: {.entry}
+[2025]{.year}
+::: {}
+[Ph.D. in Economics]{.role}<br>[National Taiwan University]{.org}
+:::
+:::
+
+::: {.entry}
+[2016]{.year}
+::: {}
+[M.A. in Economics]{.role}<br>[National Taiwan University]{.org}
+:::
+:::
+
+::: {.entry}
+[2008]{.year}
+::: {}
+[B.A. in Political Economy]{.role}<br>[National Sun Yat-Sen University]{.org}
+:::
+:::
+
+## Research Interests
+
+::: {.tags}
+[Macroeconomics]{.tag}
+[Financial Economics]{.tag}
+[Econometrics]{.tag}
+[Labor Economics]{.tag}
+:::
+
+## Selected Publications
+
+::: {.pub}
+[U.S. Inflation Inequality between 2010 and 2023]{.title}
+::: {.meta}
+with YiLi Chien and Yi-Chan Tsai · *Federal Reserve Bank of St. Louis Review*, 2026
+:::
+:::
+
+::: {.pub}
+[Financial Frictions and Uncertainty Shocks]{.title}
+::: {.meta}
+with Yi-Chan Tsai and Po-Yuan Wang · *Macroeconomic Dynamics*, 2025
+:::
+:::
+
+::: {.pub}
+[Estimating the Willingness to Pay for Voting when Absentee Voting is not Allowed]{.title}
+::: {.meta}
+with C.Y. Cyrus Chu and Wen-Jen Tsay · *Social Science Quarterly*, 2021
+:::
+:::
+
+[All research →](research.qmd){.more}
