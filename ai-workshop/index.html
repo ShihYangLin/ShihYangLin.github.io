@@ -500,6 +500,8 @@ html[lang="en"]      [data-l="zh"] { display: none; }
 }
 
 .session {
+  display: flex;
+  flex-direction: column;   /* 讓主講人那列對齊各卡底部 */
   background: var(--paper-card);
   border: 1px solid var(--green-line);
   border-radius: 16px;
@@ -524,6 +526,7 @@ html[lang="en"]      [data-l="zh"] { display: none; }
 
 .session__mode {
   display: inline-block;
+  align-self: flex-start;   /* flex 子項會把 inline-block 撐成整列，這裡收回來 */
   font-size: 0.85rem;
   font-weight: 700;
   letter-spacing: 0.03em;
@@ -543,6 +546,26 @@ html[lang="en"]      [data-l="zh"] { display: none; }
   font-size: 0.95rem;
   color: var(--ink-faint);
   line-height: 1.5;
+}
+
+.session__who {
+  margin-top: auto;
+  padding-top: 0.7rem;
+  border-top: 1px solid var(--green-line);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.5;
+}
+.session__who .label {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 0.15rem;
 }
 
 /* ───────────────────────── 活動資訊 ───────────────────────── */
@@ -847,8 +870,8 @@ html[lang="en"]      [data-l="zh"] { display: none; }
 <section class="section wrap" id="sessions">
   <div class="section__head">
     <h2 class="section__title">
-      <span data-l="zh">工作坊場次 · 全系列四場</span>
-      <span data-l="en">Workshop Sessions · Four in the Series</span>
+      <span data-l="zh">工作坊場次 · 首場線上、後三場實體</span>
+      <span data-l="en">Workshop Sessions · One Online, Three In Person</span>
     </h2>
   </div>
 
@@ -863,41 +886,61 @@ html[lang="en"]      [data-l="zh"] { display: none; }
         <span data-l="zh"><strong>8 / 19（三）</strong><br>12:00–14:00</span>
         <span data-l="en"><strong>Aug 19 (Wed)</strong><br>12:00–14:00 GMT+8</span>
       </div>
+      <div class="session__who">
+        <span class="label">Speaker</span>
+        <span data-l="zh">林世揚</span>
+        <span data-l="en">Shih-Yang Lin</span>
+      </div>
     </article>
 
     <article class="session">
       <div class="session__no">02</div>
       <div class="session__mode">
-        <span data-l="zh">形式待定</span>
-        <span data-l="en">Format TBD</span>
+        <span data-l="zh">實體場次</span>
+        <span data-l="en">In person</span>
       </div>
       <div class="session__when">
-        <span data-l="zh">日期待公布</span>
-        <span data-l="en">Date TBD</span>
+        <span data-l="zh">日期・地點待公布</span>
+        <span data-l="en">Date &amp; venue TBD</span>
+      </div>
+      <div class="session__who">
+        <span class="label">Speaker</span>
+        <span data-l="zh">陳文盛教授</span>
+        <span data-l="en">Prof. 陳文盛</span>
       </div>
     </article>
 
     <article class="session">
       <div class="session__no">03</div>
       <div class="session__mode">
-        <span data-l="zh">形式待定</span>
-        <span data-l="en">Format TBD</span>
+        <span data-l="zh">實體場次</span>
+        <span data-l="en">In person</span>
       </div>
       <div class="session__when">
-        <span data-l="zh">日期待公布</span>
-        <span data-l="en">Date TBD</span>
+        <span data-l="zh">日期・地點待公布</span>
+        <span data-l="en">Date &amp; venue TBD</span>
+      </div>
+      <div class="session__who">
+        <span class="label">Speaker</span>
+        <span data-l="zh">林世揚</span>
+        <span data-l="en">Shih-Yang Lin</span>
       </div>
     </article>
 
     <article class="session">
       <div class="session__no">04</div>
       <div class="session__mode">
-        <span data-l="zh">形式待定</span>
-        <span data-l="en">Format TBD</span>
+        <span data-l="zh">實體場次</span>
+        <span data-l="en">In person</span>
       </div>
       <div class="session__when">
-        <span data-l="zh">日期待公布</span>
-        <span data-l="en">Date TBD</span>
+        <span data-l="zh">日期・地點待公布</span>
+        <span data-l="en">Date &amp; venue TBD</span>
+      </div>
+      <div class="session__who">
+        <span class="label">Speaker</span>
+        <span data-l="zh">林世揚</span>
+        <span data-l="en">Shih-Yang Lin</span>
       </div>
     </article>
   </div>
@@ -964,8 +1007,8 @@ html[lang="en"]      [data-l="zh"] { display: none; }
   </div>
 
   <p class="cta-note">
-    <span data-l="zh">請於 8/19（三）12:00 開始前填妥課前問卷，內容會用來調整當天的實作難度。會議建議提前 5 分鐘入場；第二至四場資訊另行公布。</span>
-    <span data-l="en">Please complete the survey before 12:00 on Wed, Aug 19 — it is used to calibrate the hands-on session. Join the meeting a few minutes early. Sessions 02—04 to be announced.</span>
+    <span data-l="zh">請於 8/19（三）12:00 開始前填妥課前問卷，內容會用來調整當天的實作難度。會議建議提前 5 分鐘入場；第二至四場為實體場次，日期與地點另行公布。</span>
+    <span data-l="en">Please complete the survey before 12:00 on Wed, Aug 19 — it is used to calibrate the hands-on session. Join the meeting a few minutes early. Sessions 02—04 are in person; dates and venues to be announced.</span>
   </p>
 </section>
 
@@ -973,8 +1016,8 @@ html[lang="en"]      [data-l="zh"] { display: none; }
 <footer class="footer wrap">
   <div class="footer__grid">
     <div class="speaker">
-      <span data-l="zh">演講者：林世揚（國立東華大學經濟學系）</span>
-      <span data-l="en">Speaker: Shih-Yang Lin (NDHU Economics)</span>
+      <span data-l="zh">主講：林世揚（國立東華大學經濟學系）· 陳文盛（場次 02）</span>
+      <span data-l="en">Speakers: Shih-Yang Lin (NDHU Economics) · 陳文盛 (Session 02)</span>
     </div>
     <div class="eyebrow">Cross-tool · Cross-platform</div>
   </div>
