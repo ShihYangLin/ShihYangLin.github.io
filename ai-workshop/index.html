@@ -113,6 +113,9 @@ body {
 
 img { max-width: 100%; display: block; }
 
+/* .cta 等元素有自己的 display，hidden 需要蓋過去 */
+[hidden] { display: none !important; }
+
 /* 語言切換：以 <html lang> 決定顯示哪一組文字 */
 html[lang="zh-Hant"] [data-l="en"],
 html[lang="en"]      [data-l="zh"] { display: none; }
@@ -373,6 +376,10 @@ html[lang="en"]      [data-l="zh"] { display: none; }
 /* ───────────────────────── 區塊通用 ───────────────────────── */
 .section { padding-block: clamp(3rem, 10vw, 5.5rem); }
 
+/* 場次卡指向下方的活動資訊，兩區之間不留整段空白才看得出關聯 */
+#sessions { padding-bottom: clamp(1.25rem, 4vw, 2rem); }
+#info     { padding-top:    clamp(2rem, 6vw, 3rem); }
+
 .section__head {
   display: flex;
   align-items: baseline;
@@ -493,25 +500,58 @@ html[lang="en"]      [data-l="zh"] { display: none; }
 }
 
 /* ───────────────────────── 場次 ───────────────────────── */
+.sessions-hint {
+  margin: 0 0 clamp(1rem, 3vw, 1.35rem);
+  font-size: 0.9rem;
+  color: var(--ink-faint);
+  line-height: 1.6;
+}
+
+/* 欄數只走 1 → 2 → 4：auto-fit 會在中間寬度排成 3+1，落單的第四張很難看 */
 .sessions {
   display: grid;
   gap: clamp(0.75rem, 2.5vw, 1rem);
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  grid-template-columns: 1fr;
+}
+@media (min-width: 480px) {
+  .sessions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 940px) {
+  .sessions { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 
 .session {
+  position: relative;
   display: flex;
   flex-direction: column;   /* 讓主講人那列對齊各卡底部 */
   background: var(--paper-card);
-  border: 1px solid var(--green-line);
+  /* 邊框固定 2px：選中時只換顏色，卡片內容才不會位移 1px */
+  border: 2px solid var(--green-line);
   border-radius: 16px;
   padding: clamp(1rem, 3.5vw, 1.3rem);
+  cursor: pointer;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
 }
+@media (hover: hover) {
+  .session:hover { border-color: var(--green-mid); }
+}
+.session:focus-visible { outline: 3px solid var(--red); outline-offset: 3px; }
 
-.session--online {
-  border-color: var(--green-mid);
-  border-width: 2px;
+.session[aria-selected="true"] {
+  border-color: var(--red);
   box-shadow: var(--shadow);
+}
+/* 指向下方場次資訊的小三角 */
+.session[aria-selected="true"]::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -10px;
+  width: 18px;
+  height: 10px;
+  background: var(--red);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  transform: translateX(-50%);
 }
 
 .session__no {
@@ -542,10 +582,18 @@ html[lang="en"]      [data-l="zh"] { display: none; }
   color: #fff;
 }
 
+/* 四場一律「日期一行、時間一行」，卡片才會等高對齊 */
 .session__when {
   font-size: 0.95rem;
   color: var(--ink-faint);
   line-height: 1.5;
+  margin-bottom: 0.7rem;
+}
+.session__when strong {
+  display: block;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--ink);
 }
 
 .session__who {
@@ -626,12 +674,6 @@ html[lang="en"]      [data-l="zh"] { display: none; }
 .fact__link:hover { color: var(--red); }
 .fact__link:focus-visible { outline: 2px solid var(--red); outline-offset: 3px; }
 
-.session__when strong {
-  display: inline-block;
-  color: var(--ink);
-  font-weight: 700;
-}
-
 .cta-row {
   display: flex;
   flex-wrap: wrap;
@@ -671,6 +713,16 @@ html[lang="en"]      [data-l="zh"] { display: none; }
   box-shadow: none;
 }
 .cta--ghost:focus-visible { outline-color: var(--red); }
+
+/* 尚未開放的行動：保留版位，但明確表示現在按不了 */
+.cta--pending {
+  background: transparent;
+  color: var(--ink-faint);
+  border: 2px dashed var(--green-line);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+.cta--pending:hover { transform: none; box-shadow: none; }
 
 @media (max-width: 520px) { .cta { width: 100%; } }
 
@@ -717,6 +769,13 @@ html[lang="en"]      [data-l="zh"] { display: none; }
   @keyframes rise {
     from { opacity: 0; transform: translateY(14px); }
     to   { opacity: 1; transform: none; }
+  }
+
+  /* 切換場次時讓內容淡入，讀者才看得出下方換了東西 */
+  .details.is-switching { animation: fade-in 0.28s ease both; }
+  @keyframes fade-in {
+    from { opacity: 0.25; }
+    to   { opacity: 1; }
   }
 }
 </style>
@@ -866,7 +925,7 @@ html[lang="en"]      [data-l="zh"] { display: none; }
   </div>
 </section>
 
-<!-- ═══════════ 場次（TODO：日期確定後填入） ═══════════ -->
+<!-- ═══════════ 場次 ═══════════ -->
 <section class="section wrap" id="sessions">
   <div class="section__head">
     <h2 class="section__title">
@@ -875,16 +934,23 @@ html[lang="en"]      [data-l="zh"] { display: none; }
     </h2>
   </div>
 
-  <div class="sessions">
-    <article class="session session--online">
+  <!-- 無 JS 時卡片不能切換，提示由 JS 開啟 -->
+  <p class="sessions-hint" hidden>
+    <span data-l="zh">點選任一場次，下方「活動資訊」會顯示該場的時間與地點。</span>
+    <span data-l="en">Select a session to see its date and venue under Event Details below.</span>
+  </p>
+
+  <div class="sessions" role="tablist" aria-label="Workshop sessions">
+    <article class="session session--online" id="session-01" data-session="01"
+             role="tab" aria-controls="session-details" aria-selected="true" tabindex="0">
       <div class="session__no">01</div>
       <div class="session__mode">
         <span data-l="zh">線上場次</span>
         <span data-l="en">Online</span>
       </div>
       <div class="session__when">
-        <span data-l="zh"><strong>8 / 19（三）</strong><br>12:00–14:00</span>
-        <span data-l="en"><strong>Aug 19 (Wed)</strong><br>12:00–14:00 GMT+8</span>
+        <span data-l="zh"><strong>8 / 19（三）</strong>12:00–14:00</span>
+        <span data-l="en"><strong>Aug 19 (Wed)</strong>12:00–14:00</span>
       </div>
       <div class="session__who">
         <span class="label">Speaker</span>
@@ -893,32 +959,34 @@ html[lang="en"]      [data-l="zh"] { display: none; }
       </div>
     </article>
 
-    <article class="session">
+    <article class="session" id="session-02" data-session="02"
+             role="tab" aria-controls="session-details" aria-selected="false" tabindex="-1">
       <div class="session__no">02</div>
       <div class="session__mode">
         <span data-l="zh">實體場次</span>
         <span data-l="en">In person</span>
       </div>
       <div class="session__when">
-        <span data-l="zh">9 / 9（三）12:00–14:00・地點待公布</span>
-        <span data-l="en">Sep 9 (Wed) 12:00–14:00 · Venue TBD</span>
+        <span data-l="zh"><strong>9 / 9（三）</strong>12:00–14:00</span>
+        <span data-l="en"><strong>Sep 9 (Wed)</strong>12:00–14:00</span>
       </div>
       <div class="session__who">
         <span class="label">Speaker</span>
         <span data-l="zh">陳文盛教授</span>
-        <span data-l="en">Prof. 陳文盛</span>
+        <span data-l="en">Prof. Wen-sheng Chen</span>
       </div>
     </article>
 
-    <article class="session">
+    <article class="session" id="session-03" data-session="03"
+             role="tab" aria-controls="session-details" aria-selected="false" tabindex="-1">
       <div class="session__no">03</div>
       <div class="session__mode">
         <span data-l="zh">實體場次</span>
         <span data-l="en">In person</span>
       </div>
       <div class="session__when">
-        <span data-l="zh">日期・地點待公布</span>
-        <span data-l="en">Date &amp; venue TBD</span>
+        <span data-l="zh"><strong>10 / 14（三）</strong>12:00–14:00</span>
+        <span data-l="en"><strong>Oct 14 (Wed)</strong>12:00–14:00</span>
       </div>
       <div class="session__who">
         <span class="label">Speaker</span>
@@ -927,15 +995,16 @@ html[lang="en"]      [data-l="zh"] { display: none; }
       </div>
     </article>
 
-    <article class="session">
+    <article class="session" id="session-04" data-session="04"
+             role="tab" aria-controls="session-details" aria-selected="false" tabindex="-1">
       <div class="session__no">04</div>
       <div class="session__mode">
         <span data-l="zh">實體場次</span>
         <span data-l="en">In person</span>
       </div>
       <div class="session__when">
-        <span data-l="zh">日期・地點待公布</span>
-        <span data-l="en">Date &amp; venue TBD</span>
+        <span data-l="zh"><strong>11 / 11（三）</strong>12:00–14:00</span>
+        <span data-l="en"><strong>Nov 11 (Wed)</strong>12:00–14:00</span>
       </div>
       <div class="session__who">
         <span class="label">Speaker</span>
@@ -946,7 +1015,14 @@ html[lang="en"]      [data-l="zh"] { display: none; }
   </div>
 </section>
 
-<!-- ═══════════ 活動資訊（TODO：換成正式資訊） ═══════════ -->
+<!-- ═══════════ 活動資訊 ═══════════ -->
+<!--
+  以下內容依上方選取的場次切換：
+  data-for="01"        → 只在第一場顯示
+  data-for="02 03 04"  → 在第二、三、四場顯示
+  data-for 省略        → 四場共通，永遠顯示
+  地點確定後，改對應 data-for 的那張 .fact 即可，不必動版型。
+-->
 <section class="section wrap" id="info">
   <div class="section__head">
     <h2 class="section__title">
@@ -955,61 +1031,135 @@ html[lang="en"]      [data-l="zh"] { display: none; }
     </h2>
   </div>
 
-  <div class="facts">
-    <div class="fact">
-      <div class="fact__label">Session 01 · Date &amp; Time</div>
-      <div class="fact__value">
-        <span data-l="zh">2026 年 8 月 19 日（星期三）<span class="nb">12:00–14:00</span><br>
-          <span class="fact__note">時區：Asia/Taipei（GMT+8）</span></span>
-        <span data-l="en">Wed, August 19, 2026 · <span class="nb">12:00–14:00</span><br>
-          <span class="fact__note">Time zone: Asia/Taipei (GMT+8)</span></span>
+  <div class="details" id="session-details" role="tabpanel" aria-labelledby="session-01" tabindex="0">
+    <div class="facts">
+      <!-- ── 日期與時間 ── -->
+      <div class="fact" data-for="01">
+        <div class="fact__label">Session 01 · Date &amp; Time</div>
+        <div class="fact__value">
+          <span data-l="zh">2026 年 8 月 19 日（星期三）<span class="nb">12:00–14:00</span><br>
+            <span class="fact__note">時區：Asia/Taipei（GMT+8）</span></span>
+          <span data-l="en">Wed, August 19, 2026 · <span class="nb">12:00–14:00</span><br>
+            <span class="fact__note">Time zone: Asia/Taipei (GMT+8)</span></span>
+        </div>
+      </div>
+
+      <div class="fact" data-for="02">
+        <div class="fact__label">Session 02 · Date &amp; Time</div>
+        <div class="fact__value">
+          <span data-l="zh">2026 年 9 月 9 日（星期三）<span class="nb">12:00–14:00</span><br>
+            <span class="fact__note">時區：Asia/Taipei（GMT+8）</span></span>
+          <span data-l="en">Wed, September 9, 2026 · <span class="nb">12:00–14:00</span><br>
+            <span class="fact__note">Time zone: Asia/Taipei (GMT+8)</span></span>
+        </div>
+      </div>
+
+      <div class="fact" data-for="03">
+        <div class="fact__label">Session 03 · Date &amp; Time</div>
+        <div class="fact__value">
+          <span data-l="zh">2026 年 10 月 14 日（星期三）<span class="nb">12:00–14:00</span><br>
+            <span class="fact__note">時區：Asia/Taipei（GMT+8）</span></span>
+          <span data-l="en">Wed, October 14, 2026 · <span class="nb">12:00–14:00</span><br>
+            <span class="fact__note">Time zone: Asia/Taipei (GMT+8)</span></span>
+        </div>
+      </div>
+
+      <div class="fact" data-for="04">
+        <div class="fact__label">Session 04 · Date &amp; Time</div>
+        <div class="fact__value">
+          <span data-l="zh">2026 年 11 月 11 日（星期三）<span class="nb">12:00–14:00</span><br>
+            <span class="fact__note">時區：Asia/Taipei（GMT+8）</span></span>
+          <span data-l="en">Wed, November 11, 2026 · <span class="nb">12:00–14:00</span><br>
+            <span class="fact__note">Time zone: Asia/Taipei (GMT+8)</span></span>
+        </div>
+      </div>
+
+      <!-- ── 地點 ── -->
+      <div class="fact" data-for="01">
+        <div class="fact__label">Session 01 · Venue</div>
+        <div class="fact__value">
+          <span data-l="zh">線上舉行 · Google Meet<br>
+            <a class="fact__link" href="https://meet.google.com/dcf-rxxt-tcc" target="_blank" rel="noopener">meet.google.com/dcf-rxxt-tcc</a></span>
+          <span data-l="en">Online via Google Meet<br>
+            <a class="fact__link" href="https://meet.google.com/dcf-rxxt-tcc" target="_blank" rel="noopener">meet.google.com/dcf-rxxt-tcc</a></span>
+        </div>
+      </div>
+
+      <div class="fact" data-for="02">
+        <div class="fact__label">Session 02 · Venue</div>
+        <div class="fact__value">
+          <span data-l="zh">實體場次 · 地點待公布<br>
+            <span class="fact__note">確定後將於本頁公布</span></span>
+          <span data-l="en">In person · Venue to be announced<br>
+            <span class="fact__note">This page will be updated once confirmed</span></span>
+        </div>
+      </div>
+
+      <div class="fact" data-for="03">
+        <div class="fact__label">Session 03 · Venue</div>
+        <div class="fact__value">
+          <span data-l="zh">實體場次 · 地點待公布<br>
+            <span class="fact__note">確定後將於本頁公布</span></span>
+          <span data-l="en">In person · Venue to be announced<br>
+            <span class="fact__note">This page will be updated once confirmed</span></span>
+        </div>
+      </div>
+
+      <div class="fact" data-for="04">
+        <div class="fact__label">Session 04 · Venue</div>
+        <div class="fact__value">
+          <span data-l="zh">實體場次 · 地點待公布<br>
+            <span class="fact__note">確定後將於本頁公布</span></span>
+          <span data-l="en">In person · Venue to be announced<br>
+            <span class="fact__note">This page will be updated once confirmed</span></span>
+        </div>
+      </div>
+
+      <!-- ── 四場共通 ── -->
+      <div class="fact">
+        <div class="fact__label">Audience</div>
+        <div class="fact__value">
+          <span data-l="zh">經濟學系所教師、博碩士生，及對 AI 研究流程有興趣者</span>
+          <span data-l="en">Economics faculty, graduate students, and anyone curious about AI-assisted research</span>
+        </div>
+      </div>
+
+      <div class="fact">
+        <div class="fact__label">Format</div>
+        <div class="fact__value">
+          <span data-l="zh">工作坊形式 · 建議自備筆電實作</span>
+          <span data-l="en">Hands-on workshop · Laptop recommended</span>
+        </div>
       </div>
     </div>
 
-    <div class="fact">
-      <div class="fact__label">Session 01 · Venue</div>
-      <div class="fact__value">
-        <span data-l="zh">線上舉行 · Google Meet<br>
-          <a class="fact__link" href="https://meet.google.com/dcf-rxxt-tcc" target="_blank" rel="noopener">meet.google.com/dcf-rxxt-tcc</a></span>
-        <span data-l="en">Online via Google Meet<br>
-          <a class="fact__link" href="https://meet.google.com/dcf-rxxt-tcc" target="_blank" rel="noopener">meet.google.com/dcf-rxxt-tcc</a></span>
-      </div>
+    <div class="cta-row">
+      <a class="cta" data-for="01"
+         href="https://docs.google.com/forms/d/e/1FAIpQLScvPB70ldQYvvFOsBwi0S2EuYvVWJZygP_Ayc2Q2ctNjhlQjA/viewform"
+         target="_blank" rel="noopener">
+        <span data-l="zh">填寫課前問卷</span>
+        <span data-l="en">Pre-workshop survey</span>
+      </a>
+      <!-- 問卷網址確定後，把這個 span 改寫成跟上面那顆按鈕一樣的 a.cta 連結即可 -->
+      <span class="cta cta--pending" data-for="02 03 04">
+        <span data-l="zh">課前問卷．尚未開放</span>
+        <span data-l="en">Pre-workshop survey · not open yet</span>
+      </span>
+      <a class="cta cta--ghost" data-for="01" href="https://meet.google.com/dcf-rxxt-tcc" target="_blank" rel="noopener">
+        <span data-l="zh">加入 Google Meet</span>
+        <span data-l="en">Join Google Meet</span>
+      </a>
     </div>
 
-    <div class="fact">
-      <div class="fact__label">Audience</div>
-      <div class="fact__value">
-        <span data-l="zh">經濟學系所教師、博碩士生，及對 AI 研究流程有興趣者</span>
-        <span data-l="en">Economics faculty, graduate students, and anyone curious about AI-assisted research</span>
-      </div>
-    </div>
-
-    <div class="fact">
-      <div class="fact__label">Format</div>
-      <div class="fact__value">
-        <span data-l="zh">工作坊形式 · 建議自備筆電實作</span>
-        <span data-l="en">Hands-on workshop · Laptop recommended</span>
-      </div>
-    </div>
+    <p class="cta-note" data-for="01">
+      <span data-l="zh">請於 8/19（三）12:00 開始前填妥課前問卷，內容會用來調整當天的實作難度。會議建議提前 5 分鐘入場。</span>
+      <span data-l="en">Please complete the survey before 12:00 on Wed, Aug 19 — it is used to calibrate the hands-on session. Join the meeting a few minutes early.</span>
+    </p>
+    <p class="cta-note" data-for="02 03 04">
+      <span data-l="zh">本場為實體場次，地點確定後會在本頁公布。課前問卷將於接近場次時開放，屆時此處會換成報名連結。</span>
+      <span data-l="en">This is an in-person session; the venue will be announced on this page. The pre-workshop survey opens closer to the date, and the link will appear here.</span>
+    </p>
   </div>
-
-  <div class="cta-row">
-    <a class="cta"
-       href="https://docs.google.com/forms/d/e/1FAIpQLScvPB70ldQYvvFOsBwi0S2EuYvVWJZygP_Ayc2Q2ctNjhlQjA/viewform"
-       target="_blank" rel="noopener">
-      <span data-l="zh">填寫課前問卷</span>
-      <span data-l="en">Pre-workshop survey</span>
-    </a>
-    <a class="cta cta--ghost" href="https://meet.google.com/dcf-rxxt-tcc" target="_blank" rel="noopener">
-      <span data-l="zh">加入 Google Meet</span>
-      <span data-l="en">Join Google Meet</span>
-    </a>
-  </div>
-
-  <p class="cta-note">
-    <span data-l="zh">請於 8/19（三）12:00 開始前填妥課前問卷，內容會用來調整當天的實作難度。會議建議提前 5 分鐘入場；第二至四場為實體場次，日期與地點另行公布。</span>
-    <span data-l="en">Please complete the survey before 12:00 on Wed, Aug 19 — it is used to calibrate the hands-on session. Join the meeting a few minutes early. Sessions 02—04 are in person; dates and venues to be announced.</span>
-  </p>
 </section>
 
 <!-- ═══════════ 頁尾 ═══════════ -->
@@ -1041,6 +1191,90 @@ html[lang="en"]      [data-l="zh"] { display: none; }
 
     // 與 <head> 內的早期設定同步按鈕狀態
     apply(document.documentElement.lang === 'en' ? 'en' : 'zh');
+  })();
+</script>
+
+<script>
+  // 場次卡 → 下方活動資訊。無此段程式時四場資訊全部並排顯示，頁面仍可讀。
+  (function () {
+    var tabs = Array.prototype.slice.call(document.querySelectorAll('.session[data-session]'));
+    var panel = document.getElementById('session-details');
+    var infoSection = document.getElementById('info');
+    if (!tabs.length || !panel || !infoSection) return;
+
+    var hint = document.querySelector('.sessions-hint');
+    var switchables = Array.prototype.slice.call(panel.querySelectorAll('[data-for]'));
+    var motionOK = window.matchMedia('(prefers-reduced-motion: no-preference)');
+
+    function tabFor(id) {
+      for (var i = 0; i < tabs.length; i++) {
+        if (tabs[i].getAttribute('data-session') === id) return tabs[i];
+      }
+      return null;
+    }
+
+    function select(id, opts) {
+      if (!tabFor(id)) id = tabs[0].getAttribute('data-session');
+      opts = opts || {};
+
+      tabs.forEach(function (tab) {
+        var on = tab.getAttribute('data-session') === id;
+        tab.setAttribute('aria-selected', String(on));
+        tab.tabIndex = on ? 0 : -1;
+      });
+
+      switchables.forEach(function (el) {
+        el.hidden = el.getAttribute('data-for').split(/\s+/).indexOf(id) === -1;
+      });
+
+      panel.setAttribute('aria-labelledby', 'session-' + id);
+
+      // replaceState 不會捲動、也不會塞爆上一頁紀錄
+      try { history.replaceState(null, '', '#session-' + id); } catch (e) { /* file:// 下會擋，忽略 */ }
+
+      if (opts.animate && motionOK.matches) {
+        panel.classList.remove('is-switching');
+        void panel.offsetWidth;            // 強制回流，動畫才會重播
+        panel.classList.add('is-switching');
+      }
+      if (opts.focus) tabFor(id).focus();
+      // 資訊區不在視窗上半部時才捲過去；桌機兩區同屏就別亂動畫面
+      if (opts.scroll) {
+        var top = infoSection.getBoundingClientRect().top;
+        if (top < 0 || top > window.innerHeight * 0.6) {
+          infoSection.scrollIntoView({ behavior: motionOK.matches ? 'smooth' : 'auto', block: 'start' });
+        }
+      }
+    }
+
+    tabs.forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        select(tab.getAttribute('data-session'), { animate: true, scroll: true });
+      });
+    });
+
+    document.querySelector('.sessions').addEventListener('keydown', function (e) {
+      var step = { ArrowLeft: -1, ArrowRight: 1 }[e.key];
+      var jump = { Home: 0, End: tabs.length - 1 }[e.key];
+      var next;
+
+      if (step) {
+        var here = tabs.indexOf(document.activeElement);
+        if (here === -1) return;
+        next = tabs[(here + step + tabs.length) % tabs.length];
+      } else if (jump !== undefined) {
+        next = tabs[jump];
+      } else {
+        return;
+      }
+
+      e.preventDefault();
+      select(next.getAttribute('data-session'), { animate: true, focus: true });
+    });
+
+    var fromHash = /^#session-(0[1-9])$/.exec(location.hash);
+    select(fromHash ? fromHash[1] : tabs[0].getAttribute('data-session'));
+    if (hint) hint.hidden = false;
   })();
 </script>
 
