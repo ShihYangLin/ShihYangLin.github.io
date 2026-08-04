@@ -582,6 +582,17 @@ html[lang="en"]      [data-l="zh"] { display: none; }
   color: #fff;
 }
 
+/* 第二場有獨立教材，卡片先露出主題，使用者不用點進資訊區才知道內容 */
+.session__topic {
+  font-family: var(--serif);
+  font-size: 1.02rem;
+  font-weight: 700;
+  line-height: 1.45;
+  color: var(--green-mid);
+  letter-spacing: 0.02em;
+  margin: 0.1rem 0 0.55rem;
+}
+
 /* 四場一律「日期一行、時間一行」，卡片才會等高對齊 */
 .session__when {
   font-size: 0.95rem;
@@ -966,6 +977,10 @@ html[lang="en"]      [data-l="zh"] { display: none; }
         <span data-l="zh">實體場次</span>
         <span data-l="en">In person</span>
       </div>
+      <div class="session__topic">
+        <span data-l="zh">跟 AI 一起用 Git</span>
+        <span data-l="en">Using Git with AI</span>
+      </div>
       <div class="session__when">
         <span data-l="zh"><strong>9 / 9（三）</strong>12:00–14:00</span>
         <span data-l="en"><strong>Sep 9 (Wed)</strong>12:00–14:00</span>
@@ -1134,6 +1149,12 @@ html[lang="en"]      [data-l="zh"] { display: none; }
     </div>
 
     <div class="cta-row">
+      <a class="cta" data-for="02"
+         href="https://cwstedctw.github.io/git-ai-workshop/material.html#prep"
+         target="_blank" rel="noopener">
+        <span data-l="zh">第二場：課程教材與行前準備</span>
+        <span data-l="en">Session 02 Materials &amp; Pre-work</span>
+      </a>
       <a class="cta" data-for="01"
          href="https://docs.google.com/forms/d/e/1FAIpQLScvPB70ldQYvvFOsBwi0S2EuYvVWJZygP_Ayc2Q2ctNjhlQjA/viewform"
          target="_blank" rel="noopener">
@@ -1151,11 +1172,15 @@ html[lang="en"]      [data-l="zh"] { display: none; }
       </a>
     </div>
 
+    <p class="cta-note" data-for="02">
+      <span data-l="zh">此連結會直接開啟「行前準備」；課程頁也包含完整課程路線、概念地圖、操作流程與課後查詢。</span>
+      <span data-l="en">This link opens at Pre-work preparation; the page also includes the full course guide and post-work reference.</span>
+    </p>
     <p class="cta-note" data-for="01">
       <span data-l="zh">請於 8/19（三）14:00 開始前填妥課前問卷，內容會用來調整當天的實作難度。會議建議提前 5 分鐘入場。</span>
       <span data-l="en">Please complete the survey before 14:00 on Wed, Aug 19 — it is used to calibrate the hands-on session. Join the meeting a few minutes early.</span>
     </p>
-    <p class="cta-note" data-for="02 03 04">
+    <p class="cta-note" data-for="03 04">
       <span data-l="zh">本場為實體場次，請直接前往人社二館 D410 室，建議提前 5 分鐘入座。課前問卷將於接近場次時開放，屆時此處會換成報名連結。</span>
       <span data-l="en">This is an in-person session at HSSB II, Room D410; please arrive a few minutes early. The pre-workshop survey opens closer to the date, and the link will appear here.</span>
     </p>
