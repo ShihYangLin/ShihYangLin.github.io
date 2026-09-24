@@ -420,3 +420,44 @@ Catalog decisions (these amend the Generator catalog above):
 7. Router: `#/<module>/<generator>` without `level`/`seed` must not be
    "unknown"; default to level 1 and a fresh random seed, and rewrite the
    hash with `history.replaceState`.
+
+### Gate 1 (approved with required fixes, 2026-09-25)
+
+Checker fixes (each needs a regression test in `checker.test.js`):
+1. **Sampling bug**: all variables currently advance with the same
+   golden-ratio step, so multi-variable points lie on a family of
+   parallel lines. A wrong answer that differs only by a function
+   vanishing on those lines is accepted 20/20. Use independent
+   per-variable sequences (e.g. Kronecker steps √2, √3, √5, √7 fractional
+   parts with independent random phases, or a seeded PRNG per variable).
+   Regression: `x + sin(2π((y−0.5)/3.5 − (x−0.5)/3.5 − 0.41421356…))`
+   vs `x` on `x,y ∈ [0.5, 4]` must be `incorrect`.
+2. Skip a sample point only when the **reference** is non-finite. If the
+   reference is finite and the student's value is non-finite or complex,
+   that point is a mismatch. `sqrt(-x)` or `log(-x)` on a positive domain
+   must be `incorrect`, not `uncheckable`.
+3. Reject function names used without parentheses (`sqrt x`, `ln x`,
+   `lnx`) with a friendly message: "Use parentheses, e.g. ln(x)".
+4. Allow `e` inside implicit-multiplication tokens when `e` is not a
+   declared variable: `2xe^x` = `2*x*e^x`. Never split tokens that are
+   function names or constants.
+5. Non-blocking ambiguity notice under the preview when a number after
+   `^` or `/` is directly followed by a letter or `(`: `e^2x` → "Read as
+   (e^2)·x. For e^(2x), add parentheses." Same for `1/2x`.
+6. `set` fields accept input without braces (`-1, 3`).
+7. Map math.js parser errors to friendly bilingual messages; show each
+   message once (currently duplicated, English-only).
+
+Content fixes (apply to all generators, now and later):
+8. Shared formatting helper (e.g. `content/generators/format.js`) for
+   polynomials and coefficients: never output `x^1`, `1x`, `+-`, `- -`;
+   compute numeric coefficients in solutions (`48-6Q`, not `48-2(3)Q`).
+   Add a harness test that scans every prompt/hint/solution for these
+   patterns.
+9. MRP in Chinese is 「邊際收益產量（MRP）」, not 邊際收益產值 (that is
+   VMP, 邊際產值). Add both to the glossary.
+10. Chinese further-reading line shows `§ §7.2–7.3`; fix the duplicate `§`.
+11. Lessons use the new structure in the design doc (motivation, key
+    ideas + intuition, 2–3 collapsible worked examples following the
+    book's setups with new numbers, common mistakes, further reading).
+    Rewrite `deriv-rules` lessons in this structure.

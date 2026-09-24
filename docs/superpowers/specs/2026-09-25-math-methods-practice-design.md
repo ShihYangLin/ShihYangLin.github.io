@@ -94,9 +94,17 @@ How to use it (hard constraints, because the site is public):
 
 Each module page has three parts:
 
-1. **Key ideas** (short lesson card, ≤ 1 screen): definitions, the rule
-   or condition in one display formula, one small original worked
-   example, and common mistakes. Not a textbook replacement.
+1. **Lesson** (revised at Gate 1: the instructor values Chiang's
+   introductions and worked examples, so lessons are fuller than a
+   one-screen card). Structure:
+   - *Motivation*: the book's opening economic question, paraphrased.
+   - *Key ideas*: each rule / condition in a display formula, followed
+     by the book's intuition (geometric or economic) in 2–4 sentences.
+   - *Worked examples*: 2–3 examples in collapsible `<details>`, using
+     the book's example setups with new numbers, fully step by step.
+   - *Common mistakes*.
+   - *Further reading* line.
+   About two screens with the examples collapsed.
 2. **Practice**: a stream of randomized problems from the module's
    generators (3–6 generators per module), at difficulty levels 1–3.
 3. **Mastery indicator**: per-generator status stored locally.
