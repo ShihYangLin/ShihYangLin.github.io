@@ -488,3 +488,29 @@ new generators checked. Required fixes:
    `deriv-rules`, and apply to every new module.
 5. Low priority: `xexp(x)` gives a generic "unsupported operation"
    message; give a hint to write `x*exp(x)`.
+
+### Gate 2b (approved with required fixes, 2026-09-25)
+
+All reference answers in the new generators are mathematically correct.
+Lessons now reach the length target. Required fixes (all modules):
+1. **Juxtaposition bugs in displayed math** (students see wrong math):
+   `timing/timber` shows `V(t)=4005^{\sqrt t}` for 400·5^{√t};
+   `partials/jacobian` solution shows `23u(1,4)` for `6u(1,4)`. Add a
+   format helper that inserts `\cdot` whenever a numeric coefficient
+   precedes a number or a numeric base, compute products instead of
+   concatenating digits, and audit every template string for
+   `${a}${b}`-style numeric concatenation.
+2. **Unreduced fractions**: `2/4`, `16/14`, `2/20`, `2t/10`, rate
+   `2/10`. Add `frac(p, q)` that reduces and prints an integer when
+   possible (`\frac{p}{q}` in display math, `p/q` inline is fine).
+   Reference answers may stay unreduced, but displayed text may not.
+   Add a harness test: no `a/b` with integer a, b and gcd(a, b) > 1
+   inside `$...$`. Rates may be shown as decimals (`r=0.1`) when that
+   reads more naturally.
+3. `1\sqrt{L}` and similar unit coefficients before functions; extend the
+   unit-coefficient test to cover `1\sqrt`, `1e^`, `1\ln`.
+4. `partials/market-cs`: the prompt asks for ∂P*/∂a without defining the
+   parameters. State the general model `Q_d = a − bP`, `Q_s = −c + dP`
+   and the parameter values.
+5. Field labels containing math (`f_x =`, `MP_K =`) must render with
+   KaTeX, e.g. label `$f_x$ =`.
