@@ -381,3 +381,42 @@ one exists.
 | utility maximization / cost minimization | 效用極大化／成本極小化 |
 | budget constraint | 預算限制 |
 | price discrimination | 差別取價 |
+
+---
+
+## Reviewer decisions
+
+### Gate 0 (approved 2026-09-25)
+
+Environment (applies to all phases): the implementer's sandbox has no
+network and cannot write `.git`. The reviewer commits after each gate.
+Handoff notes go to `math-methods/qa/HANDOFF-phase-N.md` (gitignored, so
+they are never published). Source notes live in
+`math-methods/.source-notes/` (gitignored).
+
+Catalog decisions (these amend the Generator catalog above):
+1. **Move `mc-ac` to `deriv-rules`** (the MC–AC relation uses the
+   quotient rule, §7.2). `deriv-basics` keeps `marginal-cost`.
+2. **Move `compound` to `exp-log`** (§§10.2, 10.4). `timing` keeps
+   `wine-storage` and `timber` and adds `growth-rate` style drills only
+   if they come from §10.7; otherwise `timing` has 2 generators plus the
+   §10.7 content already in `exp-log`.
+3. `mr-from-demand`: L1–L2 use `MR = P + Q·dP/dQ` (§7.2). The elasticity
+   form `MR = P(1 − 1/|ε|)` is L3 only, and the lesson cross-references
+   the elasticity material.
+4. `taylor`: L1–L2 use polynomial and rational functions only (§9.5).
+   L3 may use `e^x`, `ln x`, `sqrt x`; the L3 prompt notes that it uses
+   the exp-log module.
+5. No comparative statics that need the implicit function theorem
+   (Ch 8). §11.7 / §12.5 comparative statics only on explicit reduced
+   forms. `jacobian` asks whether the Jacobian determinant is
+   identically zero (functional dependence), nothing more.
+6. `lagrange/setup`: the prompt always states `Z = f + λ(c − g)`. The
+   opposite sign is **not** accepted; it is registered as a
+   misconception with feedback explaining the convention. Every
+   multiplier / shadow-price prompt restates the convention.
+   `shadow-price` labels `Δz* ≈ λ*Δc` as a first-order approximation and
+   shows the exact re-solve for comparison.
+7. Router: `#/<module>/<generator>` without `level`/`seed` must not be
+   "unknown"; default to level 1 and a fresh random seed, and rewrite the
+   hash with `history.replaceState`.
