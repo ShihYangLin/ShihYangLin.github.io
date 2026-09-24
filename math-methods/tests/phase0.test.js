@@ -11,7 +11,8 @@ test('registry has ten unique modules in the intended groups', () => {
   assert.equal(modules.filter(module => module.group === 'optimization').length, 4);
   for (const module of modules) {
     assert.ok(module.title.en && module.title.zh && module.sections);
-    assert.deepEqual(module.generators, []);
+    if (module.id === 'deriv-rules') assert.equal(module.generators.length, 6);
+    else assert.deepEqual(module.generators, []);
   }
 });
 
@@ -22,9 +23,15 @@ test('routes cover map, module, problem, progress, and unknown paths', () => {
   assert.deepEqual(parseRoute('#/lagrange/cobb-douglas?level=2&seed=81723'), {
     kind: 'problem', module: modules[9], generator: 'cobb-douglas', level: 2, seed: 81723
   });
-  for (const path of ['#/missing', '#/limits/a?level=4&seed=1', '#/limits/a?level=2', '#/limits/a?level=2&seed=-2']) {
+  for (const path of ['#/missing', '#/limits/a?level=4&seed=1', '#/limits/a?level=2&seed=-2']) {
     assert.equal(parseRoute(path).kind, 'unknown');
   }
+  const rewritten = [];
+  const defaulted = parseRoute('#/deriv-rules/product', { seed: 42, replaceHash: hash => rewritten.push(hash) });
+  assert.equal(defaulted.level, 1);
+  assert.equal(defaulted.seed, 42);
+  assert.deepEqual(rewritten, ['#/deriv-rules/product?level=1&seed=42']);
+  assert.equal(parseRoute('#/deriv-rules/product?level=2', { seed: 9, replaceHash: hash => rewritten.push(hash) }).seed, 9);
 });
 
 test('language resolution follows URL, storage, then browser preference', () => {

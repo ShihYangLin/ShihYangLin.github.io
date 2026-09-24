@@ -105,6 +105,52 @@ h2 { font-family: 'Newsreader', 'Noto Serif TC', serif; font-size: 31px; font-we
 .site-footer { border-top: 1px solid var(--faint); color: var(--muted); }
 .footer-inner { min-height: 80px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
 
+.lesson-card { max-width: 850px; margin-top: 48px; padding: 34px 38px; border: 1px solid var(--faint); background: var(--panel); }
+.lesson-card .eyebrow { margin-bottom: 14px; }
+.lesson-card h2 { margin-bottom: 18px; }
+.lesson-card p { margin: 13px 0; }
+.lesson-rule { max-width: 100%; overflow-x: auto; padding: 10px 0; }
+.lesson-mistake { color: var(--muted); }
+.lesson-reading { padding-top: 15px; border-top: 1px solid var(--faint); color: var(--muted); font-size: 13px; }
+.practice { margin-top: 68px; padding-top: 24px; border-top: 1px solid var(--ink); }
+.practice-head { display: flex; justify-content: space-between; align-items: end; gap: 24px; }
+.practice-head .eyebrow { margin-bottom: 10px; }
+.practice-selectors { display: flex; gap: 12px; }
+.practice-selectors label { display: grid; gap: 4px; color: var(--muted); font-family: 'IBM Plex Mono', monospace; font-size: 11px; }
+.practice select, .answer-field input:not([type="radio"]) { min-height: 42px; border: 1px solid var(--faint); border-radius: 0; background: var(--panel); color: var(--ink); font: inherit; }
+.practice select { max-width: 220px; padding: 8px 12px; }
+.problem-seed { margin-top: 34px; color: var(--muted); font: 11px 'IBM Plex Mono', monospace; letter-spacing: .08em; }
+.problem-prompt { max-width: 760px; margin: 14px 0 28px; font-size: 18px; line-height: 1.8; }
+.answer-field { max-width: 760px; margin: 20px 0; padding: 0; border: 0; }
+.answer-field label, .answer-field legend { display: block; margin-bottom: 6px; font-weight: 600; }
+.answer-field input:not([type="radio"]) { display: block; width: 100%; padding: 9px 12px; font-family: 'IBM Plex Mono', monospace; font-size: 16px; }
+.answer-preview { min-height: 32px; max-width: 100%; overflow-x: auto; padding-top: 6px; }
+.preview-error, .field-feedback { color: var(--muted); font-size: 13px; }
+.field-feedback { margin: 2px 0; }
+.problem-actions, .progress-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+.problem-actions button, .progress-actions button, #reset-confirm button { padding: 10px 16px; border: 1px solid var(--faint); background: var(--panel); color: var(--ink); cursor: pointer; }
+.problem-actions button:hover, .progress-actions button:hover, #reset-confirm button:hover { border-color: var(--accent); }
+.problem-actions .action-primary { border-color: var(--accent); background: var(--accent); color: white; }
+.problem-feedback { max-width: 760px; margin-top: 20px; padding: 0; font-weight: 600; }
+.problem-feedback:not(:empty) { padding: 12px 16px; border-left: 3px solid var(--accent); background: var(--accent-soft); }
+.problem-feedback.is-correct { border-color: #2c8562; }
+.problem-feedback.is-incorrect { border-color: #ba6734; }
+.problem-feedback.is-invalid, .problem-feedback.is-uncheckable { border-color: var(--muted); }
+.hint-region, .solution-region { max-width: 760px; margin-top: 20px; padding: 18px 22px; border: 1px solid var(--faint); background: var(--panel); }
+.solution-region h3 { margin: 0 0 10px; font-family: 'Newsreader', 'Noto Serif TC', serif; font-size: 23px; }
+.solution-region li { margin: 9px 0; }
+.typing-help { max-width: 760px; margin-top: 30px; padding-top: 15px; border-top: 1px solid var(--faint); color: var(--muted); }
+.typing-help summary { cursor: pointer; }
+.typing-help code { font-family: 'IBM Plex Mono', monospace; }
+.progress-module { margin-top: 42px; }
+.progress-table-wrap { max-width: 100%; overflow-x: auto; }
+.progress-module table { width: 100%; margin-top: 16px; border-collapse: collapse; font-size: 13px; }
+.progress-module th, .progress-module td { padding: 10px 12px; border-bottom: 1px solid var(--faint); text-align: left; }
+.progress-module thead th { color: var(--muted); font: 11px 'IBM Plex Mono', monospace; }
+.progress-module tbody th { font-weight: 500; }
+#reset-confirm { margin-top: 20px; padding: 16px; border: 1px solid var(--faint); }
+.katex-display { max-width: 100%; overflow-x: auto; overflow-y: hidden; }
+
 @media (max-width: 760px) {
   .header-inner, .footer-inner { padding-inline: 16px; }
   .page-shell { padding-inline: 16px; padding-bottom: 80px; }
@@ -119,6 +165,10 @@ h2 { font-family: 'Newsreader', 'Noto Serif TC', serif; font-size: 31px; font-we
   .module-card { min-height: 111px; }
   .topic-section + .topic-section { margin-top: 64px; }
   .footer-inner { flex-wrap: wrap; padding-block: 20px; }
+  .lesson-card { padding: 24px 20px; }
+  .practice-head { align-items: stretch; flex-direction: column; }
+  .practice-selectors { flex-wrap: wrap; }
+  .problem-prompt { font-size: 16px; }
 }
 
 @media (max-width: 390px) {

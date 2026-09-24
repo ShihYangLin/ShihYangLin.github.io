@@ -1,6 +1,8 @@
 import { modules } from '../../content/modules.js';
 import { getLanguage, initLanguage, setLanguage, t } from './i18n.js';
 import { parseRoute } from './router.js';
+import { mountProblem, typeset } from './render.js';
+import { readProgress, resetProgress, exportProgress } from './progress.js';
 
 const app = document.getElementById('app');
 const themeButton = document.getElementById('theme-toggle');
@@ -11,7 +13,7 @@ function escapeHtml(value) {
 
 function progressFor(module) {
   try {
-    const stored = JSON.parse(localStorage.getItem('mm-progress-v1') || '{}');
+    const stored = readProgress();
     if (!module.generators.length) return t('notStarted');
     const statuses = module.generators.map(generator => stored[`${module.id}/${generator.id}`] || {});
     if (statuses.every(status => status.mastered)) return t('mastered');
@@ -46,19 +48,56 @@ function renderMap(notice = false) {
     </div>`;
 }
 
-function renderModule(route) {
+let renderVersion = 0;
+async function renderModule(route) {
   const lang = getLanguage();
-  const problem = route.kind === 'problem';
+  const version = ++renderVersion;
+  const selected = route.kind === 'problem' ? route.module.generators.find(item => item.id === route.generator) : route.module.generators[0];
+  if (route.kind === 'problem' && (!selected || !selected.levels.includes(route.level))) { renderMap(true); return; }
   app.innerHTML = `<div class="page-shell interior-page">
     <a class="crumb" href="#/">← ${t('backToTopics')}</a>
     <p class="eyebrow">${t('sectionLabel')} · Chiang &amp; Wainwright ${escapeHtml(route.module.sections)}</p>
     <h1>${escapeHtml(route.module.title[lang])}</h1>
-    <div class="placeholder-panel"><p>${problem ? t('problemPending') : t('moduleIntro')}</p></div>
+    <div id="lesson-slot"></div><div id="practice-slot"></div>
   </div>`;
+  const lesson = app.querySelector('#lesson-slot');
+  try {
+    const response = await fetch(`content/lessons/${route.module.id}.${lang}.html`);
+    if (response.ok) {
+      const html = await response.text();
+      if (version !== renderVersion) return;
+      lesson.innerHTML = html;
+      typeset(lesson);
+    } else lesson.innerHTML = `<div class="placeholder-panel"><p>${t('moduleIntro')}</p></div>`;
+  } catch { if (version === renderVersion) lesson.innerHTML = `<div class="placeholder-panel"><p>${t('moduleIntro')}</p></div>`; }
+  if (version !== renderVersion) return;
+  if (selected) {
+    const level = route.kind === 'problem' ? route.level : selected.levels[0];
+    const seed = route.kind === 'problem' ? route.seed : (globalThis.crypto?.getRandomValues ? crypto.getRandomValues(new Uint32Array(1))[0] : Math.floor(Math.random() * 0x100000000));
+    const hashParams = new URLSearchParams(window.location.hash.split('?')[1] || '');
+    const qa = new URLSearchParams(window.location.search).get('qa') || hashParams.get('qa');
+    mountProblem(app.querySelector('#practice-slot'), route.module, selected, level, seed, qa);
+  } else app.querySelector('#practice-slot').innerHTML = `<div class="placeholder-panel"><p>${t('moduleIntro')}</p></div>`;
 }
 
 function renderProgress() {
-  app.innerHTML = `<div class="page-shell interior-page"><a class="crumb" href="#/">← ${t('backToTopics')}</a><p class="eyebrow">${t('progress')}</p><h1>${t('progressTitle')}</h1><div class="placeholder-panel"><p>${t('progressIntro')}</p></div></div>`;
+  const data = readProgress();
+  const lang = getLanguage();
+  const rows = modules.filter(module => module.generators.length).map(module => `<section class="progress-module"><h2>${escapeHtml(module.title[lang])}</h2><div class="progress-table-wrap"><table><thead><tr><th>${t('generatorStatus')}</th><th>${t('attempts')}</th><th>${t('firstTryCorrect')}</th><th>${t('streak')}</th><th>${t('bestLevel')}</th><th>${t('status')}</th></tr></thead><tbody>${module.generators.map(generator => {
+    const item = data[`${module.id}/${generator.id}`] || {};
+    return `<tr><th><a href="#/${module.id}/${generator.id}">${escapeHtml(generator.title[lang])}</a></th><td>${item.attempts || 0}</td><td>${item.firstTryCorrect || 0}</td><td>${item.streak || 0}</td><td>${item.bestLevel || '—'}</td><td>${item.mastered ? t('mastered') : t('notStarted')}</td></tr>`;
+  }).join('')}</tbody></table></div></section>`).join('');
+  app.innerHTML = `<div class="page-shell interior-page"><a class="crumb" href="#/">← ${t('backToTopics')}</a><p class="eyebrow">${t('progress')}</p><h1>${t('progressTitle')}</h1><p>${t('progressIntro')}</p>${rows}<div class="progress-actions"><button type="button" id="export-progress">${t('exportProgress')}</button><button type="button" id="reset-progress">${t('resetProgress')}</button></div><div id="reset-confirm" hidden><p>${t('confirmReset')}</p><button type="button" id="confirm-reset">${t('confirm')}</button><button type="button" id="cancel-reset">${t('cancel')}</button></div></div>`;
+  app.querySelector('#export-progress').addEventListener('click', () => {
+    const blob = new Blob([exportProgress()], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a'); link.href = url; link.download = 'math-methods-progress.json'; link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  });
+  const panel = app.querySelector('#reset-confirm');
+  app.querySelector('#reset-progress').addEventListener('click', () => { panel.hidden = false; app.querySelector('#confirm-reset').focus(); });
+  app.querySelector('#cancel-reset').addEventListener('click', () => { panel.hidden = true; app.querySelector('#reset-progress').focus(); });
+  app.querySelector('#confirm-reset').addEventListener('click', () => { resetProgress(); renderProgress(); });
 }
 
 function render() {
@@ -69,6 +108,7 @@ function render() {
     button.setAttribute('aria-pressed', String(button.dataset.lang === lang));
   });
   const route = parseRoute(window.location.hash);
+  if (route.kind === 'map' || route.kind === 'unknown' || route.kind === 'progress') renderVersion++;
   if (route.kind === 'map' || route.kind === 'unknown') renderMap(route.kind === 'unknown');
   else if (route.kind === 'progress') renderProgress();
   else renderModule(route);
