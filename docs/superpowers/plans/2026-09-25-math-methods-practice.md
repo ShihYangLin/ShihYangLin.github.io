@@ -514,3 +514,16 @@ Lessons now reach the length target. Required fixes (all modules):
    and the parameter values.
 5. Field labels containing math (`f_x =`, `MP_K =`) must render with
    KaTeX, e.g. label `$f_x$ =`.
+
+### Gate 3a (approved with required fixes, 2026-09-25)
+
+All Gate 2b display bugs verified fixed by regenerating the affected
+problems. `opt-one` and `taylor` math verified. Required fixes:
+1. Derivative notation: use primes for orders 1–3 (`f'(x)`, `f''(x)`,
+   `f'''(x)`, `\pi''(Q^*)`), and `f^{(n)}` only for n ≥ 4, matching
+   Chiang. Applies to prompts, labels, hints, solutions, lessons.
+2. `\cdot` only between two numbers or before a numeric base
+   (`400\cdot 5^{\sqrt t}`); never before a variable or function
+   (`4t^2`, `2x`, `2\ln t`, not `4\cdot t^2`, `2\cdot x`). Also
+   `MP_K=1(2)/3` → compute `2/3` directly. Add a harness test for
+   `\cdot` followed by a letter or `\ln`/`\sqrt`.
