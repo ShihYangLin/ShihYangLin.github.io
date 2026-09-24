@@ -16,6 +16,7 @@ export function localizedError(message, lang) {
     'Enter a finite number': '請輸入有限數值。', 'Choose an answer': '請選擇答案。',
     'Enter a set such as {-1, 3}': '請輸入集合，例如 {-1, 3}。',
     'Use parentheses, e.g. ln(x)': '函數請加括號，例如 ln(x)。',
+    'Write x*exp(x) with a multiplication sign': '請用乘號寫成 x*exp(x)。',
     'Check the expression syntax and parentheses': '請檢查算式語法與括號。'
   };
   return known[message] || '算式格式不正確。';
@@ -99,7 +100,7 @@ export function mountProblem(host, module, selected, level, seed, qa = null) {
       const node = host.querySelector(`[data-field-feedback="${field.key}"]`);
       if (node) {
         const fieldResult = outcome.fields[field.key];
-        node.textContent = invalid.suppressField ? '' : fieldResult.status === 'correct' ? `✓ ${t('correct')}` : fieldResult.status === 'incorrect' ? t('incorrect') : fieldResult.status === 'uncheckable' ? t('uncheckable') : localizedError(fieldResult.message, lang);
+        node.textContent = invalid.suppressField ? '' : fieldResult.status === 'skipped' ? '' : fieldResult.status === 'correct' ? `✓ ${t('correct')}` : fieldResult.status === 'incorrect' ? t('incorrect') : fieldResult.status === 'uncheckable' ? t('uncheckable') : localizedError(fieldResult.message, lang);
       }
     }
     if (record && !checked && outcome.status !== 'invalid' && outcome.status !== 'uncheckable') {

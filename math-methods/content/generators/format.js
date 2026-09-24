@@ -19,3 +19,8 @@ export function linear(coefficient, variable, intercept = 0) {
 export function product(coefficient, expression) {
   return `${coefficient === 1 ? '' : coefficient === -1 ? '-' : coefficient}(${expression})`;
 }
+
+// Parser power syntax uses parentheses; KaTeX expects a braced exponent.
+export function texPowers(expression) {
+  return String(expression).replace(/\^\(([^()]*)\)/g, '^{$1}');
+}

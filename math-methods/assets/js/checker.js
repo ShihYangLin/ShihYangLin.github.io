@@ -59,6 +59,7 @@ function validate(node, allowedVars) {
       if (child.name === 'ln') throw new Error('Use parentheses, e.g. ln(x)');
       if (!allowedVars.has(child.name) && !CONSTANTS.has(child.name)) {
         if (/^(?:ln|log|sqrt|sin|cos|tan|exp|abs)[A-Za-z]+$/i.test(child.name)) throw new Error('Use parentheses, e.g. ln(x)');
+        if (/^[A-Za-z]exp(?:\(.+\))?$/.test(child.name)) throw new Error('Write x*exp(x) with a multiplication sign');
         throw new Error(`Unknown symbol: ${child.name}`);
       }
       return;
@@ -69,6 +70,7 @@ function validate(node, allowedVars) {
       if (!count.includes(child.args.length)) throw new Error('Wrong number of function arguments');
       return;
     }
+    if (child.isFunctionNode && /^[A-Za-z]exp$/.test(child.fn?.name || '')) throw new Error('Write x*exp(x) with a multiplication sign');
     throw new Error('This expression contains an unsupported operation');
   });
 }
@@ -213,7 +215,9 @@ export function createChecker(library = globalThis.math) {
   }
 
   function checkMulti(answers, problem) {
-    const fields = Object.fromEntries(problem.fields.map(field => [field.key, checkField(answers?.[field.key], field, problem)]));
+    const fields = Object.fromEntries(problem.fields.map(field => [field.key, field.gradeWhen && problem.fields.find(item => item.key === field.gradeWhen.key)?.answer !== field.gradeWhen.value
+      ? result('skipped', 'Not graded for this behavior')
+      : checkField(answers?.[field.key], field, problem)]));
     const statuses = Object.values(fields).map(field => field.status);
     const status = ['invalid', 'uncheckable', 'incorrect'].find(value => statuses.includes(value)) || 'correct';
     return result(status, status === 'correct' ? 'Correct' : 'Check the marked fields', { fields });

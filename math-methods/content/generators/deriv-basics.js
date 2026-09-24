@@ -1,8 +1,8 @@
-import { linear, polynomial, term } from './format.js';
+import { linear, polynomial, term, texPowers } from './format.js';
 
 const both = (en, zh) => ({ en, zh });
-const expr = (key, label, answer) => ({ key, type: 'expr', label: both(label, label), answer });
-const number = (key, label, answer) => ({ key, type: 'number', label: both(label, label), answer: String(answer) });
+const expr = (key, label, answer) => ({ key, type: 'expr', label: both(label, ({ 'Difference quotient =': '差商 =', 'Slope =': '斜率 =' })[label] || label), answer });
+const number = (key, label, answer) => ({ key, type: 'number', label: both(label, ({ 'Difference quotient =': '差商 =', 'Slope =': '斜率 =' })[label] || label), answer: String(answer) });
 const misconception = (key, answer, en, zh) => ({ key, answer: String(answer), feedback: both(en, zh) });
 
 function diffQuotient(rng, level) {
@@ -45,11 +45,11 @@ function powerRule(rng, level) {
   }
   return {
     id: 'deriv-basics/power-rule', level, vars: ['x'], domain: { x: [0.5, 4] },
-    prompt: both(`Differentiate $f(x)=${f}$${level === 2 ? ' on $x>0$' : ''}.`, `求 $f(x)=${f}$ 的導數${level === 2 ? '，定義域為 $x>0$' : ''}。`),
+    prompt: both(`Differentiate $f(x)=${texPowers(f)}$${level === 2 ? ' on $x>0$' : ''}.`, `求 $f(x)=${texPowers(f)}$ 的導數${level === 2 ? '，定義域為 $x>0$' : ''}。`),
     fields: [expr('ans', "f'(x) =", answer)],
     misconceptions: [misconception('ans', wrong, 'Multiply by the exponent and reduce the exponent by one.', '要乘上原指數，並將指數減一。')],
     hints: [both('Differentiate each term separately; a constant has derivative zero.', '逐項微分；常數項的導數為零。'), both('Apply $d(ax^n)/dx=anx^{n-1}$, including for negative or fractional $n$.', '使用 $d(ax^n)/dx=anx^{n-1}$；負數或分數指數也適用。')],
-    solution: [both(steps, stepsZh), both(`The derivative function is $f'(x)=${answer}$.`, `導數函數為 $f'(x)=${answer}$。`)]
+    solution: [both(steps, stepsZh), both(`The derivative function is $f'(x)=${texPowers(answer)}$.`, `導數函數為 $f'(x)=${texPowers(answer)}$。`)]
   };
 }
 

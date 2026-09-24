@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import katex from '../vendor/katex/katex.mjs';
 import { modules } from '../content/modules.js';
-import { linear, polynomial, term } from '../content/generators/format.js';
+import { linear, polynomial, term, texPowers } from '../content/generators/format.js';
 import { createRng } from '../assets/js/rng.js';
 import { createChecker } from '../assets/js/checker.js';
 import { loadMathJs } from './load-mathjs.js';
@@ -20,6 +20,13 @@ test('active lessons have the revised structure and a single section sign in rea
       assert.ok((html.match(/<details>/g) || []).length >= 2, `${module.id} ${lang} examples`);
       assert.match(html, lang === 'en' ? /Further reading: Chiang &amp; Wainwright §(?!§)/ : /延伸閱讀：Chiang &amp; Wainwright §(?!§)/);
       mathRenders(html.replaceAll('&gt;', '>').replaceAll('&lt;', '<'));
+      if (lang === 'en') {
+        const prose = [...html.replace(/<details>[\s\S]*?<\/details>/g, '').matchAll(/<p(?: [^>]*)?>([\s\S]*?)<\/p>/g)].map(match => match[1].replace(/<[^>]+>/g, ' ')).join(' ');
+        const count = prose.trim().split(/\s+/).length;
+        assert.ok(count >= 500 && count <= 900, `${module.id} lesson prose: ${count} words`);
+        const motivation = html.match(/<h3>Motivation<\/h3>([\s\S]*?)<h3>Key ideas<\/h3>/)?.[1] || '';
+        assert.ok((motivation.match(/<p>/g) || []).length >= 2, `${module.id} motivation paragraphs`);
+      }
     }
   }
 });
@@ -37,6 +44,7 @@ test('Chinese MRP wording and glossary distinguish MRP from VMP', () => {
 
 test('shared formatter suppresses unit powers, unit coefficients and doubled signs', () => {
   assert.equal(term(1, 'x'), 'x');
+  assert.equal(texPowers('4x^(1/2)+3x^(-2)'), '4x^{1/2}+3x^{-2}');
   assert.equal(linear(-1, 'x', -2), '-x-2');
   assert.equal(polynomial([[1, 'x', 1], [-3, 'x', 2], [0], [2]]), 'x-3x^2+2');
 });
@@ -47,7 +55,10 @@ function cleanAlgebra(value, where) {
 
 function mathRenders(value) {
   const matches = [...value.matchAll(/\$\$([\s\S]*?)\$\$|\$([^$]+)\$/g)];
-  for (const match of matches) katex.renderToString(match[1] || match[2], { throwOnError: true, strict: 'error' });
+  for (const match of matches) {
+    assert.doesNotMatch(match[1] || match[2], /\^\(/, 'TeX powers use braces, not parser parentheses');
+    katex.renderToString(match[1] || match[2], { throwOnError: true, strict: 'error' });
+  }
 }
 
 function bilingual(value, label) {
@@ -81,6 +92,8 @@ for (const module of modules) {
           }
           const answers = Object.fromEntries(problem.fields.map(field => {
             bilingual(field.label, `${where} label`);
+            const englishWords = field.label.en.replace(/\$[^$]*\$/g, '');
+            if (/[A-Za-z]{3,}/.test(englishWords)) assert.notEqual(field.label.zh, field.label.en, `${where} translated label ${field.key}`);
             if (field.type !== 'choice' && field.type !== 'set') {
               const parsed = checker.parseAnswer(field.answer, field.type === 'expr' ? problem.vars : []);
               assert.ok(parsed.ok, `${where}: ${field.key} ${parsed.error}`);

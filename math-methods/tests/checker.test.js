@@ -105,3 +105,24 @@ test('parser errors have friendly English and Chinese text', () => {
     summary: '請檢查算式語法與括號。', suppressField: true
   });
 });
+
+
+test('at-infinity behavior gates the numeric value without revealing type in prompt', async () => {
+  const { limitsGenerators } = await import('../content/generators/limits.js');
+  const { createRng } = await import('../assets/js/rng.js');
+  const generator = limitsGenerators.find(item => item.id === 'at-infinity');
+  const cases = Array.from({ length: 100 }, (_, seed) => generator.generate(createRng(seed), 2));
+  assert.equal(new Set(cases.map(item => item.prompt.en.replace(/\\frac\{[^}]+\}\{[^}]+\}/, 'FORMULA'))).size, 1);
+  const finite = cases.find(item => item.fields[0].answer === 'finite');
+  const divergent = cases.find(item => item.fields[0].answer !== 'finite');
+  assert.equal(checker.checkMulti({ behavior: finite.fields[0].answer, value: '' }, finite).status, 'invalid');
+  assert.equal(checker.checkMulti({ behavior: divergent.fields[0].answer, value: '' }, divergent).status, 'correct');
+  assert.equal(checker.checkMulti({ behavior: 'finite', value: '' }, divergent).status, 'incorrect');
+});
+
+test('xexp(x) gives a bilingual multiplication hint', () => {
+  const parsed = checker.parseAnswer('xexp(x)', ['x']);
+  assert.equal(parsed.ok, false);
+  assert.equal(parsed.error, 'Write x*exp(x) with a multiplication sign');
+  assert.equal(localizedError(parsed.error, 'zh'), '請用乘號寫成 x*exp(x)。');
+});

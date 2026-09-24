@@ -1,8 +1,8 @@
 import { linear, polynomial } from './format.js';
 
 const both = (en, zh) => ({ en, zh });
-const number = (key, label, answer) => ({ key, type: 'number', label: both(label, label), answer: String(answer) });
-const choice = (key, label, answer, options) => ({ key, type: 'choice', label: both(label, label), answer, options });
+const number = (key, label, answer) => ({ key, type: 'number', label: both(label, ({ 'Limit =': '極限值 =', 'Left limit =': '左極限 =', 'Right limit =': '右極限 =', 'k =': 'k =' })[label] || label), answer: String(answer) });
+const choice = (key, label, answer, options) => ({ key, type: 'choice', label: both(label, ({ 'Two-sided limit exists?': '雙邊極限存在嗎？', 'Continuous now?': '目前連續嗎？', 'Behavior =': '趨勢 =' })[label] || label), answer, options });
 const misconception = (key, answer, en, zh) => ({ key, answer: String(answer), feedback: both(en, zh) });
 const yesNo = [
   { value: 'yes', label: both('Yes', '是') }, { value: 'no', label: both('No', '否') }
@@ -70,13 +70,14 @@ function atInfinity(rng, level) {
   const numerator = variant === 0 ? linear(a, 'x', c) : variant === 1 ? linear(a, 'x', c) : polynomial([[negative ? -a : a, 'x', 2], [c]]);
   const denominator = variant === 0 ? polynomial([[b, 'x', 2], [d]]) : linear(b, 'x', d);
   const finite = variant !== 2;
-  const answer = variant === 0 ? 0 : variant === 1 ? `${a}/${b}` : negative ? 'negative' : 'positive';
+  const behavior = finite ? 'finite' : negative ? 'negative' : 'positive';
+  const answer = variant === 0 ? '0' : variant === 1 ? `${a}/${b}` : '0';
   const options = [{ value: 'positive', label: both('Diverges to +∞', '發散至 +∞') }, { value: 'negative', label: both('Diverges to −∞', '發散至 −∞') }, { value: 'finite', label: both('Finite', '有限值') }];
   return {
     id: 'limits/at-infinity', level, vars: [], domain: {},
-    prompt: both(`As $x\\to+\\infty$, analyze $f(x)=\\frac{${numerator}}{${denominator}}$. ${finite ? 'Find the finite limit.' : 'Choose its behavior; infinity is not a finite limit.'}`, `當 $x\\to+\\infty$，分析 $f(x)=\\frac{${numerator}}{${denominator}}$。${finite ? '求有限極限。' : '選擇其趨勢；無窮大不是有限極限。'}`),
-    fields: [finite ? number('ans', 'Limit =', answer) : choice('ans', 'Behavior =', answer, options)],
-    misconceptions: [misconception('ans', finite ? (variant === 0 ? 1 : 0) : 'finite', 'Compare the highest powers of numerator and denominator.', '應比較分子與分母的最高次方。')],
+    prompt: both(`As $x\\to+\\infty$, analyze $f(x)=\\frac{${numerator}}{${denominator}}$. Choose its behavior and, if finite, give the limit value.`, `當 $x\\to+\\infty$，分析 $f(x)=\\frac{${numerator}}{${denominator}}$。選擇趨勢；若為有限值，再填極限值。`),
+    fields: [choice('behavior', 'Behavior =', behavior, options), { ...number('value', 'Limit if finite =', answer), label: both('Limit if finite =', '若為有限值，極限 ='), gradeWhen: { key: 'behavior', value: 'finite' } }],
+    misconceptions: [misconception('behavior', behavior === 'finite' ? 'positive' : 'finite', 'Compare the highest powers of numerator and denominator.', '應比較分子與分母的最高次方。')],
     hints: [both('Divide top and bottom by the highest power in the denominator.', '分子與分母同除以分母的最高次方。'), both('Lower-degree terms vanish relative to the leading terms as $x\\to+\\infty$.', '當 $x\\to+\\infty$，低次項相對於最高次項的影響消失。')],
     solution: [both(`The numerator has degree ${variant === 2 ? 2 : 1}; the denominator has degree ${variant === 0 ? 2 : 1}.`, `分子為 ${variant === 2 ? 2 : 1} 次；分母為 ${variant === 0 ? 2 : 1} 次。`), both(variant === 0 ? 'The denominator grows faster, so the ratio tends to $0$.' : variant === 1 ? `The leading coefficients give a finite limit of $${a}/${b}$.` : `The ratio grows without bound with ${negative ? 'negative' : 'positive'} sign; it diverges to ${negative ? '$-\\infty$' : '$+\\infty$'}.`, variant === 0 ? '分母成長較快，所以比值趨近 $0$。' : variant === 1 ? `最高次項的係數比給出有限極限 $${a}/${b}$。` : `比值的絕對值無界增大，且符號為${negative ? '負' : '正'}，故發散至 ${negative ? '$-\\infty$' : '$+\\infty$'}。`)]
   };
