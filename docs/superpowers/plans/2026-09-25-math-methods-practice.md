@@ -463,3 +463,28 @@ Content fixes (apply to all generators, now and later):
     ideas + intuition, 2–3 collapsible worked examples following the
     book's setups with new numbers, common mistakes, further reading).
     Rewrite `deriv-rules` lessons in this structure.
+
+### Gate 2a (approved with required fixes, 2026-09-25)
+
+All 11 Gate 1 items verified independently by the reviewer. Math in all
+new generators checked. Required fixes:
+1. `deriv-basics/power-rule` prints `x^(1/2)` / `x^(-2)` inside TeX,
+   which KaTeX renders wrongly. TeX strings must use braces (`x^{1/2}`).
+   Add a harness test: no `$...$` segment may contain `^(`.
+2. `limits/at-infinity` leaks the answer type through the prompt ("Find
+   the finite limit" vs "Choose its behavior"). Use one prompt for all
+   cases, with a behavior choice (finite / +∞ / −∞) and a value field
+   that is only graded when the correct behavior is "finite".
+3. Field labels are not translated (Chinese page shows
+   "Difference quotient ="). Every label with words needs a real `zh`
+   label. Add a harness test: if `label.en` contains a word of 3+ Latin
+   letters outside `$...$`, `label.zh` must differ from `label.en`.
+4. Lessons are still thin (~280 words). The instructor specifically
+   values Chiang's introductions: the *Motivation* section should be
+   1–2 real paragraphs that follow the book's narrative (e.g. Ch 6 goes
+   comparative statics → rate of change → difference quotient →
+   derivative → slope → limit). Target 500–900 English words per lesson
+   excluding worked examples. Backfill `limits`, `deriv-basics`,
+   `deriv-rules`, and apply to every new module.
+5. Low priority: `xexp(x)` gives a generic "unsupported operation"
+   message; give a hint to write `x*exp(x)`.
