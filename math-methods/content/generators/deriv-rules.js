@@ -1,3 +1,4 @@
+import { linear, polynomial, term } from './format.js';
 const both = (en, zh) => ({ en, zh });
 const expr = (key, label, answer) => ({ key, type: 'expr', label: both(label, label), answer });
 const number = (key, label, answer) => ({ key, type: 'number', label: both(label, label), answer: String(answer) });
@@ -6,8 +7,8 @@ const misconception = (key, answer, en, zh) => ({ key, answer: String(answer), f
 function product(rng, level) {
   const a = rng.int(2, 6), b = rng.int(1, 5), c = rng.int(2, 5), d = rng.int(1, 5);
   const n = level === 1 ? 1 : 2;
-  const u = `${a}x+${b}`, v = n === 1 ? `${c}x+${d}` : `${c}x^2+${d}`;
-  const vp = n === 1 ? `${c}` : `${n*c}x`;
+  const u = linear(a, 'x', b), v = polynomial([[c, 'x', n], [d]]);
+  const vp = term(n*c, 'x', n-1);
   return {
     id: 'deriv-rules/product', level, vars: ['x'], domain: { x: [0.4, 3.6] },
     prompt: both(`Differentiate $f(x)=(${u})(${v})$.`, `求 $f(x)=(${u})(${v})$ 的導數。`),
@@ -23,7 +24,7 @@ function quotient(rng, level) {
   let d = rng.int(1, 5);
   if (a*d === b*c) d++;
   const n = level === 1 ? 1 : 2;
-  const u = n === 1 ? `${a}x+${b}` : `${a}x^2+${b}`, up = n === 1 ? `${a}` : `${2*a}x`, v = `${c}x+${d}`;
+  const u = polynomial([[a, 'x', n], [b]]), up = term(n*a, 'x', n-1), v = linear(c, 'x', d);
   return {
     id: 'deriv-rules/quotient', level, vars: ['x'], domain: { x: [0.5, 4] },
     prompt: both(`Differentiate $f(x)=\\frac{${u}}{${v}}$.`, `求 $f(x)=\\frac{${u}}{${v}}$ 的導數。`),
@@ -37,18 +38,20 @@ function quotient(rng, level) {
 function chain(rng, level) {
   if (level === 3) {
     const a = rng.int(18, 35), b = rng.int(2, 3), c = rng.int(2, 5);
-    const inner = `${c}L+1`;
+    const inner = linear(c, 'L', 1);
+    const revenue = polynomial([[a, 'Q'], [-b, 'Q', 2]]);
+    const marginal = polynomial([[a], [-2*b, 'Q']]);
     return {
       id: 'deriv-rules/chain', level, vars: ['L'], domain: { L: [0.1, 0.8] },
-      prompt: both(`Output is $Q(L)=${inner}$ and revenue is $R(Q)=${a}Q-${b}Q^2$. Find the marginal revenue product $dR/dL$ as a function of $L$.`, `產量為 $Q(L)=${inner}$，收益為 $R(Q)=${a}Q-${b}Q^2$。求勞動的邊際收益產值 $dR/dL$，以 $L$ 表示。`),
+      prompt: both(`Output is $Q(L)=${inner}$ and revenue is $R(Q)=${revenue}$. Find the marginal revenue product $dR/dL$ as a function of $L$.`, `產量為 $Q(L)=${inner}$，收益為 $R(Q)=${revenue}$。求勞動的邊際收益產量（MRP）$dR/dL$，以 $L$ 表示。`),
       fields: [expr('ans', 'dR/dL =', `(${a}-2*${b}(${inner}))*${c}`)],
       misconceptions: [misconception('ans', `${a}-2*${b}(${inner})`, 'Multiply marginal revenue by the marginal product of labor.', '還要將邊際收益乘以勞動的邊際產量。')],
       hints: [both('Revenue changes through output: $L\\to Q\\to R$.', '收益透過產量隨勞動改變：$L\\to Q\\to R$。'), both('Use $dR/dL=(dR/dQ)(dQ/dL)$.', '使用 $dR/dL=(dR/dQ)(dQ/dL)$。')],
-      solution: [both(`Marginal revenue is $dR/dQ=${a}-2(${b})Q$; marginal product is $dQ/dL=${c}$.`, `邊際收益為 $dR/dQ=${a}-2(${b})Q$；邊際產量為 $dQ/dL=${c}$。`), both(`Substitute $Q=${inner}$: $dR/dL=(${a}-2(${b})(${inner}))(${c})$.`, `代入 $Q=${inner}$：$dR/dL=(${a}-2(${b})(${inner}))(${c})$。`)]
+      solution: [both(`Marginal revenue is $dR/dQ=${marginal}$; marginal product is $dQ/dL=${c}$.`, `邊際收益為 $dR/dQ=${marginal}$；邊際產量為 $dQ/dL=${c}$。`), both(`Substitute $Q=${inner}$: $dR/dL=(${a}-${2*b}(${inner}))(${c})$.`, `代入 $Q=${inner}$：$dR/dL=(${a}-${2*b}(${inner}))(${c})$。`)]
     };
   }
   const a = rng.int(2, 5), b = rng.int(1, 5), n = level === 1 ? 1 : 2, m = rng.int(3, 5);
-  const inside = `${a}x^${n}+${b}`, derivative = n === 1 ? `${a}` : `${a*n}x`;
+  const inside = polynomial([[a, 'x', n], [b]]), derivative = term(a*n, 'x', n-1);
   const isRoot = level === 2 && rng.sign() === -1;
   const answer = isRoot ? `(${derivative})/(2sqrt(${inside}))` : `${m}(${inside})^${m-1}(${derivative})`;
   const wrong = isRoot ? `1/(2sqrt(${inside}))` : `${m}(${inside})^${m-1}`;
@@ -65,10 +68,10 @@ function chain(rng, level) {
 
 function inverseFn(rng, level) {
   const a = rng.int(2, 4), b = rng.int(2, 6), x = rng.int(1, 3);
-  const linear = level === 2 && rng.sign() === 1;
-  const y = linear ? `${a}x+${b}` : `${a}x^3+${b}x`;
-  const y0 = linear ? a*x+b : a*x**3+b*x;
-  const slope = linear ? a : 3*a*x*x+b;
+  const isLinear = level === 2 && rng.sign() === 1;
+  const y = isLinear ? polynomial([[a, 'x'], [b]]) : polynomial([[a, 'x', 3], [b, 'x']]);
+  const y0 = isLinear ? a*x+b : a*x**3+b*x;
+  const slope = isLinear ? a : 3*a*x*x+b;
   return {
     id: 'deriv-rules/inverse-fn', level, vars: [], domain: {},
     prompt: both(`The function $y=${y}$ is strictly increasing. At $x=${x}$ (so $y=${y0}$), find $dx/dy$.`, `函數 $y=${y}$ 嚴格遞增。在 $x=${x}$（故 $y=${y0}$）處，求 $dx/dy$。`),
@@ -82,28 +85,32 @@ function inverseFn(rng, level) {
 function mrFromDemand(rng, level) {
   const b = rng.int(2, 4), q = rng.int(2, 5), a = 3*b*q + rng.int(6, 16);
   const p = a-b*q, mr = a-2*b*q;
-  const fields = [expr('mr', 'MR(Q) =', `${a}-${2*b}Q`)];
+  const price = polynomial([[a], [-b, 'Q']]);
+  const mrExpr = polynomial([[a], [-2*b, 'Q']]);
+  const fields = [expr('mr', 'MR(Q) =', mrExpr)];
   if (level >= 2) fields.push(number('at', `MR(${q}) =`, mr));
   if (level === 3) fields.push(number('elasticity', '|ε| =', `${p}/${b*q}`));
   return {
     id: 'deriv-rules/mr-from-demand', level, vars: ['Q'], domain: { Q: [0.5, Math.min(6, a/b-0.5)] },
-    prompt: both(`Inverse demand is $P(Q)=${a}-${b}Q$. Find marginal revenue${level >= 2 ? ` and evaluate it at $Q=${q}$` : ''}${level === 3 ? '; also find $|\\varepsilon|$ there and verify $MR=P(1-1/|\\varepsilon|)$' : ''}.`, `反需求函數為 $P(Q)=${a}-${b}Q$。求邊際收益${level >= 2 ? `，並計算 $Q=${q}$ 時的值` : ''}${level === 3 ? '；另求該處的 $|\\varepsilon|$，並驗證 $MR=P(1-1/|\\varepsilon|)$' : ''}。`),
+    prompt: both(`Inverse demand is $P(Q)=${price}$. Find marginal revenue${level >= 2 ? ` and evaluate it at $Q=${q}$` : ''}${level === 3 ? '; also find $|\\varepsilon|$ there and verify $MR=P(1-1/|\\varepsilon|)$' : ''}.`, `反需求函數為 $P(Q)=${price}$。求邊際收益${level >= 2 ? `，並計算 $Q=${q}$ 時的值` : ''}${level === 3 ? '；另求該處的 $|\\varepsilon|$，並驗證 $MR=P(1-1/|\\varepsilon|)$' : ''}。`),
     fields,
-    misconceptions: [misconception('mr', `${a}-${b}Q`, 'Price is average revenue. Differentiate $R=P(Q)Q$ to obtain marginal revenue.', '價格是平均收益。應先對 $R=P(Q)Q$ 微分，才能得到邊際收益。')],
+    misconceptions: [misconception('mr', price, 'Price is average revenue. Differentiate $R=P(Q)Q$ to obtain marginal revenue.', '價格是平均收益。應先對 $R=P(Q)Q$ 微分，才能得到邊際收益。')],
     hints: [both('Write total revenue as $R(Q)=P(Q)Q$.', '先寫出總收益 $R(Q)=P(Q)Q$。'), both('Use $MR=P+Q\\,dP/dQ$.', '使用 $MR=P+Q\\,dP/dQ$。')],
-    solution: [both(`$R(Q)=(${a}-${b}Q)Q$ and $dP/dQ=-${b}$.`, `$R(Q)=(${a}-${b}Q)Q$，且 $dP/dQ=-${b}$。`), both(`$MR(Q)=P+Q(dP/dQ)=${a}-2(${b})Q$${level >= 2 ? `, so $MR(${q})=${mr}$` : ''}.`, `$MR(Q)=P+Q(dP/dQ)=${a}-2(${b})Q$${level >= 2 ? `，故 $MR(${q})=${mr}$` : ''}。`), ...(level === 3 ? [both(`At $Q=${q}$, $P=${p}$ and $|\\varepsilon|=P/(${b}Q)=${p}/${b*q}$; hence $P(1-1/|\\varepsilon|)=${mr}$.`, `在 $Q=${q}$ 處，$P=${p}$、$|\\varepsilon|=P/(${b}Q)=${p}/${b*q}$；因此 $P(1-1/|\\varepsilon|)=${mr}$。`)] : [])]
+    solution: [both(`$R(Q)=(${price})Q$ and $dP/dQ=-${b}$.`, `$R(Q)=(${price})Q$，且 $dP/dQ=-${b}$。`), both(`$MR(Q)=P+Q(dP/dQ)=${mrExpr}$${level >= 2 ? `, so $MR(${q})=${mr}$` : ''}.`, `$MR(Q)=P+Q(dP/dQ)=${mrExpr}$${level >= 2 ? `，故 $MR(${q})=${mr}$` : ''}。`), ...(level === 3 ? [both(`At $Q=${q}$, $P=${p}$ and $|\\varepsilon|=P/(${b}Q)=${p}/${b*q}$; hence $P(1-1/|\\varepsilon|)=${mr}$.`, `在 $Q=${q}$ 處，$P=${p}$、$|\\varepsilon|=P/(${b}Q)=${p}/${b*q}$；因此 $P(1-1/|\\varepsilon|)=${mr}$。`)] : [])]
   };
 }
 
 function mcAc(rng, level) {
   const q = rng.int(2, 6), c = rng.int(2, 4), f = c*q*q, v = rng.int(2, 8);
+  const cost = polynomial([[c, 'Q', 2], [v, 'Q'], [f]]);
+  const mc = linear(2*c, 'Q', v);
   return {
     id: 'deriv-rules/mc-ac', level, vars: [], domain: {},
-    prompt: both(`For $Q>0$, total cost is $C(Q)=${f}+${v}Q+${c}Q^2$. Find the quantity where $MC=AC$ (the minimum of average cost).`, `對 $Q>0$，總成本為 $C(Q)=${f}+${v}Q+${c}Q^2$。求 $MC=AC$（平均成本最低）時的產量。`),
+    prompt: both(`For $Q>0$, total cost is $C(Q)=${cost}$. Find the quantity where $MC=AC$ (the minimum of average cost).`, `對 $Q>0$，總成本為 $C(Q)=${cost}$。求 $MC=AC$（平均成本最低）時的產量。`),
     fields: [number('ans', 'Q =', q)],
     misconceptions: [misconception('ans', `-${q}`, 'Output must be positive; solve the cost condition on $Q>0$.', '產量必須為正；請在 $Q>0$ 的範圍求解成本條件。')],
     hints: [both('Start from $AC=C(Q)/Q$.', '先寫出 $AC=C(Q)/Q$。'), both('The quotient rule gives $AC\\prime=(MC-AC)/Q$ for $Q>0$.', '對 $Q>0$，除法法則給出 $AC\\prime=(MC-AC)/Q$。')],
-    solution: [both(`$AC=${f}/Q+${v}+${c}Q$ and $MC=${v}+${2*c}Q$.`, `$AC=${f}/Q+${v}+${c}Q$，$MC=${v}+${2*c}Q$。`), both(`Setting $MC=AC$ gives $${c}Q=${f}/Q$, hence $Q^2=${q*q}$ and $Q=${q}>0$.`, `令 $MC=AC$，得 $${c}Q=${f}/Q$，所以 $Q^2=${q*q}$，且 $Q=${q}>0$。`), both(`Since $AC\\prime\\prime=2(${f})/Q^3>0$, this is the minimum of $AC$.`, `由於 $AC\\prime\\prime=2(${f})/Q^3>0$，此處為 $AC$ 的最低點。`)]
+    solution: [both(`$AC=${f}/Q+${v}+${c}Q$ and $MC=${mc}$.`, `$AC=${f}/Q+${v}+${c}Q$，$MC=${mc}$。`), both(`Setting $MC=AC$ gives $${c}Q=${f}/Q$, hence $Q^2=${q*q}$ and $Q=${q}>0$.`, `令 $MC=AC$，得 $${c}Q=${f}/Q$，所以 $Q^2=${q*q}$，且 $Q=${q}>0$。`), both(`Since $AC\\prime\\prime=${2*f}/Q^3>0$, this is the minimum of $AC$.`, `由於 $AC\\prime\\prime=${2*f}/Q^3>0$，此處為 $AC$ 的最低點。`)]
   };
 }
 

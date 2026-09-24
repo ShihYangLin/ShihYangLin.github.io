@@ -1,12 +1,12 @@
 import katex from '../../vendor/katex/katex.mjs';
 import renderMathInElement from '../../vendor/katex/contrib/auto-render.mjs';
-import { checkMulti, matchMisconception, parseAnswer } from './checker.js';
+import { ambiguityNotice, checkMulti, matchMisconception, parseAnswer, parseSetEntries } from './checker.js';
 import { getLanguage, t } from './i18n.js';
 import { createRng } from './rng.js';
 import { breakStreak, recordAttempt } from './progress.js';
 
 const escapeHtml = value => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
-function localizedError(message, lang) {
+export function localizedError(message, lang) {
   if (lang !== 'zh') return message;
   if (message.startsWith('Unknown symbol:')) return `不支援的符號：${message.slice(15)}`;
   const known = {
@@ -14,9 +14,19 @@ function localizedError(message, lang) {
     'Only finite numbers are allowed': '只能輸入有限數值。', 'Wrong number of function arguments': '函數的參數個數不正確。',
     'This expression contains an unsupported operation': '算式包含不支援的運算。',
     'Enter a finite number': '請輸入有限數值。', 'Choose an answer': '請選擇答案。',
-    'Enter a set such as {-1, 3}': '請輸入集合，例如 {-1, 3}。'
+    'Enter a set such as {-1, 3}': '請輸入集合，例如 {-1, 3}。',
+    'Use parentheses, e.g. ln(x)': '函數請加括號，例如 ln(x)。',
+    'Check the expression syntax and parentheses': '請檢查算式語法與括號。'
   };
   return known[message] || '算式格式不正確。';
+}
+
+export function invalidDisplay(outcome, problem, lang, generic) {
+  const single = outcome.status === 'invalid' && problem.fields.length === 1;
+  return {
+    summary: single ? localizedError(outcome.fields[problem.fields[0].key].message, lang) : generic,
+    suppressField: single
+  };
 }
 
 export function typeset(element) {
@@ -35,7 +45,7 @@ function routeFor(module, generator, level, seed) {
 function fieldHtml(field, lang) {
   const key = escapeHtml(field.key);
   if (field.type === 'choice') return `<fieldset class="answer-field"><legend>${escapeHtml(field.label[lang])}</legend>${field.options.map(option => `<label><input type="radio" name="${key}" value="${escapeHtml(option.value)}">${escapeHtml(option.label[lang])}</label>`).join('')}</fieldset>`;
-  return `<div class="answer-field"><label for="answer-${key}">${escapeHtml(field.label[lang])}</label><input id="answer-${key}" name="${key}" data-answer="${key}" autocomplete="off" spellcheck="false" aria-describedby="preview-${key}"><div class="answer-preview" id="preview-${key}" aria-live="off"></div><p class="field-feedback" data-field-feedback="${key}"></p></div>`;
+  return `<div class="answer-field"><label for="answer-${key}">${escapeHtml(field.label[lang])}</label><input id="answer-${key}" name="${key}" data-answer="${key}" autocomplete="off" spellcheck="false" aria-describedby="preview-${key} notice-${key}"><div class="answer-preview" id="preview-${key}" aria-live="off"></div><p class="answer-notice" id="notice-${key}"></p><p class="field-feedback" data-field-feedback="${key}"></p></div>`;
 }
 
 export function mountProblem(host, module, selected, level, seed, qa = null) {
@@ -60,7 +70,17 @@ export function mountProblem(host, module, selected, level, seed, qa = null) {
     if (field.type === 'choice') return;
     const input = form.elements[field.key];
     const preview = host.querySelector(`#preview-${field.key}`);
+    const notice = host.querySelector(`#notice-${field.key}`);
+    notice.textContent = ambiguityNotice(input.value, lang);
     if (!input.value.trim()) { preview.innerHTML = ''; return; }
+    if (field.type === 'set') {
+      const entries = parseSetEntries(input.value);
+      const parsedEntries = entries?.map(entry => parseAnswer(entry, []));
+      preview.innerHTML = parsedEntries?.every(item => item.ok)
+        ? katex.renderToString(`\\{${parsedEntries.map(item => item.tex).join(', ')}\\}`, { throwOnError: true })
+        : `<span class="preview-error">${escapeHtml(localizedError(parsedEntries?.find(item => !item.ok)?.error || 'Enter a set such as {-1, 3}', lang))}</span>`;
+      return;
+    }
     const parsed = parseAnswer(input.value, field.type === 'expr' ? problem.vars : []);
     preview.innerHTML = parsed.ok ? katex.renderToString(parsed.tex, { throwOnError: true }) : `<span class="preview-error">${escapeHtml(localizedError(parsed.error, lang))}</span>`;
   };
@@ -73,12 +93,13 @@ export function mountProblem(host, module, selected, level, seed, qa = null) {
     const misconception = outcome.status === 'incorrect' ? matchMisconception(answers, problem) : null;
     const messages = { correct: t('correct'), incorrect: misconception ? misconception.feedback[lang] : t('incorrect'), invalid: t('invalid'), uncheckable: t('uncheckable') };
     feedback.className = `problem-feedback is-${outcome.status}`;
-    feedback.textContent = `${outcome.status === 'correct' ? '✓' : outcome.status === 'incorrect' ? '✕' : '!'} ${messages[outcome.status]}`;
+    const invalid = invalidDisplay(outcome, problem, lang, messages[outcome.status]);
+    feedback.textContent = `${outcome.status === 'correct' ? '✓' : outcome.status === 'incorrect' ? '✕' : '!'} ${invalid.summary}`;
     for (const field of problem.fields) {
       const node = host.querySelector(`[data-field-feedback="${field.key}"]`);
       if (node) {
         const fieldResult = outcome.fields[field.key];
-        node.textContent = fieldResult.status === 'correct' ? `✓ ${t('correct')}` : fieldResult.status === 'incorrect' ? t('incorrect') : fieldResult.status === 'uncheckable' ? t('uncheckable') : localizedError(fieldResult.message, lang);
+        node.textContent = invalid.suppressField ? '' : fieldResult.status === 'correct' ? `✓ ${t('correct')}` : fieldResult.status === 'incorrect' ? t('incorrect') : fieldResult.status === 'uncheckable' ? t('uncheckable') : localizedError(fieldResult.message, lang);
       }
     }
     if (record && !checked && outcome.status !== 'invalid' && outcome.status !== 'uncheckable') {

@@ -11,8 +11,8 @@ test('registry has ten unique modules in the intended groups', () => {
   assert.equal(modules.filter(module => module.group === 'optimization').length, 4);
   for (const module of modules) {
     assert.ok(module.title.en && module.title.zh && module.sections);
-    if (module.id === 'deriv-rules') assert.equal(module.generators.length, 6);
-    else assert.deepEqual(module.generators, []);
+    const expected = { limits: 5, 'deriv-basics': 4, 'deriv-rules': 6 }[module.id] || 0;
+    assert.equal(module.generators.length, expected);
   }
 });
 

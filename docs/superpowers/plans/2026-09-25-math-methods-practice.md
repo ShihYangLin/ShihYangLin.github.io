@@ -359,6 +359,8 @@ one exists.
 | comparative statics | 比較靜態分析 |
 | Jacobian determinant | Jacobian 行列式 |
 | marginal revenue / cost / product | 邊際收益／邊際成本／邊際產量 |
+| marginal revenue product (MRP) | 邊際收益產量（MRP） |
+| value of marginal product (VMP) | 邊際產值（VMP） |
 | average cost | 平均成本 |
 | elasticity | 彈性 |
 | critical (stationary) point | 臨界點（駐點） |

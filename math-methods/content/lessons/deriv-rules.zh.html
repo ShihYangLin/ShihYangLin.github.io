@@ -1,10 +1,19 @@
 <article class="lesson-card">
-  <p class="eyebrow">核心概念 · §§7.2–7.3</p>
+  <p class="eyebrow">微分法則 · §§7.2–7.3</p>
   <h2>追蹤每個變動的部分</h2>
-  <p>經濟量常由其他量組成：收益是價格乘以產量，平均成本是成本除以產量。微分法則幫助我們逐一計入各部分的變動。</p>
-  <div class="lesson-rule">$$ (uv)'=u'v+uv', \qquad (u/v)'=\frac{u'v-uv'}{v^2}, \qquad \frac{dz}{dx}=\frac{dz}{dy}\frac{dy}{dx}. $$</div>
-  <p>例如，反需求函數為 $P(Q)=26-2Q$ 時，收益 $R(Q)=P(Q)Q$，故 $MR=P+QP'=26-4Q$。乘法法則同時計入產量與價格的變動。第三級再運用後續單元的彈性概念理解此結果。對 $Q&gt;0$，若 $AC=C(Q)/Q$，除法法則給出 $AC'=(MC-AC)/Q$：邊際成本高於平均成本時，平均成本上升。</p>
-  <p>連鎖律沿著勞動 $L\to$ 產量 $Q\to$ 收益 $R$ 的關係計算：$dR/dL=(dR/dQ)(dQ/dL)$。若 $y=f(x)$ 在局部可逆且 $f'(x)\ne0$，反函數斜率為 $dx/dy=1/f'(x)$。使用反函數法則前，應先確認單調性。</p>
-  <p class="lesson-mistake"><strong>常見錯誤：</strong>把兩個導數相乘而漏掉乘法法則的兩項；顛倒除法法則的分子順序；漏乘內層導數。</p>
-  <p class="lesson-reading">延伸閱讀：Chiang &amp; Wainwright §§7.2–7.3</p>
+  <h3>動機</h3>
+  <p>廠商多賣一單位時，銷售量增加，價格卻可能改變。平均成本則是總成本除以產量。這些問題分別需要乘法與除法法則；若勞動先影響產量、產量再影響收益，就要沿著兩段關係使用連鎖律。</p>
+  <h3>核心概念</h3>
+  <div class="lesson-rule">$$\frac{d(uv)}{dx}=u'v+uv'$$</div>
+  <p>乘積的兩個因子各貢獻一項變動。收益 $R=P(Q)Q$ 因此有 $MR=P+QP'$；當需求向下傾斜時，價格的下降使邊際收益低於價格。</p>
+  <div class="lesson-rule">$$\frac{d(u/v)}{dx}=\frac{u'v-uv'}{v^2},\qquad AC' = \frac{MC-AC}{Q}\quad(Q>0)$$</div>
+  <p>分子的順序先計入分子變動，再扣除分母變動的效果。平均成本公式表示：$MC>AC$ 時 $AC$ 上升；$MC<AC$ 時 $AC$ 下降。</p>
+  <div class="lesson-rule">$$\frac{dR}{dL}=\frac{dR}{dQ}\frac{dQ}{dL},\qquad \frac{dx}{dy}=\frac{1}{dy/dx}$$</div>
+  <p>第一式沿著勞動、產量、收益兩段關係計算；$dR/dL$ 是邊際收益產量（MRP）。反函數的倒數公式要求函數在附近可逆，且原函數斜率不為零。第三級會在學過彈性後使用邊際收益的彈性表示式。</p>
+  <h3>範例詳解</h3>
+  <details><summary>價格變動時的邊際收益</summary><p>若 $P(Q)=35-3Q$，則 $R(Q)=(35-3Q)Q$。對兩個因子微分：$MR=P+QP'=(35-3Q)-3Q=35-6Q$。在 $Q=4$ 時，$MR=11$。</p></details>
+  <details><summary>平均成本與邊際成本交點</summary><p>設 $Q>0$ 時 $C(Q)=27+5Q+3Q^2$。則 $AC=27/Q+5+3Q$、$MC=5+6Q$。除法法則給出 $AC'=(MC-AC)/Q=-27/Q^2+3$。令其為零得 $Q=3$；因 $AC''=54/Q^3>0$，平均成本在此最低。</p></details>
+  <details><summary>勞動透過產量影響收益</summary><p>假設 $Q(L)=4L+2$、$R(Q)=30Q-2Q^2$。先求 $dR/dQ=30-4Q$ 與 $dQ/dL=4$，因此 $dR/dL=4(30-4Q)=4(30-4(4L+2))=88-64L$。</p></details>
+  <h3>常見錯誤</h3><p>乘積不可只算 $u'v'$；除法法則不可顛倒分子兩項；連鎖律不可漏乘內層導數。使用反函數法則前，還需確認局部一對一與原斜率不為零。</p>
+  <p class="lesson-reading">延伸閱讀：Chiang &amp; Wainwright §7.2–7.3</p>
 </article>

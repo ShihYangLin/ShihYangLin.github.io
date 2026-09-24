@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createChecker } from '../assets/js/checker.js';
+import { ambiguityNotice, createChecker, parseSetEntries } from '../assets/js/checker.js';
+import { invalidDisplay, localizedError } from '../assets/js/render.js';
 import { loadMathJs } from './load-mathjs.js';
 
 const checker = createChecker(loadMathJs());
@@ -51,11 +52,56 @@ test('numbers, choices, sets and multiple fields', () => {
   assert.equal(checker.checkChoice('min', 'max').status, 'incorrect');
   assert.equal(checker.checkSet('{3,-1}', '{-1,3}').status, 'correct');
   assert.equal(checker.checkSet('{3,3}', '{-1,3}').status, 'incorrect');
-  assert.equal(checker.checkSet('3,-1', '{-1,3}').status, 'invalid');
+  assert.equal(checker.checkSet('3,-1', '{-1,3}').status, 'correct');
   const problem = { vars: ['x'], domain, fields: [
     { key: 'a', type: 'expr', answer: '2x' }, { key: 'b', type: 'number', answer: '3' }
   ], misconceptions: [{ key: 'a', answer: 'x', feedback: { en: 'Missing factor', zh: '漏乘係數' } }] };
   assert.equal(checker.checkMulti({ a: '2*x', b: '3' }, problem).status, 'correct');
   assert.equal(checker.checkMulti({ a: 'x', b: '3' }, problem).fields.a.status, 'incorrect');
   assert.equal(checker.matchMisconception({ a: 'x', b: '3' }, problem).answer, 'x');
+});
+
+test('independent sampling detects a difference hidden on diagonal lines', () => {
+  const falseMatch = 'x+sin(2*pi*((y-0.5)/3.5-(x-0.5)/3.5-0.4142135623730951))';
+  assert.equal(checker.checkExpr(falseMatch, 'x', ['x', 'y'], { x: [0.5, 4], y: [0.5, 4] }).status, 'incorrect');
+});
+
+test('a non-finite student expression disagrees with a finite reference', () => {
+  for (const student of ['sqrt(-x)', 'log(-x)']) {
+    assert.equal(checker.checkExpr(student, 'x', ['x'], domain).status, 'incorrect');
+  }
+});
+
+test('function names require parentheses', () => {
+  for (const input of ['sqrt x', 'ln x', 'lnx']) {
+    assert.equal(checker.parseAnswer(input, ['x']).error, 'Use parentheses, e.g. ln(x)');
+  }
+});
+
+test('implicit multiplication splits e between declared variables', () => {
+  assert.equal(checker.checkExpr('2xe^x', '2*x*e^x', ['x'], domain).status, 'correct');
+});
+
+test('ambiguous exponent and division grouping has a bilingual notice', () => {
+  assert.match(ambiguityNotice('e^2x'), /parentheses/);
+  assert.match(ambiguityNotice('1/2x', 'zh'), /括號/);
+  assert.equal(ambiguityNotice('e^(2x)'), '');
+  assert.equal(checker.checkExpr('e^2x', '(e^2)*x', ['x'], domain).status, 'correct');
+  assert.equal(checker.checkExpr('1/2x', 'x/2', ['x'], domain).status, 'correct');
+});
+
+test('set inputs work with or without braces', () => {
+  assert.equal(checker.checkSet('-1, 3', '{3,-1}').status, 'correct');
+  assert.equal(checker.checkSet('{3,-1}', '-1,3').status, 'correct');
+  assert.deepEqual(parseSetEntries('-1, log(8,2)'), ['-1', ' log(8,2)']);
+  assert.deepEqual(parseSetEntries('｛-1，3｝'), ['-1', '3']);
+});
+
+test('parser errors have friendly English and Chinese text', () => {
+  const message = checker.parseAnswer('x++', ['x']).error;
+  assert.equal(message, 'Check the expression syntax and parentheses');
+  assert.equal(localizedError(message, 'zh'), '請檢查算式語法與括號。');
+  assert.deepEqual(invalidDisplay({ status: 'invalid', fields: { ans: { message } } }, { fields: [{ key: 'ans' }] }, 'zh', 'generic'), {
+    summary: '請檢查算式語法與括號。', suppressField: true
+  });
 });

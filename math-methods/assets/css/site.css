@@ -126,6 +126,9 @@ h2 { font-family: 'Newsreader', 'Noto Serif TC', serif; font-size: 31px; font-we
 .answer-field input:not([type="radio"]) { display: block; width: 100%; padding: 9px 12px; font-family: 'IBM Plex Mono', monospace; font-size: 16px; }
 .answer-preview { min-height: 32px; max-width: 100%; overflow-x: auto; padding-top: 6px; }
 .preview-error, .field-feedback { color: var(--muted); font-size: 13px; }
+.answer-notice { color: var(--muted); font-size: 13px; margin: 2px 0; }
+.lesson-card details { margin: 12px 0; border-top: 1px solid var(--faint); padding: 12px 0; }
+.lesson-card details summary { cursor: pointer; font-weight: 600; }
 .field-feedback { margin: 2px 0; }
 .problem-actions, .progress-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
 .problem-actions button, .progress-actions button, #reset-confirm button { padding: 10px 16px; border: 1px solid var(--faint); background: var(--panel); color: var(--ink); cursor: pointer; }

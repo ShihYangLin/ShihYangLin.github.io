@@ -3,22 +3,47 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import katex from '../vendor/katex/katex.mjs';
 import { modules } from '../content/modules.js';
+import { linear, polynomial, term } from '../content/generators/format.js';
 import { createRng } from '../assets/js/rng.js';
 import { createChecker } from '../assets/js/checker.js';
 import { loadMathJs } from './load-mathjs.js';
 
 const checker = createChecker(loadMathJs());
 
-test('derivative lesson cards render and carry the exact reading line', () => {
-  for (const [lang, ending] of [
-    ['en', 'Further reading: Chiang &amp; Wainwright §§7.2–7.3'],
-    ['zh', '延伸閱讀：Chiang &amp; Wainwright §§7.2–7.3']
-  ]) {
-    const html = readFileSync(new URL(`../content/lessons/deriv-rules.${lang}.html`, import.meta.url), 'utf8');
-    assert.ok(html.includes(ending));
-    mathRenders(html.replaceAll('&gt;', '>').replaceAll('&lt;', '<'));
+test('active lessons have the revised structure and a single section sign in reading', () => {
+  for (const module of modules.filter(item => item.generators.length)) {
+    for (const lang of ['en', 'zh']) {
+      const html = readFileSync(new URL(`../content/lessons/${module.id}.${lang}.html`, import.meta.url), 'utf8');
+      for (const heading of lang === 'en' ? ['Motivation', 'Key ideas', 'Worked examples', 'Common mistakes'] : ['動機', '核心概念', '範例詳解', '常見錯誤']) {
+        assert.ok(html.includes(`<h3>${heading}</h3>`), `${module.id} ${lang} ${heading}`);
+      }
+      assert.ok((html.match(/<details>/g) || []).length >= 2, `${module.id} ${lang} examples`);
+      assert.match(html, lang === 'en' ? /Further reading: Chiang &amp; Wainwright §(?!§)/ : /延伸閱讀：Chiang &amp; Wainwright §(?!§)/);
+      mathRenders(html.replaceAll('&gt;', '>').replaceAll('&lt;', '<'));
+    }
   }
 });
+
+test('Chinese MRP wording and glossary distinguish MRP from VMP', () => {
+  const lesson = readFileSync(new URL('../content/lessons/deriv-rules.zh.html', import.meta.url), 'utf8');
+  const generatorSource = readFileSync(new URL('../content/generators/deriv-rules.js', import.meta.url), 'utf8');
+  const plan = readFileSync(new URL('../../docs/superpowers/plans/2026-09-25-math-methods-practice.md', import.meta.url), 'utf8');
+  assert.match(lesson, /邊際收益產量（MRP）/);
+  assert.match(generatorSource, /邊際收益產量（MRP）/);
+  assert.doesNotMatch(generatorSource, /邊際收益產值/);
+  assert.match(plan, /邊際收益產量（MRP）/);
+  assert.match(plan, /邊際產值（VMP）/);
+});
+
+test('shared formatter suppresses unit powers, unit coefficients and doubled signs', () => {
+  assert.equal(term(1, 'x'), 'x');
+  assert.equal(linear(-1, 'x', -2), '-x-2');
+  assert.equal(polynomial([[1, 'x', 1], [-3, 'x', 2], [0], [2]]), 'x-3x^2+2');
+});
+
+function cleanAlgebra(value, where) {
+  assert.doesNotMatch(value, /[A-Za-z]\^1(?!\d)|(^|[^\d])1[A-Za-z]|\+\-|-[\s]+-/, where);
+}
 
 function mathRenders(value) {
   const matches = [...value.matchAll(/\$\$([\s\S]*?)\$\$|\$([^$]+)\$/g)];
@@ -44,10 +69,12 @@ for (const module of modules) {
           assert.equal(problem.level, level);
           assert.ok(Array.isArray(problem.fields) && problem.fields.length, where);
           bilingual(problem.prompt, `${where} prompt`);
+          cleanAlgebra(problem.prompt.en, where);
+          cleanAlgebra(problem.prompt.zh, where);
           assert.ok(problem.hints.length >= 2, where);
           assert.ok(problem.solution.length >= 2, where);
-          problem.hints.forEach((value, index) => bilingual(value, `${where} hint ${index}`));
-          problem.solution.forEach((value, index) => bilingual(value, `${where} solution ${index}`));
+          problem.hints.forEach((value, index) => { bilingual(value, `${where} hint ${index}`); cleanAlgebra(value.en, where); cleanAlgebra(value.zh, where); });
+          problem.solution.forEach((value, index) => { bilingual(value, `${where} solution ${index}`); cleanAlgebra(value.en, where); cleanAlgebra(value.zh, where); });
           assert.ok(problem.misconceptions.length >= 1, where);
           for (const [name, [low, high]] of Object.entries(problem.domain)) {
             assert.ok(problem.vars.includes(name) && Number.isFinite(low) && Number.isFinite(high) && low < high && Math.abs(low) <= 1000 && Math.abs(high) <= 1000, where);

@@ -13,15 +13,38 @@ export function normalizeInput(input, vars = []) {
   // math.js reads "xy" as one name. Split only strings wholly made of the declared
   // single-letter variables; function names and unknown identifiers stay intact.
   if (vars.every(name => /^[A-Za-z]$/.test(name))) {
-    value = value.replace(/[A-Za-z]+/g, token => token.length > 1 && [...token].every(char => vars.includes(char)) ? [...token].join('*') : token);
+    value = value.replace(/[A-Za-z]+/g, token => {
+      if (FUNCTIONS.has(token) || CONSTANTS.has(token)) return token;
+      const letters = [...token];
+      if (letters.length > 1 && letters.every(char => vars.includes(char) || (char === 'e' && !vars.includes('e')))) return letters.join('*');
+      return token;
+    });
     value = value.replace(/([A-Za-z]+)\s*\(/g, (match, name) => vars.includes(name) ? `${name}*(` : match);
   }
   return value;
 }
 
+export function ambiguityNotice(input, lang = 'en') {
+  const source = String(input ?? '').normalize('NFKC');
+  if (/e\^2x/.test(source)) return lang === 'zh' ? 'e^2x 讀作 (e^2)·x；若要輸入 e^(2x)，請加括號。' : 'e^2x is read as (e^2)·x. For e^(2x), add parentheses.';
+  if (/1\/2x/.test(source)) return lang === 'zh' ? '1/2x 讀作 (1/2)·x；若要輸入 1/(2x)，請加括號。' : '1/2x is read as (1/2)·x. For 1/(2x), add parentheses.';
+  const match = source.match(/([\^\/])\s*(\d+(?:\.\d+)?)\s*(?=[A-Za-z(])/);
+  if (!match) return '';
+  const [, operator, value] = match;
+  return lang === 'zh'
+    ? `請確認括號：${operator}${value}x 讀作「先${operator === '^' ? '次方' : '除以'} ${value}，再乘 x」；若要將 x 一起運算，請加括號。`
+    : `Check grouping: ${operator}${value}x is read as “apply ${operator}${value}, then multiply by x.” Add parentheses to include x.`;
+}
+
+function friendlyParseError(message) {
+  if (/Unknown symbol:/.test(message)) return message;
+  if (/Unexpected|Parenthesis|End of expression|Syntax|Value expected|Function expected|Unexpected end/i.test(message)) return 'Check the expression syntax and parentheses';
+  return 'Check the expression syntax and parentheses';
+}
+
 function validate(node, allowedVars) {
   let count = 0;
-  node.traverse(child => {
+  node.traverse((child, _path, parent) => {
     if (++count > 150) throw new Error('Expression is too long');
     if (child.isParenthesisNode) return;
     if (child.isConstantNode) {
@@ -29,7 +52,15 @@ function validate(node, allowedVars) {
       return;
     }
     if (child.isSymbolNode) {
-      if (!allowedVars.has(child.name) && !CONSTANTS.has(child.name) && !FUNCTIONS.has(child.name)) throw new Error(`Unknown symbol: ${child.name}`);
+      if (FUNCTIONS.has(child.name)) {
+        if (!parent?.isFunctionNode || parent.fn !== child) throw new Error('Use parentheses, e.g. ln(x)');
+        return;
+      }
+      if (child.name === 'ln') throw new Error('Use parentheses, e.g. ln(x)');
+      if (!allowedVars.has(child.name) && !CONSTANTS.has(child.name)) {
+        if (/^(?:ln|log|sqrt|sin|cos|tan|exp|abs)[A-Za-z]+$/i.test(child.name)) throw new Error('Use parentheses, e.g. ln(x)');
+        throw new Error(`Unknown symbol: ${child.name}`);
+      }
       return;
     }
     if (child.isOperatorNode && OPERATORS.has(child.fn)) return;
@@ -43,6 +74,25 @@ function validate(node, allowedVars) {
 }
 
 function result(status, message, extra = {}) { return { status, message, ...extra }; }
+
+export function parseSetEntries(value) {
+  const source = String(value ?? '').normalize('NFKC').trim();
+  if (!source) return null;
+  const wrapped = /^\{.*\}$/.test(source);
+  if (source.startsWith('{') !== source.endsWith('}')) return null;
+  const body = (wrapped ? source.slice(1, -1) : source).trim();
+  if (!body) return [];
+  const entries = []; let depth = 0, start = 0;
+  for (let i = 0; i < body.length; i++) {
+    if (body[i] === '(') depth++;
+    if (body[i] === ')') depth--;
+    if (depth < 0) return null;
+    if (body[i] === ',' && depth === 0) { entries.push(body.slice(start, i)); start = i + 1; }
+  }
+  if (depth !== 0) return null;
+  entries.push(body.slice(start));
+  return entries.every(entry => entry.trim()) ? entries : null;
+}
 
 export function createChecker(library = globalThis.math) {
   if (!library?.create || !library?.parse) throw new Error('Load the vendored math.js UMD bundle before checker.js');
@@ -61,8 +111,13 @@ export function createChecker(library = globalThis.math) {
     }
     const source = normalizeInput(input, vars);
     if (!source || source.length > 300) return { ok: false, node: null, tex: '', error: source ? 'Expression is too long' : 'Enter an answer' };
+    let node;
     try {
-      const node = parse(source);
+      node = parse(source);
+    } catch (error) {
+      return { ok: false, node: null, tex: '', error: friendlyParseError(error.message || '') };
+    }
+    try {
       validate(node, new Set(vars));
       return { ok: true, node, tex: node.toTex(), error: null };
     } catch (error) {
@@ -92,19 +147,23 @@ export function createChecker(library = globalThis.math) {
     let wrong = false;
     const count = opts.points ?? 10;
     if (!Number.isInteger(count) || count < 8) throw new Error('At least eight points are required');
-    // A random phase makes the evaluation points unpredictable while the
-    // irrational step spreads them through each declared interval.
-    const phase = Math.random();
+    // Independent irrational steps prevent all coordinates from tracing
+    // parallel diagonal lines. Independent phases avoid a fixed offset.
+    const steps = [Math.SQRT2 - 1, Math.sqrt(3) - 1, Math.sqrt(5) - 2, Math.sqrt(7) - 2];
+    const phases = vars.map(() => Math.random());
     for (let attempt = 0; attempt < 50 && valid < count; attempt++) {
       const scope = Object.fromEntries(vars.map((name, index) => {
         const [low, high] = domain[name];
-        const fraction = ((phase + attempt * 0.6180339887498949 + index * 0.4142135623730951) % 1);
+        const fraction = (phases[index] + attempt * (steps[index] ?? (Math.sqrt(11 + 2 * index) % 1))) % 1;
         return [name, low + (high - low) * fraction];
       }));
-      let a, b;
-      try { a = left.evaluate(scope); b = right.evaluate(scope); } catch { continue; }
-      if (typeof a !== 'number' || typeof b !== 'number' || !Number.isFinite(a) || !Number.isFinite(b)) continue;
+      let b;
+      try { b = right.evaluate(scope); } catch { continue; }
+      if (typeof b !== 'number' || !Number.isFinite(b)) continue;
       valid++;
+      let a;
+      try { a = left.evaluate(scope); } catch { wrong = true; continue; }
+      if (typeof a !== 'number' || !Number.isFinite(a)) { wrong = true; continue; }
       if (Math.abs(a - b) > (opts.absTol ?? ABS) + (opts.relTol ?? REL) * Math.max(Math.abs(a), Math.abs(b))) wrong = true;
     }
     if (valid < 6) return result('uncheckable', 'Could not check; please simplify your answer');
@@ -128,24 +187,7 @@ export function createChecker(library = globalThis.math) {
   }
 
   function checkSet(student, reference, opts = {}) {
-    const parseSet = value => {
-      const source = String(value ?? '').trim();
-      if (!/^\{.*\}$/.test(source)) return null;
-      const body = source.slice(1, -1).trim();
-      if (!body) return [];
-      // Numeric set entries may include log(x,b); split only at top level.
-      const entries = []; let depth = 0, start = 0;
-      for (let i = 0; i < body.length; i++) {
-        if (body[i] === '(') depth++;
-        if (body[i] === ')') depth--;
-        if (depth < 0) return null;
-        if (body[i] === ',' && depth === 0) { entries.push(body.slice(start, i)); start = i + 1; }
-      }
-      if (depth !== 0) return null;
-      entries.push(body.slice(start));
-      return entries.every(entry => entry.trim()) ? entries : null;
-    };
-    const a = parseSet(student), b = parseSet(reference);
+    const a = parseSetEntries(student), b = parseSetEntries(reference);
     if (!a) return result('invalid', 'Enter a set such as {-1, 3}');
     if (!b) throw new Error('Invalid reference set');
     const used = new Set();

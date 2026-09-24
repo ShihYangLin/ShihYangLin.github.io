@@ -1,10 +1,19 @@
 <article class="lesson-card">
-  <p class="eyebrow">KEY IDEAS · §§7.2–7.3</p>
-  <h2>Follow each changing part</h2>
-  <p>Economic quantities often combine other quantities. Revenue multiplies price by output; average cost divides cost by output. Differentiation rules track how every part changes.</p>
-  <div class="lesson-rule">$$ (uv)'=u'v+uv', \qquad (u/v)'=\frac{u'v-uv'}{v^2}, \qquad \frac{dz}{dx}=\frac{dz}{dy}\frac{dy}{dx}. $$</div>
-  <p>For example, if inverse demand is $P(Q)=26-2Q$, revenue is $R(Q)=P(Q)Q$, so $MR=P+QP'=26-4Q$. The product rule counts both the change in quantity and the change in price. Level 3 revisits this result using elasticity from later material. For $AC=C(Q)/Q$ with $Q&gt;0$, the quotient rule gives $AC'=(MC-AC)/Q$: marginal cost above average cost means average cost is rising.</p>
-  <p>The chain rule follows a sequence such as labor $L\to$ output $Q\to$ revenue $R$: $dR/dL=(dR/dQ)(dQ/dL)$. If $y=f(x)$ is locally invertible and $f'(x)\ne0$, its inverse slope is $dx/dy=1/f'(x)$. Check monotonicity before using the inverse rule.</p>
-  <p class="lesson-mistake"><strong>Watch for:</strong> multiplying two derivatives instead of adding the product-rule terms; reversing the quotient numerator; omitting the inner derivative.</p>
-  <p class="lesson-reading">Further reading: Chiang &amp; Wainwright §§7.2–7.3</p>
+  <p class="eyebrow">DERIVATIVE RULES · §§7.2–7.3</p>
+  <h2>Follow every changing part</h2>
+  <h3>Motivation</h3>
+  <p>Revenue changes when a firm sells another unit, but its price may change too. Average cost divides total cost by output. These economic questions lead to the product and quotient rules; linked effects, such as labor changing output and output changing revenue, lead to the chain rule.</p>
+  <h3>Key ideas</h3>
+  <div class="lesson-rule">$$\frac{d(uv)}{dx}=u'v+uv'$$</div>
+  <p>Both factors contribute to a product's change. For revenue $R=P(Q)Q$, this gives $MR=P+QP'$. With downward-sloping demand, the price change makes marginal revenue lower than price.</p>
+  <div class="lesson-rule">$$\frac{d(u/v)}{dx}=\frac{u'v-uv'}{v^2},\qquad AC' = \frac{MC-AC}{Q}\quad(Q>0)$$</div>
+  <p>The numerator's order follows from changing the top while holding the bottom, then accounting for the changing bottom. The average-cost identity says $AC$ rises where $MC>AC$ and falls where $MC<AC$.</p>
+  <div class="lesson-rule">$$\frac{dR}{dL}=\frac{dR}{dQ}\frac{dQ}{dL},\qquad \frac{dx}{dy}=\frac{1}{dy/dx}$$</div>
+  <p>The first formula follows both links from labor through output to revenue; $dR/dL$ is marginal revenue product (MRP). The reciprocal formula needs a locally invertible function and a nonzero original slope. The elasticity form of $MR$ appears at level 3 after the later elasticity material.</p>
+  <h3>Worked examples</h3>
+  <details><summary>Revenue from a changing price</summary><p>If $P(Q)=35-3Q$, then $R(Q)=(35-3Q)Q$. Differentiate both factors: $MR=P+QP'=(35-3Q)-3Q=35-6Q$. At $Q=4$, $MR=11$.</p></details>
+  <details><summary>Average cost and the MC crossing</summary><p>Let $C(Q)=27+5Q+3Q^2$ for $Q>0$. Then $AC=27/Q+5+3Q$ and $MC=5+6Q$. By the quotient rule, $AC'=(MC-AC)/Q=-27/Q^2+3$. Setting this to zero gives $Q=3$; $AC''=54/Q^3>0$, so average cost is minimized there.</p></details>
+  <details><summary>Revenue through output</summary><p>Suppose $Q(L)=4L+2$ and $R(Q)=30Q-2Q^2$. First, $dR/dQ=30-4Q$ and $dQ/dL=4$. Thus $dR/dL=4(30-4Q)=4(30-4(4L+2))=88-64L$.</p></details>
+  <h3>Common mistakes</h3><p>Do not multiply $u'$ by $v'$ for a product, reverse the quotient numerator, or omit the inner derivative. For an inverse, check that the original function is locally one-to-one and its slope is nonzero.</p>
+  <p class="lesson-reading">Further reading: Chiang &amp; Wainwright §7.2–7.3</p>
 </article>
