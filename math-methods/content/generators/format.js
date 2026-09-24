@@ -24,3 +24,29 @@ export function product(coefficient, expression) {
 export function texPowers(expression) {
   return String(expression).replace(/\^\(([^()]*)\)/g, '^{$1}');
 }
+
+// Display helpers: keep adjacent numeric factors distinct and reduce exact rates.
+export function texProduct(coefficient, factor) {
+  if (coefficient === 1) return factor;
+  if (coefficient === -1) return `-${factor}`;
+  return `${coefficient}\\cdot ${factor}`;
+}
+
+export function frac(numerator, denominator, tex = false) {
+  if (!Number.isInteger(numerator) || !Number.isInteger(denominator) || denominator === 0) throw new RangeError('Fraction requires integers and a nonzero denominator');
+  const sign = Math.sign(numerator * denominator) < 0 ? '-' : '';
+  let p = Math.abs(numerator), q = Math.abs(denominator);
+  const gcd = (a, b) => b ? gcd(b, a % b) : a;
+  const divisor = gcd(p, q);
+  p /= divisor; q /= divisor;
+  return q === 1 ? `${sign}${p}` : tex ? `${sign}\\frac{${p}}{${q}}` : `${sign}${p}/${q}`;
+}
+
+export function texRate(numerator, denominator, variable = '') {
+  const coefficient = frac(numerator, denominator, true);
+  if (!variable) return coefficient;
+  if (coefficient === '0') return '0';
+  if (coefficient === '1') return variable;
+  if (coefficient === '-1') return `-${variable}`;
+  return `${coefficient}${variable}`;
+}

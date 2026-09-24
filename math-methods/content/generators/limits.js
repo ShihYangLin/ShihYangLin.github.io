@@ -1,7 +1,7 @@
-import { linear, polynomial } from './format.js';
+import { frac, linear, polynomial } from './format.js';
 
 const both = (en, zh) => ({ en, zh });
-const number = (key, label, answer) => ({ key, type: 'number', label: both(label, ({ 'Limit =': '極限值 =', 'Left limit =': '左極限 =', 'Right limit =': '右極限 =', 'k =': 'k =' })[label] || label), answer: String(answer) });
+const number = (key, label, answer) => ({ key, type: 'number', label: both(label, ({ 'Limit =': '極限值 =', 'Left limit =': '左極限 =', 'Right limit =': '右極限 =', '$k$ =': '$k$ =' })[label] || label), answer: String(answer) });
 const choice = (key, label, answer, options) => ({ key, type: 'choice', label: both(label, ({ 'Two-sided limit exists?': '雙邊極限存在嗎？', 'Continuous now?': '目前連續嗎？', 'Behavior =': '趨勢 =' })[label] || label), answer, options });
 const misconception = (key, answer, en, zh) => ({ key, answer: String(answer), feedback: both(en, zh) });
 const yesNo = [
@@ -20,7 +20,7 @@ function polyLimit(rng, level) {
       fields: [number('ans', 'Limit =', `${top}/${bottom}`)],
       misconceptions: [misconception('ans', top, 'The denominator also approaches a nonzero value; divide the two limits.', '分母也趨近一個非零值；須將分子極限除以分母極限。')],
       hints: [both('Both polynomials are continuous at the approach point.', '分子與分母的多項式在該點都連續。'), both('Substitute after checking the denominator is nonzero.', '先確認分母不為零，再分別代入並相除。')],
-      solution: [both(`At $x=${point}$, the numerator approaches $${top}$ and the denominator $${bottom}\\ne0$.`, `當 $x\\to${point}$，分子趨近 $${top}$，分母趨近 $${bottom}\\ne0$。`), both(`The quotient limit is $${top}/${bottom}$.`, `商的極限為 $${top}/${bottom}$。`)]
+      solution: [both(`At $x=${point}$, the numerator approaches $${top}$ and the denominator $${bottom}\\ne0$.`, `當 $x\\to${point}$，分子趨近 $${top}$，分母趨近 $${bottom}\\ne0$。`), both(`The quotient limit is $${frac(top,bottom,true)}$.`, `商的極限為 $${frac(top,bottom,true)}$。`)]
     };
   }
   const f = polynomial([[a, 'x', 2], [b, 'x'], [c]]), value = a*point*point+b*point+c;
@@ -79,7 +79,7 @@ function atInfinity(rng, level) {
     fields: [choice('behavior', 'Behavior =', behavior, options), { ...number('value', 'Limit if finite =', answer), label: both('Limit if finite =', '若為有限值，極限 ='), gradeWhen: { key: 'behavior', value: 'finite' } }],
     misconceptions: [misconception('behavior', behavior === 'finite' ? 'positive' : 'finite', 'Compare the highest powers of numerator and denominator.', '應比較分子與分母的最高次方。')],
     hints: [both('Divide top and bottom by the highest power in the denominator.', '分子與分母同除以分母的最高次方。'), both('Lower-degree terms vanish relative to the leading terms as $x\\to+\\infty$.', '當 $x\\to+\\infty$，低次項相對於最高次項的影響消失。')],
-    solution: [both(`The numerator has degree ${variant === 2 ? 2 : 1}; the denominator has degree ${variant === 0 ? 2 : 1}.`, `分子為 ${variant === 2 ? 2 : 1} 次；分母為 ${variant === 0 ? 2 : 1} 次。`), both(variant === 0 ? 'The denominator grows faster, so the ratio tends to $0$.' : variant === 1 ? `The leading coefficients give a finite limit of $${a}/${b}$.` : `The ratio grows without bound with ${negative ? 'negative' : 'positive'} sign; it diverges to ${negative ? '$-\\infty$' : '$+\\infty$'}.`, variant === 0 ? '分母成長較快，所以比值趨近 $0$。' : variant === 1 ? `最高次項的係數比給出有限極限 $${a}/${b}$。` : `比值的絕對值無界增大，且符號為${negative ? '負' : '正'}，故發散至 ${negative ? '$-\\infty$' : '$+\\infty$'}。`)]
+    solution: [both(`The numerator has degree ${variant === 2 ? 2 : 1}; the denominator has degree ${variant === 0 ? 2 : 1}.`, `分子為 ${variant === 2 ? 2 : 1} 次；分母為 ${variant === 0 ? 2 : 1} 次。`), both(variant === 0 ? 'The denominator grows faster, so the ratio tends to $0$.' : variant === 1 ? `The leading coefficients give a finite limit of $${frac(a,b,true)}$.` : `The ratio grows without bound with ${negative ? 'negative' : 'positive'} sign; it diverges to ${negative ? '$-\\infty$' : '$+\\infty$'}.`, variant === 0 ? '分母成長較快，所以比值趨近 $0$。' : variant === 1 ? `最高次項的係數比給出有限極限 $${frac(a,b,true)}$。` : `比值的絕對值無界增大，且符號為${negative ? '負' : '正'}，故發散至 ${negative ? '$-\\infty$' : '$+\\infty$'}。`)]
   };
 }
 
@@ -90,7 +90,7 @@ function continuity(rng, level) {
   return {
     id: 'limits/continuity', level, vars: [], domain: {},
     prompt: both(`Let $f(x)=\\begin{cases}${nearby},&x\\ne${point}\\\\${assigned},&x=${point}\\end{cases}$. Find $\\lim_{x\\to${point}}f(x)$, the value $k$ that would make $f(${point})=k$ continuous, and decide whether the current function is continuous at $${point}$.`, `設 $f(x)=\\begin{cases}${nearby},&x\\ne${point}\\\\${assigned},&x=${point}\\end{cases}$。求 $\\lim_{x\\to${point}}f(x)$、使 $f(${point})=k$ 連續所需的 $k$，並判斷目前函數在 $${point}$ 是否連續。`),
-    fields: [number('limit', 'Limit =', target), number('k', 'k =', target), choice('continuous', 'Continuous now?', isContinuous ? 'yes' : 'no', yesNo)],
+    fields: [number('limit', 'Limit =', target), number('k', '$k$ =', target), choice('continuous', 'Continuous now?', isContinuous ? 'yes' : 'no', yesNo)],
     misconceptions: [misconception('continuous', isContinuous ? 'no' : 'yes', 'Continuity requires the defined value to equal the existing two-sided limit.', '連續性要求函數在該點有定義，且其值等於雙邊極限。')],
     hints: [both('First compute the approach value from the branch for nearby inputs.', '先用附近點的分段式求趨近值。'), both('Compare that limit with the assigned value at the point.', '將極限與該點指定的函數值比較。')],
     solution: [both(`For nearby $x$, $f(x)=${nearby}$, so the two-sided limit is $${target}$.`, `在附近，$f(x)=${nearby}$，因此雙邊極限為 $${target}$。`), both(`The point is defined with value $${assigned}$. Continuity requires $k=${target}$; the current function is ${isContinuous ? 'continuous' : 'discontinuous'} because $${assigned}${isContinuous ? '=' : '\\ne'}${target}$.`, `該點目前指定值為 $${assigned}$。連續所需的值是 $k=${target}$；目前函數${isContinuous ? '連續' : '不連續'}，因為 $${assigned}${isContinuous ? '=' : '\\ne'}${target}$。`)]

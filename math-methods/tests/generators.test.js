@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import katex from '../vendor/katex/katex.mjs';
 import { modules } from '../content/modules.js';
-import { linear, polynomial, term, texPowers } from '../content/generators/format.js';
+import { frac, linear, polynomial, term, texPowers, texProduct } from '../content/generators/format.js';
 import { createRng } from '../assets/js/rng.js';
 import { createChecker } from '../assets/js/checker.js';
 import { loadMathJs } from './load-mathjs.js';
@@ -47,25 +47,149 @@ test('shared formatter suppresses unit powers, unit coefficients and doubled sig
   assert.equal(texPowers('4x^(1/2)+3x^(-2)'), '4x^{1/2}+3x^{-2}');
   assert.equal(linear(-1, 'x', -2), '-x-2');
   assert.equal(polynomial([[1, 'x', 1], [-3, 'x', 2], [0], [2]]), 'x-3x^2+2');
+  assert.equal(texProduct(4, '5^{\\sqrt t}'), '4\\cdot 5^{\\sqrt t}');
+  assert.equal(texProduct(1, '\\sqrt L'), '\\sqrt L');
+  assert.equal(frac(16, 14, true), '\\frac{8}{7}');
+  assert.equal(frac(-2, 20), '-1/10');
+  assert.equal(frac(4, 2, true), '2');
 });
 
 function cleanAlgebra(value, where) {
   assert.doesNotMatch(value, /[A-Za-z]\^1(?!\d)|(^|[^\d])1[A-Za-z]|\+\-|-[\s]+-/, where);
 }
 
-function mathRenders(value) {
+function mathRenders(value, generated = false) {
   const matches = [...value.matchAll(/\$\$([\s\S]*?)\$\$|\$([^$]+)\$/g)];
   for (const match of matches) {
-    assert.doesNotMatch(match[1] || match[2], /\^\(/, 'TeX powers use braces, not parser parentheses');
-    katex.renderToString(match[1] || match[2], { throwOnError: true, strict: 'error' });
+    const math = match[1] || match[2];
+    assert.doesNotMatch(math, /\^\(/, 'TeX powers use braces, not parser parentheses');
+    if (generated) {
+      assert.doesNotMatch(math, /(?<![\d.])1\\(?:sqrt|ln)\b|(?<![\d.])1e\^/, 'omit unit coefficients before functions');
+      assert.doesNotMatch(math, /\d{3,}\^\{\\sqrt/, 'separate a coefficient from a numeric exponential base');
+      for (const fraction of math.matchAll(/(?<![\d.^])(-?\d+)\s*\/\s*(\d+)(?![\d!])/g)) {
+        const p = Math.abs(Number(fraction[1])), q = Number(fraction[2]);
+        const gcd = (a, b) => b ? gcd(b, a % b) : a;
+        assert.ok(gcd(p, q) <= 1, `unreduced displayed fraction ${fraction[0]} in ${math}`);
+      }
+      for (const fraction of math.matchAll(/(?<![\d.^])(\d+)[A-Za-z]\/\s*(\d+)(?!\d)/g)) {
+        const p = Number(fraction[1]), q = Number(fraction[2]);
+        const gcd = (a, b) => b ? gcd(b, a % b) : a;
+        assert.ok(gcd(p, q) <= 1, `unreduced displayed coefficient ${fraction[0]} in ${math}`);
+      }
+      for (const fraction of math.matchAll(/\\frac\{(-?\d+)\}\{(\d+)\}/g)) {
+        const p = Math.abs(Number(fraction[1])), q = Number(fraction[2]);
+        const gcd = (a, b) => b ? gcd(b, a % b) : a;
+        assert.ok(gcd(p, q) <= 1, `unreduced TeX fraction ${fraction[0]} in ${math}`);
+      }
+    }
+    katex.renderToString(math, { throwOnError: true, strict: 'error' });
   }
 }
+
+test('Gate 2b numeric factors remain separate in timber and Jacobian templates', () => {
+  const timber = modules.find(item => item.id === 'timing').generators.find(item => item.id === 'timber');
+  const jacobian = modules.find(item => item.id === 'partials').generators.find(item => item.id === 'jacobian');
+  for (let seed = 0; seed < 300; seed++) {
+    const tree = timber.generate(createRng(seed), 3);
+    assert.match(tree.prompt.en, /V\(t\)=\d+\\cdot \d+\^\{\\sqrt t\}/);
+    const jac = jacobian.generate(createRng(seed), 3);
+    const k = jac.prompt.en.match(/\$v=(\d+)\(/)?.[1];
+    if (k) {
+      const coefficient = jac.solution[0].en.match(/\(v_x,v_y\)=(\d+)u/)?.[1];
+      assert.equal(Number(coefficient), 2 * Number(k), `Jacobian seed ${seed}`);
+    }
+  }
+});
+
+test('Gate 2b displayed fractions and function coefficients are reduced across every template', () => {
+  for (const module of modules) for (const generator of module.generators) for (const level of generator.levels) {
+    for (let seed = 0; seed < 40; seed++) {
+      const problem = generator.generate(createRng(seed), level);
+      for (const value of [problem.prompt, ...problem.hints, ...problem.solution]) {
+        mathRenders(value.en, true);
+        mathRenders(value.zh, true);
+      }
+    }
+  }
+});
+
+test('Gate 2b market parameters and KaTeX field labels are explicit', () => {
+  const market = modules.find(item => item.id === 'partials').generators.find(item => item.id === 'market-cs');
+  const renderer = readFileSync(new URL('../assets/js/render.js', import.meta.url), 'utf8');
+  assert.match(renderer, /querySelectorAll\('\.answer-field label, \.answer-field legend'\)\.forEach\(typeset\)/);
+  for (let seed = 0; seed < 300; seed++) {
+    const problem = market.generate(createRng(seed), 2);
+    assert.match(problem.prompt.en, /Q_d=a-bP.*Q_s=-c\+dP.*a=\d+.*b=\d+.*c=\d+.*d=\d+/);
+    assert.match(problem.prompt.zh, /Q_d=a-bP.*Q_s=-c\+dP.*a=\d+.*b=\d+.*c=\d+.*d=\d+/);
+    assert.ok(problem.fields.filter(item => ['pa', 'qc'].includes(item.key)).every(item => item.label.en.includes('$')));
+  }
+});
+
+test('optimization economics and inflections satisfy their stated restrictions', () => {
+  const math = loadMathJs();
+  const opt = modules.find(item => item.id === 'opt-one');
+  const profit = opt.generators.find(item => item.id === 'profit-max');
+  const inflection = opt.generators.find(item => item.id === 'inflection');
+  const classify = opt.generators.find(item => item.id === 'classify');
+  for (let seed = 0; seed < 300; seed++) {
+    const p = profit.generate(createRng(seed), 3);
+    const q = Number(p.fields.find(item => item.key === 'q').answer);
+    const inverseDemand = p.prompt.en.match(/P\(Q\)=([^$]+)/)[1];
+    const cost = p.prompt.en.match(/C\(Q\)=([^$]+)/)[1];
+    const objective = `Q*(${inverseDemand})-(${cost})`;
+    const first = math.derivative(objective, 'Q');
+    const secondProfit = math.derivative(first, 'Q');
+    assert.ok(q > 0 && math.evaluate(inverseDemand, { Q: q }) > 0, `profit seed ${seed}`);
+    assert.ok(Math.abs(first.evaluate({ Q: q })) < 1e-8 && secondProfit.evaluate({ Q: q }) < 0, `profit FOC/SOC seed ${seed}`);
+    assert.ok(Math.abs(math.evaluate(objective, { Q: q }) - Number(p.fields.find(item => item.key === 'profit').answer)) < 1e-8);
+    assert.equal(p.fields.find(item => item.key === 'soc').answer, 'negative');
+    assert.match(p.solution[1].en, /Strict concavity/);
+    const point = inflection.generate(createRng(seed), 2);
+    const x = Number(point.fields.find(item => item.key === 'x').answer);
+    const f = point.prompt.en.match(/f\(x\)=([^$]+)/)[1];
+    const second = math.derivative(math.derivative(f, 'x'), 'x');
+    assert.ok(second.evaluate({ x: x - 0.25 }) * second.evaluate({ x: x + 0.25 }) < 0, `inflection seed ${seed}`);
+    const candidates = classify.generate(createRng(seed), 2);
+    const cf = candidates.prompt.en.match(/f\(x\)=([^$]+)/)[1];
+    const curvature = math.derivative(math.derivative(cf, 'x'), 'x');
+    const roots = candidates.fields.find(item => item.key === 'roots').answer.slice(1, -1).split(',').map(Number);
+    assert.ok(roots[0] < roots[1]);
+    assert.equal(candidates.fields.find(item => item.key === 'left').answer, curvature.evaluate({ x: roots[0] }) < 0 ? 'max' : 'min');
+    assert.equal(candidates.fields.find(item => item.key === 'right').answer, curvature.evaluate({ x: roots[1] }) < 0 ? 'max' : 'min');
+  }
+});
+
+test('Taylor lower levels use polynomial or rational functions and P2 matches derivatives', () => {
+  const math = loadMathJs();
+  const mod = modules.find(item => item.id === 'taylor');
+  const poly = mod.generators.find(item => item.id === 'taylor-poly');
+  for (const generator of mod.generators) for (const level of generator.levels.filter(value => value <= 2)) {
+    for (let seed = 0; seed < 300; seed++) {
+      const problem = generator.generate(createRng(seed), level);
+      assert.doesNotMatch(problem.prompt.en, /e\^x|\\ln|\\sqrt/);
+    }
+  }
+  for (const level of poly.levels) for (let seed = 0; seed < 300; seed++) {
+    const problem = poly.generate(createRng(seed), level);
+    const center = Number(problem.prompt.en.match(/x_0=(-?\d+)/)[1]);
+    let f = problem.prompt.en.match(/f\(x\)=([^$]+)/)[1];
+    f = f.replace(/\\frac\{(\d+)\}\{([^}]+)\}/, '($1)/($2)').replace('\\ln x', 'log(x)').replace('\\sqrt{x}', 'sqrt(x)').replace('e^x', 'exp(x)');
+    const answer = problem.fields[0].answer;
+    for (let order = 0; order <= 2; order++) {
+      let original = f, approximation = answer;
+      for (let i = 0; i < order; i++) { original = math.derivative(original, 'x'); approximation = math.derivative(approximation, 'x'); }
+      const actual = typeof original === 'string' ? math.evaluate(original, { x: center }) : original.evaluate({ x: center });
+      const estimated = typeof approximation === 'string' ? math.evaluate(approximation, { x: center }) : approximation.evaluate({ x: center });
+      assert.ok(Math.abs(actual - estimated) < 1e-8, `Taylor P2 L${level} seed ${seed} order ${order}`);
+    }
+  }
+});
 
 function bilingual(value, label) {
   assert.ok(value && typeof value.en === 'string' && value.en.trim(), `${label} EN`);
   assert.ok(value && typeof value.zh === 'string' && value.zh.trim(), `${label} ZH`);
-  mathRenders(value.en);
-  mathRenders(value.zh);
+  mathRenders(value.en, true);
+  mathRenders(value.zh, true);
 }
 
 for (const module of modules) {
@@ -92,6 +216,7 @@ for (const module of modules) {
           }
           const answers = Object.fromEntries(problem.fields.map(field => {
             bilingual(field.label, `${where} label`);
+            if (/[_^\\]|f'\(x\)|\b(?:MC|MR)\([^)]+\)|\b(?:dx\/dy|dR\/dL)\b|^[xyQk] =/.test(field.label.en)) assert.match(field.label.en, /\$[^$]+\$/, `${where} math label wrapped for KaTeX`);
             const englishWords = field.label.en.replace(/\$[^$]*\$/g, '');
             if (/[A-Za-z]{3,}/.test(englishWords)) assert.notEqual(field.label.zh, field.label.en, `${where} translated label ${field.key}`);
             if (field.type !== 'choice' && field.type !== 'set') {
