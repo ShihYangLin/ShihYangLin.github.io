@@ -1,4 +1,4 @@
-import { linear, polynomial, texProduct } from './format.js';
+import { derivative, linear, polynomial, texProduct } from './format.js';
 const both=(en,zh)=>({en,zh});
 const field=(key,type,en,zh,answer,tol)=>({key,type,label:both(en,zh),answer:String(answer),...(tol?{tol}:{})});
 const error=(key,answer,en,zh)=>({key,answer:String(answer),feedback:both(en,zh)});
@@ -15,8 +15,8 @@ function maclaurinCoef(rng,level){
    prompt:both(`For $f(x)=${f}$, find the coefficient of $x^{${k}}$ in its exact Maclaurin polynomial.`,`對 $f(x)=${f}$，求其精確 Maclaurin 多項式中 $x^{${k}}$ 的係數。`),
    fields:[field('coef','number',`Coefficient of $x^{${k}}$ =`,`$x^{${k}}$ 的係數 =`,coef)],
    misconceptions:[error('coef',deriv,'That is the derivative at zero; divide by the factorial to obtain the coefficient.','那是零點的導數值；還須除以階乘才是係數。')],
-   hints:[both('Maclaurin means the center is zero.','Maclaurin 展開的中心是零。'),both('The coefficient of $x^k$ is $f^{(k)}(0)/k!$.','$x^k$ 的係數是 $f^{(k)}(0)/k!$。')],
-   solution:[both(`At zero, $f^{(${k})}(0)=${deriv}$.`,`在零點，$f^{(${k})}(0)=${deriv}$。`),both(`Divide by $${k}!=${factorial(k)}$ to get coefficient $${coef}$. The full polynomial expansion is exact.`,`除以 $${k}!=${factorial(k)}$，係數為 $${coef}$；完整多項式展開是精確等式。`)]};
+   hints:[both('Maclaurin means the center is zero.','Maclaurin 展開的中心是零。'),both(`The coefficient of $x^k$ is $${derivative('f',k,0)}/k!$.`,`$x^k$ 的係數是 $${derivative('f',k,0)}/k!$。`)],
+   solution:[both(`At zero, $${derivative('f',k,0)}=${deriv}$.`,`在零點，$${derivative('f',k,0)}=${deriv}$。`),both(`Divide by $${k}!=${factorial(k)}$ to get coefficient $${coef}$. The full polynomial expansion is exact.`,`除以 $${k}!=${factorial(k)}$，係數為 $${coef}$；完整多項式展開是精確等式。`)]};
  }
  const A=rng.int(2,4),b=rng.int(1,3),coef=A*(-b)**k;
  return {id:'taylor/maclaurin-coef',level,vars:[],domain:{},

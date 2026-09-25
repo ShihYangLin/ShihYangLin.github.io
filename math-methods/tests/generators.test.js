@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import katex from '../vendor/katex/katex.mjs';
 import { modules } from '../content/modules.js';
-import { frac, linear, polynomial, term, texPowers, texProduct } from '../content/generators/format.js';
+import { derivative, frac, linear, polynomial, term, texPowers, texProduct } from '../content/generators/format.js';
 import { createRng } from '../assets/js/rng.js';
 import { createChecker } from '../assets/js/checker.js';
 import { loadMathJs } from './load-mathjs.js';
@@ -48,7 +48,12 @@ test('shared formatter suppresses unit powers, unit coefficients and doubled sig
   assert.equal(linear(-1, 'x', -2), '-x-2');
   assert.equal(polynomial([[1, 'x', 1], [-3, 'x', 2], [0], [2]]), 'x-3x^2+2');
   assert.equal(texProduct(4, '5^{\\sqrt t}'), '4\\cdot 5^{\\sqrt t}');
+  assert.equal(texProduct(4, 't^2'), '4t^2');
+  assert.equal(texProduct(2, '\\ln t'), '2\\ln t');
   assert.equal(texProduct(1, '\\sqrt L'), '\\sqrt L');
+  assert.equal(derivative('f', 1, 'x'), "f'(x)");
+  assert.equal(derivative('f', 3, 'x'), "f'''(x)");
+  assert.equal(derivative('f', 4, 'x'), 'f^{(4)}(x)');
   assert.equal(frac(16, 14, true), '\\frac{8}{7}');
   assert.equal(frac(-2, 20), '-1/10');
   assert.equal(frac(4, 2, true), '2');
@@ -63,6 +68,8 @@ function mathRenders(value, generated = false) {
   for (const match of matches) {
     const math = match[1] || match[2];
     assert.doesNotMatch(math, /\^\(/, 'TeX powers use braces, not parser parentheses');
+    assert.doesNotMatch(math, /\^\{\([123]\)\}/, 'derivatives of orders 1–3 use primes');
+    assert.doesNotMatch(math, /\\cdot(?!s)\s*(?:[A-Za-z]|\\(?:ln|sqrt)\b)/, 'multiplication dots precede numeric factors only');
     if (generated) {
       assert.doesNotMatch(math, /(?<![\d.])1\\(?:sqrt|ln)\b|(?<![\d.])1e\^/, 'omit unit coefficients before functions');
       assert.doesNotMatch(math, /\d{3,}\^\{\\sqrt/, 'separate a coefficient from a numeric exponential base');
@@ -108,6 +115,22 @@ test('Gate 2b displayed fractions and function coefficients are reduced across e
       for (const value of [problem.prompt, ...problem.hints, ...problem.solution]) {
         mathRenders(value.en, true);
         mathRenders(value.zh, true);
+      }
+    }
+  }
+});
+
+test('Gate 3a prime notation and multiplication dots across every lesson and generator', () => {
+  for (const module of modules) {
+    for (const lang of ['en', 'zh']) {
+      const html = readFileSync(new URL(`../content/lessons/${module.id}.${lang}.html`, import.meta.url), 'utf8');
+      mathRenders(html.replaceAll('&gt;', '>').replaceAll('&lt;', '<'));
+    }
+    for (const generator of module.generators) for (const level of generator.levels) for (let seed = 0; seed < 20; seed++) {
+      const problem = generator.generate(createRng(seed), level);
+      for (const pair of [problem.prompt, ...problem.hints, ...problem.solution, ...problem.fields.map(item => item.label), ...problem.misconceptions.map(item => item.feedback)]) {
+        mathRenders(pair.en, true);
+        mathRenders(pair.zh, true);
       }
     }
   }

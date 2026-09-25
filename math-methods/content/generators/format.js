@@ -29,7 +29,12 @@ export function texPowers(expression) {
 export function texProduct(coefficient, factor) {
   if (coefficient === 1) return factor;
   if (coefficient === -1) return `-${factor}`;
-  return `${coefficient}\\cdot ${factor}`;
+  return `${coefficient}${/^\s*[\d.]/.test(factor) ? '\\cdot ' : ''}${factor}`;
+}
+
+export function derivative(symbol, order, argument = '') {
+  if (!Number.isInteger(order) || order < 1) throw new RangeError('Positive derivative order required');
+  return `${symbol}${order <= 3 ? "'".repeat(order) : `^{(${order})}`}${argument ? `(${argument})` : ''}`;
 }
 
 export function frac(numerator, denominator, tex = false) {

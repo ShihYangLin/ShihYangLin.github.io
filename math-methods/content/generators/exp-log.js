@@ -51,7 +51,7 @@ function compound(rng,level){
 function growthRate(rng,level){
  const g=rng.int(2,6),h=rng.int(1,g-1),k=rng.int(1,3), A=rng.int(2,5),B=rng.int(2,5);
  if(level===2)return {id:'exp-log/growth-rate',level,vars:['t'],domain:{t:[0.5,5]},
- prompt:both(`For $t>0$, let $Y(t)=${A}\\cdot ${k===1?'t':`t^{${k}}`}e^{${texRate(g,10,'t')}}$. Find its instantaneous proportional growth rate $d\\ln Y/dt$.`,`對 $t>0$，設 $Y(t)=${A}\\cdot ${k===1?'t':`t^{${k}}`}e^{${texRate(g,10,'t')}}$。求瞬時比例成長率 $d\\ln Y/dt$。`),
+ prompt:both(`For $t>0$, let $Y(t)=${A}${k===1?'t':`t^{${k}}`}e^{${texRate(g,10,'t')}}$. Find its instantaneous proportional growth rate $d\\ln Y/dt$.`,`對 $t>0$，設 $Y(t)=${A}${k===1?'t':`t^{${k}}`}e^{${texRate(g,10,'t')}}$。求瞬時比例成長率 $d\\ln Y/dt$。`),
  fields:[field('rate','expr','Growth rate =','成長率 =',`${k}/t+${frac(g,10)}`)],misconceptions:[error('rate',frac(g,10),'The power of time also contributes $k/t$ to proportional growth.','時間冪次也對比例成長率貢獻 $k/t$。')],
  hints:[both('Taking logs turns the product into a sum.','取對數將乘積化為和。'),both('Differentiate $\\ln Y=\\ln A+k\\ln t+gt/10$.','對 $\\ln Y=\\ln A+k\\ln t+gt/10$ 微分。')],
  solution:[both(`$\\ln Y=\\ln ${A}+${texProduct(k, '\\ln t')}+${texRate(g,10,'t')}$.`,`$\\ln Y=\\ln ${A}+${texProduct(k, '\\ln t')}+${texRate(g,10,'t')}$。`),both(`Differentiate: $d\\ln Y/dt=${k}/t+${frac(g,10,true)}$.`,`微分得 $d\\ln Y/dt=${k}/t+${frac(g,10,true)}$。`)]};
