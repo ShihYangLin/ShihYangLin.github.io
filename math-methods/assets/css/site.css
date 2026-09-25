@@ -164,6 +164,36 @@ h2 { font-family: 'Newsreader', 'Noto Serif TC', serif; font-size: 31px; font-we
 .plot-point { fill: var(--panel); stroke: var(--ink); stroke-width: 2.5; vector-effect: non-scaling-stroke; }
 .plot-point-label, .plot-axis-label { fill: var(--ink); font: 12px 'IBM Plex Mono', monospace; }
 .solution-plot figcaption { color: var(--muted); font-size: 12px; }
+.lesson-figure { max-width: 560px; margin: 24px auto 28px; }
+.lesson-figure svg { display: block; width: 100%; height: auto; max-width: 560px; background: var(--panel); }
+.lesson-figure figcaption { margin-top: 7px; color: var(--muted); font-size: 13px; line-height: 1.5; }
+.lesson-figure .fig-axis { fill: none; stroke: var(--muted); stroke-width: 1.3; }
+.lesson-figure .fig-guide { fill: none; stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 5 5; }
+.lesson-figure .fig-curve, .lesson-figure .fig-tangent, .lesson-figure .fig-budget, .lesson-figure .fig-isocost { fill: none; stroke: var(--accent); stroke-width: 2.6; }
+.lesson-figure .fig-curve-2, .lesson-figure .fig-secant-near, .lesson-figure .fig-contour-2 { fill: none; stroke: var(--ink); stroke-width: 2.1; stroke-dasharray: 8 4; }
+.lesson-figure .fig-curve-3 { fill: none; stroke: var(--accent); stroke-width: 2.6; stroke-dasharray: 2 4; stroke-linecap: round; }
+.lesson-figure .fig-secant-mid, .lesson-figure .fig-isocost-other { fill: none; stroke: var(--muted); stroke-width: 1.8; stroke-dasharray: 6 5; }
+.lesson-figure .fig-secant-far { fill: none; stroke: var(--muted); stroke-width: 1.6; stroke-dasharray: 2 7; }
+.lesson-figure .fig-contour { fill: none; stroke: var(--accent); stroke-width: 1.7; }
+.lesson-figure .fig-contour-positive { fill: none; stroke: var(--accent); stroke-width: 1.8; }
+.lesson-figure .fig-arrow { fill: none; stroke: var(--ink); stroke-width: 1.7; }
+.lesson-figure .fig-bracket { fill: none; stroke: var(--ink); stroke-width: 1.4; }
+.lesson-figure .fig-point { fill: var(--accent); stroke: var(--panel); stroke-width: 1.5; }
+.lesson-figure .fig-open-point { fill: var(--panel); stroke: var(--ink); stroke-width: 1.7; }
+.lesson-figure .fig-region { fill: var(--accent-soft); stroke: none; }
+.lesson-figure .fig-label-bg { fill: var(--panel); stroke: none; }
+.lesson-figure .fig-label, .lesson-figure .fig-panel-title { fill: var(--ink); font: 18px 'IBM Plex Mono', 'Noto Sans TC', monospace; }
+.lesson-figure .fig-sign { fill: var(--accent); font: 700 22px 'IBM Plex Mono', monospace; }
+.lesson-figure .fig-panel-title { font-weight: 700; }
+.lesson-figure .fig-tangent { stroke-dasharray: 8 5; }
+.lesson-figure .fig-secant-active { fill: none; stroke: var(--ink); stroke-width: 2.4; }
+.lesson-figure-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-top: 10px; color: var(--ink); }
+.lesson-figure-controls label { display: flex; align-items: center; gap: 10px; flex: 1 1 230px; font: 15px 'IBM Plex Mono', monospace; }
+.lesson-figure-controls input[type="range"] { min-width: 0; width: 100%; accent-color: var(--accent); cursor: pointer; }
+.lesson-figure-controls button { min-width: 72px; min-height: 44px; padding: 8px 12px; border: 1px solid var(--accent); background: var(--panel); color: var(--ink); cursor: pointer; }
+.lesson-figure-controls button:hover, .lesson-figure-controls button:focus-visible { background: var(--accent-soft); }
+.lesson-figure-readout { flex: 1 0 100%; margin: 0; font: 13px/1.5 'IBM Plex Mono', 'Noto Sans TC', monospace; overflow-wrap: anywhere; }
+.lesson-figure-controls .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 .typing-help { max-width: 760px; margin-top: 30px; padding-top: 15px; border-top: 1px solid var(--faint); color: var(--muted); }
 .typing-help summary { cursor: pointer; }
 .typing-help code { font-family: 'IBM Plex Mono', monospace; }

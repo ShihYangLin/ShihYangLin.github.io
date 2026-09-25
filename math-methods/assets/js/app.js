@@ -4,6 +4,7 @@ import { parseRoute } from './router.js';
 import { mountProblem, typeset } from './render.js';
 import { readProgress, resetProgress, exportProgress } from './progress.js';
 import { feedbackUrl, pageContext } from './feedback.js';
+import { mountLessonInteractives } from './lesson-interactive.js';
 
 const app = document.getElementById('app');
 
@@ -67,6 +68,7 @@ async function renderModule(route, focus = false) {
       if (version !== renderVersion) return;
       lesson.innerHTML = html;
       typeset(lesson);
+      mountLessonInteractives(lesson, lang);
     } else lesson.innerHTML = `<div class="placeholder-panel"><p>${t('moduleIntro')}</p></div>`;
   } catch { if (version === renderVersion) lesson.innerHTML = `<div class="placeholder-panel"><p>${t('moduleIntro')}</p></div>`; }
   if (version !== renderVersion) return;

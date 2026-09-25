@@ -25,12 +25,14 @@ The vendored KaTeX and math.js versions are recorded in `vendor/VERSIONS.md`. Th
 | `index.html` | Static entry point, fonts, and vendored library loading |
 | `assets/css/site.css` | Responsive layout and light/dark theme tokens |
 | `assets/js/app.js`, `router.js`, `i18n.js` | Page views, hash routes, bilingual UI |
+| `assets/js/lesson-interactive.js` | Optional secant slider and Play control for lesson figures |
 | `assets/js/render.js`, `plot.js` | Exercise form, feedback, math rendering, solution SVG |
 | `assets/js/checker.js`, `rng.js`, `progress.js` | Answer checking, deterministic seeds, local progress |
 | `assets/js/feedback.js` | Google Form address for the footer feedback link and per-problem report link; both stay hidden while it is empty |
 | `content/modules.js` | Ordered module registry |
 | `content/generators/*.js`, `format.js` | Pure problem generators and shared algebra/TeX helpers |
 | `content/lessons/<module>.en.html`, `.zh.html` | English and Traditional Chinese lesson fragments |
+| `tools/lesson-figures.mjs` | Dependency-free generator for bilingual inline SVG lesson figures; `--check` detects drift |
 | `tests/*.test.js` | Checker, generator, mathematical, route, plot, and UI contract tests |
 | `vendor/` | Pinned KaTeX and math.js; do not edit these files |
 
@@ -47,6 +49,8 @@ The vendored KaTeX and math.js versions are recorded in `vendor/VERSIONS.md`. Th
 ## Lesson structure and source rule
 
 Each module has paired `.en.html` and `.zh.html` fragments. Keep the same mathematical sequence in both. A lesson opens with an **At a glance** (`重點速覽`) summary, then contains **Motivation**, **Key ideas**, 2–3 collapsible **Worked examples**, **Common mistakes**, and a **Further reading** line naming the relevant Chiang & Wainwright sections. Math inside `$...$` or `$$...$$` is rendered with KaTeX.
+
+Selected key ideas contain fifteen original explanatory figures (A1–B6, with the limits cases split) as inline SVG, paired across languages. Their geometry and translated labels live in `tools/lesson-figures.mjs`. After editing a definition, run `node math-methods/tools/lesson-figures.mjs` from the repository root to regenerate both fragments, then `node math-methods/tools/lesson-figures.mjs --check` to confirm they match. Keep figure markers in place; do not hand-edit generated regions. The secant figure also has optional slider and Play controls from `assets/js/lesson-interactive.js`; its generated h=1 SVG remains meaningful without JavaScript. New static figures can be added as definitions in the script without changing the runtime site.
 
 The summary is a `<section class="lesson-glance" id="<module>-glance">` list. Each item pairs a `glance-formula` (inline math split into `glance-chunk` spans, which wrap between chunks but never inside one) with a one-sentence conclusion and a "Why? ↓" link to the matching key idea; a final `glance-warn` item links to the common mistakes. Each key idea and the mistakes section is a `<div class="lesson-idea" id="<module>-<slug>">` ending in a "↑ Back to summary" link. Jump links use `<a class="jump-link" href="#id" data-jump="id">`: `app.js` scrolls to the target instead of following the href, because the hash is reserved for routing. Both languages must share the same jump targets; the lesson test checks this.
 
