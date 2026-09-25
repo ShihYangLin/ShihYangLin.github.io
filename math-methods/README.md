@@ -27,6 +27,7 @@ The vendored KaTeX and math.js versions are recorded in `vendor/VERSIONS.md`. Th
 | `assets/js/app.js`, `router.js`, `i18n.js` | Page views, hash routes, bilingual UI |
 | `assets/js/render.js`, `plot.js` | Exercise form, feedback, math rendering, solution SVG |
 | `assets/js/checker.js`, `rng.js`, `progress.js` | Answer checking, deterministic seeds, local progress |
+| `assets/js/feedback.js` | Google Form address for the footer feedback link and per-problem report link; both stay hidden while it is empty |
 | `content/modules.js` | Ordered module registry |
 | `content/generators/*.js`, `format.js` | Pure problem generators and shared algebra/TeX helpers |
 | `content/lessons/<module>.en.html`, `.zh.html` | English and Traditional Chinese lesson fragments |

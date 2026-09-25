@@ -3,6 +3,7 @@ import { getLanguage, initLanguage, setLanguage, t } from './i18n.js';
 import { parseRoute } from './router.js';
 import { mountProblem, typeset } from './render.js';
 import { readProgress, resetProgress, exportProgress } from './progress.js';
+import { feedbackUrl, pageContext } from './feedback.js';
 
 const app = document.getElementById('app');
 
@@ -106,6 +107,10 @@ function render(focus = false) {
   const lang = getLanguage();
   document.title = `${t('siteTitle')} · Shih-Yang Lin`;
   document.querySelectorAll('[data-i18n]').forEach(element => { element.textContent = t(element.dataset.i18n); });
+  const feedbackLink = document.getElementById('feedback-link');
+  const feedbackHref = feedbackUrl(pageContext({ lang: getLanguage(), href: location.href }));
+  feedbackLink.hidden = !feedbackHref;
+  if (feedbackHref) feedbackLink.href = feedbackHref;
   document.querySelectorAll('[data-lang]').forEach(button => {
     button.setAttribute('aria-pressed', String(button.dataset.lang === lang));
     button.setAttribute('aria-label', t(button.dataset.lang === 'en' ? 'englishButton' : 'chineseButton'));

@@ -90,6 +90,9 @@ h2 { font-family: 'Newsreader', 'Noto Serif TC', serif; font-size: 31px; font-we
 .placeholder-panel p { margin: 0; }
 .site-footer { border-top: 1px solid var(--faint); color: var(--muted); }
 .footer-inner { min-height: 80px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.footer-end { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; }
+.footer-feedback { color: var(--accent); text-decoration: none; }
+.footer-feedback:hover, .footer-feedback:focus-visible { text-decoration: underline; }
 
 .lesson-card { max-width: 850px; margin-top: 48px; padding: 34px 38px; border: 1px solid var(--faint); background: var(--panel); }
 .lesson-card .eyebrow { margin-bottom: 14px; }
@@ -143,6 +146,8 @@ h2 { font-family: 'Newsreader', 'Noto Serif TC', serif; font-size: 31px; font-we
 .problem-actions, .progress-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
 .problem-actions button, .progress-actions button, #reset-confirm button { padding: 10px 16px; border: 1px solid var(--faint); background: var(--panel); color: var(--ink); cursor: pointer; }
 .problem-actions button:hover, .progress-actions button:hover, #reset-confirm button:hover { border-color: var(--accent); }
+.problem-actions .report-link { align-self: center; margin-left: auto; color: var(--muted); font-size: 13px; text-decoration: underline; text-underline-offset: 3px; }
+.problem-actions .report-link:hover, .problem-actions .report-link:focus-visible { color: var(--accent); }
 .problem-actions .action-primary { border-color: var(--accent); background: var(--accent); color: white; }
 .problem-feedback { max-width: 760px; margin-top: 20px; padding: 0; font-weight: 600; }
 .problem-feedback:not(:empty) { padding: 12px 16px; border-left: 3px solid var(--accent); background: var(--accent-soft); }
