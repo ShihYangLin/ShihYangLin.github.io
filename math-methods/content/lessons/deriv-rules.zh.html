@@ -1,17 +1,35 @@
 <article class="lesson-card">
   <p class="eyebrow">微分法則 · §§7.2–7.3</p>
   <h2>追蹤每個變動的部分</h2>
+  <section class="lesson-glance" id="deriv-rules-glance">
+    <h3>重點速覽</h3>
+    <ol>
+      <li><div class="glance-formula"><span class="glance-chunk">$\dfrac{d(uv)}{dx}=u'v+uv'$，</span> <span class="glance-chunk">$MR=P+QP'$</span></div><p>兩個因子都在變。收益 $R=P(Q)Q$ 時，需求向下傾斜（$P'&lt;0$）使邊際收益低於價格。 <a class="jump-link" href="#deriv-rules-product" data-jump="deriv-rules-product">為什麼？↓</a></p></li>
+      <li><div class="glance-formula"><span class="glance-chunk">$\dfrac{d(u/v)}{dx}=\dfrac{u'v-uv'}{v^2}$，</span> <span class="glance-chunk">$AC'=\dfrac{MC-AC}{Q}$</span></div><p>分子先寫分子的導數。$MC&gt;AC$ 時平均成本上升，$MC&lt;AC$ 時下降。 <a class="jump-link" href="#deriv-rules-quotient" data-jump="deriv-rules-quotient">為什麼？↓</a></p></li>
+      <li><div class="glance-formula"><span class="glance-chunk">$\dfrac{dR}{dL}=\dfrac{dR}{dQ}\dfrac{dQ}{dL}$，</span> <span class="glance-chunk">$\dfrac{dx}{dy}=\dfrac{1}{dy/dx}$</span></div><p>連鎖法則逐段相乘，$dR/dL=MR\,MP_L$ 即邊際收益產量（MRP）。反函數法則要求原斜率不為零。 <a class="jump-link" href="#deriv-rules-chain" data-jump="deriv-rules-chain">為什麼？↓</a></p></li>
+      <li class="glance-warn"><p>乘積的導數不是 $u'v'$；除法法則的分子順序不可顛倒；連鎖法則別漏乘內層導數。 <a class="jump-link" href="#deriv-rules-mistakes" data-jump="deriv-rules-mistakes">常見錯誤 ↓</a></p></li>
+    </ol>
+  </section>
   <h3>動機</h3>
   <p>廠商多賣一單位時，銷售量增加，價格卻可能改變。平均成本則是總成本除以產量。這些問題分別需要乘法與除法法則；若勞動先影響產量、產量再影響收益，就要沿著兩段關係使用連鎖法則。</p>
   <p>學會基本微分後，下一個問題是：經濟量若由兩個都在變動的函數組成，會發生什麼事？總收益是第一個例子：價格依產量而變，收益又等於價格乘產量。多賣一點帶來新增單位的收入，也可能改變原有單位的售價；只對其中一個因子微分會漏掉效果。平均成本則以另一種代數形式提出類似問題：總成本除以產量。分子與分母一起變動，便說明為何邊際成本決定平均成本的升降。</p>
   <p>許多經濟關係也會經過好幾層變數。勞動改變產量，產量再改變收益；即使收益原本寫成產量的函數，我們仍想知道勞動對收益的效果。沿著兩段連結計算，就是連鎖法則，也得到具有經濟意義的邊際收益產量（MRP）。這延續前面的比較靜態分析：找出從變動投入到目標結果的完整路徑。最後，若關係在局部嚴格單調，反函數法則可將原斜率轉換為反函數的倒數斜率。</p>
   <h3>核心概念</h3>
-  <div class="lesson-rule">$$\frac{d(uv)}{dx}=u'v+uv'$$</div>
-  <p>乘積的兩個因子各貢獻一項變動。收益 $R=P(Q)Q$ 因此有 $MR=P+QP'$；當需求向下傾斜時，價格的下降使邊際收益低於價格。</p>
-  <div class="lesson-rule">$$\frac{d(u/v)}{dx}=\frac{u'v-uv'}{v^2},\qquad AC' = \frac{MC-AC}{Q}\quad(Q>0)$$</div>
-  <p>分子的順序先計入分子變動，再扣除分母變動的效果。平均成本公式表示：$MC>AC$ 時 $AC$ 上升；$MC<AC$ 時 $AC$ 下降。</p>
-  <div class="lesson-rule">$$\frac{dR}{dL}=\frac{dR}{dQ}\frac{dQ}{dL},\qquad \frac{dx}{dy}=\frac{1}{dy/dx}$$</div>
-  <p>第一式沿著勞動、產量、收益兩段關係計算；$dR/dL$ 是邊際收益產量（MRP）。反函數的倒數公式要求函數在附近可逆，且原函數斜率不為零。第三級會在學過彈性後使用邊際收益的彈性表示式。</p>
+  <div class="lesson-idea" id="deriv-rules-product">
+    <div class="lesson-rule">$$\frac{d(uv)}{dx}=u'v+uv'$$</div>
+    <p>乘積的兩個因子各貢獻一項變動。收益 $R=P(Q)Q$ 因此有 $MR=P+QP'$；當需求向下傾斜時，價格的下降使邊際收益低於價格。</p>
+    <p class="jump-back"><a class="jump-link" href="#deriv-rules-glance" data-jump="deriv-rules-glance">↑ 回到重點</a></p>
+  </div>
+  <div class="lesson-idea" id="deriv-rules-quotient">
+    <div class="lesson-rule">$$\frac{d(u/v)}{dx}=\frac{u'v-uv'}{v^2},\qquad AC' = \frac{MC-AC}{Q}\quad(Q>0)$$</div>
+    <p>分子的順序先計入分子變動，再扣除分母變動的效果。平均成本公式表示：$MC>AC$ 時 $AC$ 上升；$MC<AC$ 時 $AC$ 下降。</p>
+    <p class="jump-back"><a class="jump-link" href="#deriv-rules-glance" data-jump="deriv-rules-glance">↑ 回到重點</a></p>
+  </div>
+  <div class="lesson-idea" id="deriv-rules-chain">
+    <div class="lesson-rule">$$\frac{dR}{dL}=\frac{dR}{dQ}\frac{dQ}{dL},\qquad \frac{dx}{dy}=\frac{1}{dy/dx}$$</div>
+    <p>第一式沿著勞動、產量、收益兩段關係計算；$dR/dL$ 是邊際收益產量（MRP）。反函數的倒數公式要求函數在附近可逆，且原函數斜率不為零。第三級會在學過彈性後使用邊際收益的彈性表示式。</p>
+    <p class="jump-back"><a class="jump-link" href="#deriv-rules-glance" data-jump="deriv-rules-glance">↑ 回到重點</a></p>
+  </div>
   <p>理解乘法法則時，可想像 $x$ 發生小變化：先讓第一個因子改變，第二個因子暫用原水準；再讓第二個因子改變，第一個因子暫用原水準。兩個微小變化相乘的額外項，在取極限時消失，所以留下兩項。對反需求 $P(Q)$ 而言，$MR=P+QP'$ 將原價格與價格變動效果並列。若需求向下傾斜，$P'<0$ 且 $Q>0$，邊際收益低於價格。</p>
   <p>對 $Q>0$，從 $AC=C/Q$ 出發，除法法則給出 $AC'=(QMC-C)/Q^2=(MC-AC)/Q$。若邊際成本低於平均成本，增加產量使平均下降；高於平均成本則使平均上升。兩者相等是平均成本的平穩點，仍須檢查曲度或斜率變號才能確認極小值。使用連鎖法則時，明寫中間變數 $L\to Q(L)\to R(Q)$，得到 $dR/dL=MR\,MP_L$。反函數斜率取倒數，前提是原導數不為零且局部可逆。邊際收益的彈性形式留待後續彈性單元。</p>
   <p>反函數法則可從同一局部關係的兩種讀法理解。價格式可能將價格寫成數量的函數，另一個問題卻問數量如何隨價格改變。若該段關係一對一且斜率不為零，交換座標軸後，斜率數值便取倒數。若原斜率為零，倒數沒有定義；若曲線折返，全域也未必有單一反函數。求倒數前須先說明指定點與局部分支。</p>
@@ -19,6 +37,10 @@
   <details><summary>價格變動時的邊際收益</summary><p>若 $P(Q)=35-3Q$，則 $R(Q)=(35-3Q)Q$。對兩個因子微分：$MR=P+QP'=(35-3Q)-3Q=35-6Q$。在 $Q=4$ 時，$MR=11$。</p></details>
   <details><summary>平均成本與邊際成本交點</summary><p>設 $Q>0$ 時 $C(Q)=27+5Q+3Q^2$。則 $AC=27/Q+5+3Q$、$MC=5+6Q$。除法法則給出 $AC'=(MC-AC)/Q=-27/Q^2+3$。令其為零得 $Q=3$；因 $AC''=54/Q^3>0$，平均成本在此最低。</p></details>
   <details><summary>勞動透過產量影響收益</summary><p>假設 $Q(L)=4L+2$、$R(Q)=30Q-2Q^2$。先求 $dR/dQ=30-4Q$ 與 $dQ/dL=4$，因此 $dR/dL=4(30-4Q)=4(30-4(4L+2))=88-64L$。</p></details>
-  <h3>常見錯誤</h3><p>乘積不可只算 $u'v'$；除法法則不可顛倒分子兩項；連鎖法則不可漏乘內層函數的導數。使用反函數法則前，還需確認局部一對一與原斜率不為零。</p>
+  <div class="lesson-idea" id="deriv-rules-mistakes">
+    <h3>常見錯誤</h3>
+    <p>乘積不可只算 $u'v'$；除法法則不可顛倒分子兩項；連鎖法則不可漏乘內層函數的導數。使用反函數法則前，還需確認局部一對一與原斜率不為零。</p>
+    <p class="jump-back"><a class="jump-link" href="#deriv-rules-glance" data-jump="deriv-rules-glance">↑ 回到重點</a></p>
+  </div>
   <p class="lesson-reading">延伸閱讀：Chiang &amp; Wainwright §7.2–7.3</p>
 </article>

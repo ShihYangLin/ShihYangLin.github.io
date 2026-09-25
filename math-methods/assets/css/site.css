@@ -111,6 +111,30 @@ h2 { font-family: 'Newsreader', 'Noto Serif TC', serif; font-size: 31px; font-we
 .lesson-card p { margin: 13px 0; }
 .lesson-rule { max-width: 100%; overflow-x: auto; padding: 10px 0; }
 .lesson-mistake { color: var(--muted); }
+.lesson-glance { margin: 6px 0 30px; padding: 4px 24px 8px; border-left: 3px solid var(--accent); background: var(--accent-soft); }
+.lesson-glance ol { margin: 0; padding: 0; list-style: none; counter-reset: glance; }
+/* Numbers are drawn in their own grid column: WebKit clips native markers inside the scrolling formula box. */
+.lesson-glance li { display: grid; grid-template-columns: 1.6em minmax(0, 1fr); padding: 6px 0 4px; counter-increment: glance; }
+.lesson-glance li::before { content: counter(glance) "."; grid-row: 1; grid-column: 1; align-self: baseline; font-size: 1.08em; color: var(--muted); font-weight: 600; }
+.lesson-glance li > * { grid-column: 2; }
+.lesson-glance li > :first-child { align-self: baseline; }
+.lesson-glance li + li { border-top: 1px solid var(--faint); }
+/* Formula chunks wrap between, never inside, so narrow screens need no sideways scroll. */
+.lesson-glance .glance-formula { padding: 6px 0 2px; font-size: 1.08em; line-height: 1.9; }
+.lesson-glance .glance-chunk { display: inline-block; margin-right: 0.5em; }
+.lesson-glance .glance-keep { white-space: nowrap; }
+.lesson-glance p { margin: 2px 0 8px; }
+.lesson-glance .glance-warn { counter-increment: none; padding-top: 10px; }
+.lesson-glance .glance-warn::before { content: "⚠"; font-size: inherit; color: var(--accent); }
+.jump-link { color: var(--accent); font-size: 13px; font-weight: 600; text-decoration: none; white-space: nowrap; }
+.jump-link:hover, .jump-link:focus-visible { text-decoration: underline; }
+.lesson-glance, .lesson-idea { scroll-margin-top: 16px; }
+.lesson-idea { margin: 0 -14px; padding: 0 14px; }
+.jump-back { margin: -4px 0 18px !important; text-align: right; }
+.is-jump-target { animation: jump-flash 1.6s ease-out; }
+@keyframes jump-flash { from { background: var(--accent-soft); } to { background: transparent; } }
+.lesson-glance.is-jump-target { animation: none; }
+@media (prefers-reduced-motion: reduce) { .is-jump-target { animation: none; } }
 .lesson-reading { padding-top: 15px; border-top: 1px solid var(--faint); color: var(--muted); font-size: 13px; }
 .practice { margin-top: 68px; padding-top: 24px; border-top: 1px solid var(--ink); }
 .practice-head { display: flex; justify-content: space-between; align-items: end; gap: 24px; }
@@ -176,6 +200,7 @@ h2 { font-family: 'Newsreader', 'Noto Serif TC', serif; font-size: 31px; font-we
   .topic-section + .topic-section { margin-top: 64px; }
   .footer-inner { flex-wrap: wrap; padding-block: 20px; }
   .lesson-card { padding: 24px 20px; }
+  .lesson-glance { padding: 4px 14px 8px; }
   .practice-head { align-items: stretch; flex-direction: column; }
   .practice-selectors { flex-wrap: wrap; }
   .problem-prompt { font-size: 16px; }

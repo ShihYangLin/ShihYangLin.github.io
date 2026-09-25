@@ -21,7 +21,7 @@ test('active lessons have the revised structure and a single section sign in rea
       assert.match(html, lang === 'en' ? /Further reading: Chiang &amp; Wainwright §(?!§)/ : /延伸閱讀：Chiang &amp; Wainwright §(?!§)/);
       mathRenders(html.replaceAll('&gt;', '>').replaceAll('&lt;', '<'));
       if (lang === 'en') {
-        const prose = [...html.replace(/<details>[\s\S]*?<\/details>/g, '').matchAll(/<p(?: [^>]*)?>([\s\S]*?)<\/p>/g)].map(match => match[1].replace(/<[^>]+>/g, ' ')).join(' ');
+        const prose = [...html.replace(/<details>[\s\S]*?<\/details>/g, '').replace(/<section class="lesson-glance"[\s\S]*?<\/section>/, '').replace(/<p class="jump-back">[\s\S]*?<\/p>/g, '').matchAll(/<p(?: [^>]*)?>([\s\S]*?)<\/p>/g)].map(match => match[1].replace(/<[^>]+>/g, ' ')).join(' ');
         const count = prose.trim().split(/\s+/).length;
         assert.ok(count >= 500 && count <= 900, `${module.id} lesson prose: ${count} words`);
         const motivation = html.match(/<h3>Motivation<\/h3>([\s\S]*?)<h3>Key ideas<\/h3>/)?.[1] || '';
@@ -143,6 +143,26 @@ test('Gate 2b displayed fractions and function coefficients are reduced across e
         mathRenders(value.zh, true);
       }
     }
+  }
+});
+
+test('at-a-glance lessons lead with the summary and every jump link has a target', () => {
+  for (const module of modules.filter(item => item.generators.length)) {
+    const pages = ['en', 'zh'].map(lang => readFileSync(new URL(`../content/lessons/${module.id}.${lang}.html`, import.meta.url), 'utf8'));
+    if (!pages.some(html => html.includes('lesson-glance'))) continue;
+    const jumpSets = pages.map((html, index) => {
+      const heading = index === 0 ? 'At a glance' : '重點速覽';
+      assert.match(html, new RegExp(`</h2>\\s*<section class="lesson-glance" id="${module.id}-glance">\\s*<h3>${heading}</h3>`), `${module.id} summary first`);
+      const ids = new Set([...html.matchAll(/ id="([^"]+)"/g)].map(match => match[1]));
+      const jumps = [...html.matchAll(/<a class="jump-link" href="#([^"]+)" data-jump="([^"]+)">/g)];
+      assert.ok(jumps.length >= 4, `${module.id} jump links`);
+      for (const [, href, jump] of jumps) {
+        assert.equal(href, jump, `${module.id} href matches data-jump`);
+        assert.ok(ids.has(jump), `${module.id} missing target ${jump}`);
+      }
+      return [...new Set(jumps.map(match => match[2]))].sort().join(',');
+    });
+    assert.equal(jumpSets[0], jumpSets[1], `${module.id} en and zh share jump targets`);
   }
 });
 

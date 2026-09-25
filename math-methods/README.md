@@ -45,6 +45,8 @@ The vendored KaTeX and math.js versions are recorded in `vendor/VERSIONS.md`. Th
 
 ## Lesson structure and source rule
 
-Each module has paired `.en.html` and `.zh.html` fragments. Keep the same mathematical sequence in both. A lesson contains **Motivation**, **Key ideas**, 2–3 collapsible **Worked examples**, **Common mistakes**, and a **Further reading** line naming the relevant Chiang & Wainwright sections. Math inside `$...$` or `$$...$$` is rendered with KaTeX.
+Each module has paired `.en.html` and `.zh.html` fragments. Keep the same mathematical sequence in both. A lesson opens with an **At a glance** (`重點速覽`) summary, then contains **Motivation**, **Key ideas**, 2–3 collapsible **Worked examples**, **Common mistakes**, and a **Further reading** line naming the relevant Chiang & Wainwright sections. Math inside `$...$` or `$$...$$` is rendered with KaTeX.
+
+The summary is a `<section class="lesson-glance" id="<module>-glance">` list. Each item pairs a `glance-formula` (inline math split into `glance-chunk` spans, which wrap between chunks but never inside one) with a one-sentence conclusion and a "Why? ↓" link to the matching key idea; a final `glance-warn` item links to the common mistakes. Each key idea and the mistakes section is a `<div class="lesson-idea" id="<module>-<slug>">` ending in a "↑ Back to summary" link. Jump links use `<a class="jump-link" href="#id" data-jump="id">`: `app.js` scrolls to the target instead of following the href, because the hash is reserved for routing. Both languages must share the same jump targets; the lesson test checks this.
 
 Chiang and Wainwright, *Fundamental Methods of Mathematical Economics*, 4th ed., is a pedagogical reference. Paraphrase its ideas and motivation. Use new wording and numbers for examples and exercises. Do not paste book paragraphs, reproduce its figures, transcribe exercise sets or answers, or add or link the PDF in this repository or public site.

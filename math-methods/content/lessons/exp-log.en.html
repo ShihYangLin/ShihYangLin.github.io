@@ -1,24 +1,50 @@
 <article class="lesson-card">
   <p class="eyebrow">EXPONENTIALS &amp; LOGS · §§10.1–10.5, 10.7</p>
   <h2>Growth makes the exponent the variable</h2>
+  <section class="lesson-glance" id="exp-log-glance">
+    <h3>At a glance</h3>
+    <ol>
+      <li><div class="glance-formula"><span class="glance-chunk">$B_m(t)=P\left(1+\dfrac{r}{m}\right)^{mt}$,</span> <span class="glance-chunk">$B_c(t)=Pe^{rt}$</span></div><p>Continuous compounding is the limit as the compounding frequency $m$ grows; $e^{-rt}$ discounts a future amount to present value. <a class="jump-link" href="#exp-log-compounding" data-jump="exp-log-compounding">Why? ↓</a></p></li>
+      <li><div class="glance-formula"><span class="glance-chunk">$\ln(uv)=\ln u+\ln v$,</span> <span class="glance-chunk">$\ln(u/v)=\ln u-\ln v$,</span> <span class="glance-chunk">$\ln(u^a)=a\ln u$</span></div><p>Logs turn products into sums and powers into coefficients. Every argument must be positive. <a class="jump-link" href="#exp-log-log-rules" data-jump="exp-log-log-rules">Why? ↓</a></p></li>
+      <li><div class="glance-formula"><span class="glance-chunk">$\dfrac{d}{dx}e^{u}=e^{u}u'$,</span> <span class="glance-chunk">$\dfrac{d}{dx}b^{u}=b^{u}(\ln b)u'$,</span> <span class="glance-chunk">$\dfrac{d}{dx}\ln u=\dfrac{u'}{u}$</span></div><p>Multiply by the inner derivative; a base other than $e$ adds a factor $\ln b$. <a class="jump-link" href="#exp-log-derivatives" data-jump="exp-log-derivatives">Why? ↓</a></p></li>
+      <li><div class="glance-formula"><span class="glance-chunk">$g_y=\dfrac{d\ln y}{dt}$,</span> <span class="glance-chunk">$\varepsilon_{yx}=\dfrac{d\ln y}{d\ln x}$</span></div><p>Growth rates are log derivatives, so they add for products and subtract for quotients. Signed demand elasticity is negative. <a class="jump-link" href="#exp-log-growth" data-jump="exp-log-growth">Why? ↓</a></p></li>
+      <li class="glance-warn"><p>Keep log arguments positive, and state whether compounding is discrete or continuous. <a class="jump-link" href="#exp-log-mistakes" data-jump="exp-log-mistakes">Common mistakes ↓</a></p></li>
+    </ol>
+  </section>
   <h3>Motivation</h3>
   <p>Earlier optimization examples used polynomials and rational functions, whose derivatives we already know. Economic growth and interest introduce a different shape: time itself appears in the exponent. A balance earning interest grows on its current balance; a growing asset may become more valuable the longer it is held. Before choosing when to sell or invest, we need to understand exponential functions, how to reverse them with logarithms, and how to differentiate both. Compounding gives the natural base $e$ a practical role: it is the limit of ever more frequent compounding, not a mysterious constant.</p>
   <p>Suppose a fixed principal earns a nominal annual rate, credited several times each year. More frequent credits raise the balance because each earlier credit itself earns interest. As the number of credits grows without bound, the discrete formula approaches continuous compounding. A logarithm answers the inverse question: how long does a balance take to reach a specified target? It also simplifies products and quotients, making it useful for proportional growth and elasticity. This module builds the tools in that order. The next module uses them to choose an optimal sale or harvest date.</p>
   <h3>Key ideas</h3>
-  <div class="lesson-rule">$$b^t>0\ (b>0),\qquad B_m(t)=P\left(1+\frac{r}{m}\right)^{mt},\qquad B_c(t)=Pe^{rt}$$</div>
-  <p>An exponential puts the changing input in the exponent. For $b>1$, it rises smoothly; for $0<b<1$, it falls, and a reciprocal-base expression can rewrite the latter with a base above one. The continuous balance is the limit as compounding frequency $m$ increases. The same $e^{-rt}$ factor discounts a future receipt back to its present value. State which rate convention is used: a nominal rate with $m$ credits is not identical to an effective annual rate.</p>
-  <div class="lesson-rule">$$\ln(uv)=\ln u+\ln v,\quad \ln(u/v)=\ln u-\ln v,\quad \ln(u^a)=a\ln u\qquad(u,v>0)$$</div>
-  <p>The logarithm is the inverse of an exponential: $\ln(e^z)=z$, while $e^{\ln u}=u$ requires $u>0$. Its rules turn multiplication into addition and powers into coefficients, so an equation with an unknown exponent becomes a simpler equation after taking logs. In this site, both typed <code>ln(x)</code> and <code>log(x)</code> mean natural log; <code>log(x,b)</code> specifies a base. A log's argument must be positive in the real-number exercises.</p>
-  <div class="lesson-rule">$$\frac{d}{dx}e^{u}=e^{u}u',\quad \frac{d}{dx}b^{u}=b^{u}(\ln b)u',\quad \frac{d}{dx}\ln u=\frac{u'}{u}$$</div>
-  <p>The natural exponential reproduces itself when differentiated. A different base adds $\ln b$, and a nested argument adds its own derivative through the chain rule. A logarithm changes at a rate relative to its argument: $u'/u$. This explains why taking logs before differentiating a long product can be easier than repeatedly using product and quotient rules. For a base-$b$ logarithm, divide again by $\ln b$.</p>
-  <div class="lesson-rule">$$g_y=\frac{1}{y}\frac{dy}{dt}=\frac{d\ln y}{dt},\qquad \varepsilon_{yx}=\frac{dy}{dx}\frac{x}{y}=\frac{d\ln y}{d\ln x}$$</div>
-  <p>An absolute derivative measures units of change per unit of input. A growth rate divides by the current positive level, making it a proportional change per unit of time. Thus a product's growth rates add and a quotient's subtract. Point elasticity compares proportional changes in two positive variables. Keep the sign: a downward-sloping demand curve has negative signed price elasticity; its absolute value is a separate quantity sometimes used in revenue formulas.</p>
+  <div class="lesson-idea" id="exp-log-compounding">
+    <div class="lesson-rule">$$b^t>0\ (b>0),\qquad B_m(t)=P\left(1+\frac{r}{m}\right)^{mt},\qquad B_c(t)=Pe^{rt}$$</div>
+    <p>An exponential puts the changing input in the exponent. For $b>1$, it rises smoothly; for $0<b<1$, it falls, and a reciprocal-base expression can rewrite the latter with a base above one. The continuous balance is the limit as compounding frequency $m$ increases. The same $e^{-rt}$ factor discounts a future receipt back to its present value. State which rate convention is used: a nominal rate with $m$ credits is not identical to an effective annual rate.</p>
+    <p class="jump-back"><a class="jump-link" href="#exp-log-glance" data-jump="exp-log-glance">↑ Back to summary</a></p>
+  </div>
+  <div class="lesson-idea" id="exp-log-log-rules">
+    <div class="lesson-rule">$$\ln(uv)=\ln u+\ln v,\quad \ln(u/v)=\ln u-\ln v,\quad \ln(u^a)=a\ln u\qquad(u,v>0)$$</div>
+    <p>The logarithm is the inverse of an exponential: $\ln(e^z)=z$, while $e^{\ln u}=u$ requires $u>0$. Its rules turn multiplication into addition and powers into coefficients, so an equation with an unknown exponent becomes a simpler equation after taking logs. In this site, both typed <code>ln(x)</code> and <code>log(x)</code> mean natural log; <code>log(x,b)</code> specifies a base. A log's argument must be positive in the real-number exercises.</p>
+    <p class="jump-back"><a class="jump-link" href="#exp-log-glance" data-jump="exp-log-glance">↑ Back to summary</a></p>
+  </div>
+  <div class="lesson-idea" id="exp-log-derivatives">
+    <div class="lesson-rule">$$\frac{d}{dx}e^{u}=e^{u}u',\quad \frac{d}{dx}b^{u}=b^{u}(\ln b)u',\quad \frac{d}{dx}\ln u=\frac{u'}{u}$$</div>
+    <p>The natural exponential reproduces itself when differentiated. A different base adds $\ln b$, and a nested argument adds its own derivative through the chain rule. A logarithm changes at a rate relative to its argument: $u'/u$. This explains why taking logs before differentiating a long product can be easier than repeatedly using product and quotient rules. For a base-$b$ logarithm, divide again by $\ln b$.</p>
+    <p class="jump-back"><a class="jump-link" href="#exp-log-glance" data-jump="exp-log-glance">↑ Back to summary</a></p>
+  </div>
+  <div class="lesson-idea" id="exp-log-growth">
+    <div class="lesson-rule">$$g_y=\frac{1}{y}\frac{dy}{dt}=\frac{d\ln y}{dt},\qquad \varepsilon_{yx}=\frac{dy}{dx}\frac{x}{y}=\frac{d\ln y}{d\ln x}$$</div>
+    <p>An absolute derivative measures units of change per unit of input. A growth rate divides by the current positive level, making it a proportional change per unit of time. Thus a product's growth rates add and a quotient's subtract. Point elasticity compares proportional changes in two positive variables. Keep the sign: a downward-sloping demand curve has negative signed price elasticity; its absolute value is a separate quantity sometimes used in revenue formulas.</p>
+    <p class="jump-back"><a class="jump-link" href="#exp-log-glance" data-jump="exp-log-glance">↑ Back to summary</a></p>
+  </div>
   <p>Base conversion links the two families of functions: $b^x=e^{x\ln b}$ and $\log_b x=\ln x/\ln b$. It is more than a notational trick. It lets one derivative rule handle every positive base, and it makes equivalent interest rates comparable. When solving an exponential equation, first isolate the exponential term; then take a logarithm of both positive sides. Taking a log of a negative or zero balance has no real-number meaning here.</p>
   <h3>Worked examples</h3>
   <details><summary>From repeated credits to continuous growth</summary><p>Place $300$ at a nominal annual rate $1/10$ for two years. With two credits per year the balance is $300(1+1/20)^4$; under continuous compounding it is $300e^{1/5}$. The second expression comes from a limiting compounding convention, not from merely changing the number of years.</p></details>
   <details><summary>A log equation and its derivative</summary><p>Solve $5e^{3x}=5e^{12}$: divide by $5$, take natural logs, and obtain $3x=12$, so $x=4$. For a different task, $f(x)=\ln(3x+4)$ on $x>0$ has derivative $f'(x)=3/(3x+4)$; the numerator $3$ comes from the inner function.</p></details>
   <details><summary>Growth of a ratio and signed elasticity</summary><p>If output is $Y=4e^{3t/10}$ and labor is $L=2e^{t/10}$, then $d\ln(Y/L)/dt=3/10-1/10=1/5$. If demand is $Q=28-2P$, then at $P=4$, $Q=20$ and $d\ln Q/d\ln P=(-2)(4/20)=-2/5$.</p></details>
   <p>The logarithmic viewpoint is especially useful when a formula contains several multiplying components. It tracks each source of proportional change separately and keeps the economic interpretation visible during differentiation.</p>
-  <h3>Common mistakes</h3><p>Keep logarithm arguments positive. Do not omit the inner derivative or the $\ln b$ factor for a nonnatural base. Distinguish discrete from continuous compounding, and retain the negative sign of demand elasticity when a signed answer is requested.</p>
+  <div class="lesson-idea" id="exp-log-mistakes">
+    <h3>Common mistakes</h3>
+    <p>Keep logarithm arguments positive. Do not omit the inner derivative or the $\ln b$ factor for a nonnatural base. Distinguish discrete from continuous compounding, and retain the negative sign of demand elasticity when a signed answer is requested.</p>
+    <p class="jump-back"><a class="jump-link" href="#exp-log-glance" data-jump="exp-log-glance">↑ Back to summary</a></p>
+  </div>
   <p class="lesson-reading">Further reading: Chiang &amp; Wainwright §10.1–10.5, §10.7</p>
 </article>

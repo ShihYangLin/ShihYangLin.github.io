@@ -1,23 +1,44 @@
 <article class="lesson-card">
   <p class="eyebrow">TAYLOR APPROXIMATION · §9.5</p>
   <h2>A nearby curve as a polynomial</h2>
+  <section class="lesson-glance" id="taylor-glance">
+    <h3>At a glance</h3>
+    <ol>
+      <li><div class="glance-formula"><span class="glance-chunk">$P_n(x)=\displaystyle\sum_{k=0}^{n}\frac{f^{(k)}(0)}{k!}x^k$</span></div><p>A Maclaurin polynomial is centered at zero. Each coefficient is a derivative value divided by its factorial. <a class="jump-link" href="#taylor-maclaurin" data-jump="taylor-maclaurin">Why? ↓</a></p></li>
+      <li><div class="glance-formula"><span class="glance-chunk">$f(x)=P_n(x)+R_n(x)$,</span> <span class="glance-chunk">$P_n(x)=\displaystyle\sum_{k=0}^{n}\frac{f^{(k)}(x_0)}{k!}(x-x_0)^k$</span></div><p>A Taylor polynomial is centered at $x_0$ and uses powers of $x-x_0$. The remainder $R_n$ is what the polynomial leaves out. <a class="jump-link" href="#taylor-taylor" data-jump="taylor-taylor">Why? ↓</a></p></li>
+      <li><div class="glance-formula"><span class="glance-chunk">$P_2(x)=f(x_0)+f'(x_0)(x-x_0)$</span> <span class="glance-chunk">${}+\dfrac{f''(x_0)}{2}(x-x_0)^2$</span></div><p>Match the height, slope, and curvature at the center. Exact for a quadratic; otherwise accurate only near $x_0$. <a class="jump-link" href="#taylor-quadratic" data-jump="taylor-quadratic">Why? ↓</a></p></li>
+      <li class="glance-warn"><p>Divide by $k!$, use $x-x_0$ when the center is not zero, and round only at the end. <a class="jump-link" href="#taylor-mistakes" data-jump="taylor-mistakes">Common mistakes ↓</a></p></li>
+    </ol>
+  </section>
   <h3>Motivation</h3>
   <p>The second-derivative test sometimes stops without an answer: the first and second derivatives both vanish at a stationary point. To understand the curve nearby, we need more information than its slope and curvature at one point. A polynomial whose coefficients are built from successive derivative values supplies that information. The early terms reveal the local shape, while the first term that does not vanish can later settle the higher-derivative test. The same construction is useful when a function is awkward to evaluate directly and a short polynomial can provide a practical approximation.</p>
   <p>Begin with a polynomial at zero. Differentiating repeatedly strips away powers of $x$, and evaluation at zero isolates one coefficient at a time. Moving the center from zero to $x_0$ simply replaces $x$ by the distance $x-x_0$. For a polynomial of degree no greater than the chosen order, this rewriting is exact. For a rational or other nonpolynomial function, stopping after a few terms leaves a remainder. That distinction matters when we report a numerical estimate: the polynomial agrees with the function at the center, but away from it the omitted terms account for error.</p>
   <h3>Key ideas</h3>
-  <div class="lesson-rule">$$a_k=\frac{f^{(k)}(0)}{k!},\qquad P_n(x)=\sum_{k=0}^{n}\frac{f^{(k)}(0)}{k!}x^k$$</div>
-  <p>A Maclaurin polynomial is centered at zero. The factorial corrects for the multiplication produced by repeated differentiation: for example, differentiating $a_3x^3$ three times gives $3!a_3$. Thus the coefficient is the derivative value divided by $3!$, not the derivative value itself. For an ordinary polynomial of degree at most $n$, the sum through order $n$ reproduces the original function exactly. For a rational function such as $1/(1+bx)$, the first few terms match derivatives at zero but form a local approximation, subject to the range where its series applies.</p>
-  <div class="lesson-rule">$$P_n(x)=\sum_{k=0}^{n}\frac{f^{(k)}(x_0)}{k!}(x-x_0)^k,\qquad f(x)=P_n(x)+R_n(x)$$</div>
-  <p>A Taylor polynomial uses the chosen center $x_0$ instead of zero. Picture the offset $h=x-x_0$: the constant term matches the function's height at the center, the linear term matches its slope, and the quadratic term matches how that slope bends. This is why $P_1$ is the tangent line at $x_0$, while $P_2$ adds curvature. The remainder $R_n$ records what the selected terms leave out. At the center, every positive power of $h$ vanishes, so $P_n(x_0)=f(x_0)$; nearby accuracy depends on the omitted terms and the distance from the center.</p>
-  <div class="lesson-rule">$$P_2(x)=f(x_0)+f'(x_0)(x-x_0)+\frac{f''(x_0)}{2}(x-x_0)^2$$</div>
-  <p>Use the same three steps each time: choose the center, calculate the needed derivatives there, and insert their values into the polynomial. The second derivative is divided by $2!=2$. In a quadratic function, $P_2$ is exact everywhere. With a rational, exponential, logarithmic, or square-root function, it is generally an approximation away from the center. Only level 3 uses the exponential and logarithmic derivative rules introduced in the exp-log module; levels 1 and 2 use polynomials and rational functions.</p>
+  <div class="lesson-idea" id="taylor-maclaurin">
+    <div class="lesson-rule">$$a_k=\frac{f^{(k)}(0)}{k!},\qquad P_n(x)=\sum_{k=0}^{n}\frac{f^{(k)}(0)}{k!}x^k$$</div>
+    <p>A Maclaurin polynomial is centered at zero. The factorial corrects for the multiplication produced by repeated differentiation: for example, differentiating $a_3x^3$ three times gives $3!a_3$. Thus the coefficient is the derivative value divided by $3!$, not the derivative value itself. For an ordinary polynomial of degree at most $n$, the sum through order $n$ reproduces the original function exactly. For a rational function such as $1/(1+bx)$, the first few terms match derivatives at zero but form a local approximation, subject to the range where its series applies.</p>
+    <p class="jump-back"><a class="jump-link" href="#taylor-glance" data-jump="taylor-glance">↑ Back to summary</a></p>
+  </div>
+  <div class="lesson-idea" id="taylor-taylor">
+    <div class="lesson-rule">$$P_n(x)=\sum_{k=0}^{n}\frac{f^{(k)}(x_0)}{k!}(x-x_0)^k,\qquad f(x)=P_n(x)+R_n(x)$$</div>
+    <p>A Taylor polynomial uses the chosen center $x_0$ instead of zero. Picture the offset $h=x-x_0$: the constant term matches the function's height at the center, the linear term matches its slope, and the quadratic term matches how that slope bends. This is why $P_1$ is the tangent line at $x_0$, while $P_2$ adds curvature. The remainder $R_n$ records what the selected terms leave out. At the center, every positive power of $h$ vanishes, so $P_n(x_0)=f(x_0)$; nearby accuracy depends on the omitted terms and the distance from the center.</p>
+    <p class="jump-back"><a class="jump-link" href="#taylor-glance" data-jump="taylor-glance">↑ Back to summary</a></p>
+  </div>
+  <div class="lesson-idea" id="taylor-quadratic">
+    <div class="lesson-rule">$$P_2(x)=f(x_0)+f'(x_0)(x-x_0)+\frac{f''(x_0)}{2}(x-x_0)^2$$</div>
+    <p>Use the same three steps each time: choose the center, calculate the needed derivatives there, and insert their values into the polynomial. The second derivative is divided by $2!=2$. In a quadratic function, $P_2$ is exact everywhere. With a rational, exponential, logarithmic, or square-root function, it is generally an approximation away from the center. Only level 3 uses the exponential and logarithmic derivative rules introduced in the exp-log module; levels 1 and 2 use polynomials and rational functions.</p>
+    <p class="jump-back"><a class="jump-link" href="#taylor-glance" data-jump="taylor-glance">↑ Back to summary</a></p>
+  </div>
   <p>For a numerical estimate, evaluate $P_2$ at the requested input and round only the final result. The estimate is a value of the polynomial, not automatically the exact value of the original function. A higher-order polynomial may improve accuracy near its center, but adding terms is not a license to ignore the remainder everywhere. The chosen center should be close to the input of interest. If we move farther away, the error can grow; a short tangent-line approximation is particularly sensitive to that distance.</p>
   <p>The polynomial viewpoint also links back to optimization. Near a stationary point, the constant term fixes the objective's height and the linear term disappears. If the quadratic term is nonzero, its sign produces the familiar second-derivative test. If that term vanishes too, the first later nonzero power tells whether nearby values sit on the same side of the center's value or on opposite sides. Taylor approximation therefore turns a derivative list into a local description of the objective curve.</p>
   <h3>Worked examples</h3>
   <details><summary>Exact Maclaurin coefficients</summary><p>Take $f(x)=5+3x+4x^2+2x^3$. Its third derivative at zero is $12$, so the coefficient of $x^3$ is $12/3!=2$. The Maclaurin polynomial through order three is exactly the original polynomial. Reporting $12$ as the coefficient would forget the factorial.</p></details>
   <details><summary>A rational function at a new center</summary><p>Let $f(x)=27/(x+2)$ and center at $x_0=1$. The values are $f(1)=9$, $f'(1)=-3$, and $f''(1)=2$. Thus $P_2(x)=9-3(x-1)+(x-1)^2$. At $x=1.5$, it gives $9-1.5+0.25=7.75$; the exact function value is $27/3.5$, so the difference is a remainder.</p></details>
   <details><summary>Tangent line versus quadratic approximation</summary><p>For $g(x)=x^2+4x+6$ at $x_0=2$, $g(2)=18$, $g'(2)=8$, and $g''(2)=2$. The tangent-line estimate is $P_1(x)=18+8(x-2)$. Adding $(x-2)^2$ gives $P_2(x)=g(x)$ exactly. At $x=2.5$, the quadratic term adds $0.25$ beyond the tangent line.</p></details>
-  <h3>Common mistakes</h3>
-  <p>Divide each derivative by the corresponding factorial. Use powers of $x-x_0$ when the center is not zero. Distinguish an exact polynomial identity from a truncated approximation, and round only after evaluating the requested polynomial.</p>
+  <div class="lesson-idea" id="taylor-mistakes">
+    <h3>Common mistakes</h3>
+    <p>Divide each derivative by the corresponding factorial. Use powers of $x-x_0$ when the center is not zero. Distinguish an exact polynomial identity from a truncated approximation, and round only after evaluating the requested polynomial.</p>
+    <p class="jump-back"><a class="jump-link" href="#taylor-glance" data-jump="taylor-glance">↑ Back to summary</a></p>
+  </div>
   <p class="lesson-reading">Further reading: Chiang &amp; Wainwright §9.5</p>
 </article>

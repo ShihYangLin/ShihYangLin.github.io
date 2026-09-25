@@ -146,6 +146,18 @@ themeButton.addEventListener('click', () => {
   try { localStorage.setItem('mm-theme', document.documentElement.dataset.theme); } catch { /* Theme still works for this session. */ }
   updateThemeButton();
 });
+// Lesson jump links scroll within the page; following their href would trigger the hash router.
+app.addEventListener('click', event => {
+  const link = event.target.closest('a[data-jump]');
+  if (!link) return;
+  event.preventDefault();
+  const target = document.getElementById(link.dataset.jump);
+  if (!target) return;
+  target.scrollIntoView({ block: 'start' });
+  target.classList.remove('is-jump-target');
+  void target.offsetWidth;
+  target.classList.add('is-jump-target');
+});
 window.addEventListener('hashchange', () => render(true));
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateThemeButton);
 render();

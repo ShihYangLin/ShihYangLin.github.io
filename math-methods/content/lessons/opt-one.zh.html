@@ -1,24 +1,52 @@
 <article class="lesson-card">
   <p class="eyebrow">單變數最適化 · §§9.1–9.4、9.6</p>
   <h2>何時一項選擇才是最好的？</h2>
+  <section class="lesson-glance" id="opt-one-glance">
+    <h3>重點速覽</h3>
+    <ol>
+      <li><div class="glance-formula">$f'(x^*)=0$，且 $f'$ 在 $x^*$ 由正轉負 <span class="glance-keep">$\Rightarrow$ 局部極大值；</span>由負轉正 <span class="glance-keep">$\Rightarrow$ 局部極小值</span></div><p>先找平穩點，再看斜率在該點兩側是否變號。 <a class="jump-link" href="#opt-one-sign" data-jump="opt-one-sign">為什麼？↓</a></p></li>
+      <li><div class="glance-formula"><span class="glance-chunk">$f'(x^*)=0$，</span> <span class="glance-chunk">$f''(x^*)&lt;0\Rightarrow$ 局部極大值，</span> <span class="glance-chunk">$f''(x^*)&gt;0\Rightarrow$ 局部極小值</span></div><p>快速判別法是看平穩點上二階導數的正負；若 $f''(x^*)=0$，此檢定沒有結論。 <a class="jump-link" href="#opt-one-curvature" data-jump="opt-one-curvature">為什麼？↓</a></p></li>
+      <li><div class="glance-formula"><span class="glance-chunk">$MR(Q^*)=MC(Q^*)$，</span> <span class="glance-chunk">$\pi''(Q^*)&lt;0$</span></div><p>邊際收益等於邊際成本、且利潤曲線向下彎時，利潤達到高點。須確認 $Q>0$、$P(Q)>0$。 <a class="jump-link" href="#opt-one-profit" data-jump="opt-one-profit">為什麼？↓</a></p></li>
+      <li><div class="glance-formula"><span class="glance-chunk">$f'(x^*)=\cdots=f^{(n-1)}(x^*)=0$，</span> <span class="glance-chunk">$f^{(n)}(x^*)\ne0$</span></div><p>$f''(x^*)=0$ 時，找第一個非零導數：$n$ 為偶數時，負值為極大、正值為極小；$n$ 為奇數時不是極值。 <a class="jump-link" href="#opt-one-higher" data-jump="opt-one-higher">為什麼？↓</a></p></li>
+      <li class="glance-warn"><p>$f'=0$ 只找到候選點；全域結論還須比較端點，並涵蓋整個可行範圍。 <a class="jump-link" href="#opt-one-global" data-jump="opt-one-global">為什麼？↓</a> · <a class="jump-link" href="#opt-one-mistakes" data-jump="opt-one-mistakes">常見錯誤 ↓</a></p></li>
+    </ol>
+  </section>
   <h3>動機</h3>
   <p>經濟學研究如何在可行的方案中作選擇。廠商選產量，家戶選消費，每項選擇都要依明確目標評價。數學函數的高點，只有在說清楚函數代表什麼、哪些變數可由決策者選擇，以及可行範圍為何之後，才有經濟意義。對廠商而言，利潤是收益減成本，$\pi(Q)=R(Q)-C(Q)$；產量 $Q$ 是抉擇變數。最有利潤的產量不必是最大產量，而是在可行範圍內使目標值最高的產量。</p>
   <p>圖形可提示峰頂或谷底，但微分能精確找出其位置。一階導數指出抉擇變數略微增加時，標的函數會上升還是下降。平滑函數的內部極端值必有零斜率，然而水平的點也可能是反曲點。因此我們先找平穩點，再檢查兩側斜率符號，接著利用曲度與高階導數快速判別。局部結論只談附近的選擇；若要宣稱整個經濟可行範圍中的最佳選擇，仍須考慮邊界與函數的整體形狀。</p>
   <h3>核心概念</h3>
-  <div class="lesson-rule">$$f'(x^*)=0,\qquad f':+\to-\ \Longrightarrow\ \text{局部極大值},\qquad f':-\to+\ \Longrightarrow\ \text{局部極小值}$$</div>
-  <p>想像由左至右沿著曲線走：斜率為正表示目標隨選擇增加而上升，斜率為負則表示下降。斜率由正轉負形成局部峰頂；由負轉正形成局部谷底。如果平穩點兩側斜率同號，曲線只是在水平處穿過，沒有轉向。這項判別針對平滑函數的內部點；端點或尖點須另行檢查。</p>
-  <div class="lesson-rule">$$f''(x)=\frac{d}{dx}f'(x),\qquad f'(x^*)=0,\quad f''(x^*)<0\Rightarrow\text{局部極大值},\quad f''(x^*)>0\Rightarrow\text{局部極小值}$$</div>
-  <p>二階導數衡量斜率如何改變。負值表示斜率逐漸減小；在零斜率處曲線向下彎，附近值低於平穩值。正值表示曲線向上彎，形成局部極小值。若二階導數為零，檢定沒有結論：可能是平坦的極大、極小，也可能是反曲點。反曲點必須真的在兩側發生凹凸性變化；單解出 $f''(x)=0$ 只找到候選點。注意：本站沿用經濟學慣例，「凸」指 $f''&gt;0$（即數學課本的「凹向上」），「凹」指 $f''&lt;0$（凹向下）。</p>
-  <div class="lesson-rule">$$\pi'(Q)=MR(Q)-MC(Q)=0,\qquad \pi''(Q)=R''(Q)-C''(Q)$$</div>
-  <p>利潤極大化的內部第一階條件是邊際收益等於邊際成本：多生產一單位所增加的收入與成本相等。但此等式本身不保證極大值。負的二階導數給出局部利潤極大值。若利潤在整個可行區間嚴格凹，且平穩點位於區間內，這個平穩點也是該區間唯一的全域極大值。若反需求為 $P(Q)=a-bQ$ 且 $a,b>0$，解釋答案時要確認 $Q>0$、$P(Q)>0$。</p>
-  <div class="lesson-rule">$$f'(x^*)=f''(x^*)=\cdots=f^{(n-1)}(x^*)=0,\quad f^{(n)}(x^*)\ne0$$</div>
-  <p>二階導數為零時，繼續找到第一個非零導數。其階數為偶數時，正值給出局部極小值，負值給出局部極大值；階數為奇數時，中心兩側的主要變化項會變號，沒有極大或極小。本站的平滑冪函數例題中，後者是水平反曲點。這也說明四次方函數即使二階導數為零，仍可能有谷底；三次方的水平點則不是極端值。</p>
-  <p>不要混淆目標值與抉擇變數。利潤曲線的峰頂決定特定 $Q^*$；被極大化的是 $\pi(Q^*)$，不是說產量本身必須最大。若有數個平穩點，應逐一判別。閉區間上的全域解須把各局部候選點與端點比較；無界範圍還須確認目標是否真能達到最大或最小值。如此才能把微分檢定接回原本的經濟決策。</p>
+  <div class="lesson-idea" id="opt-one-sign">
+    <div class="lesson-rule">$$f'(x^*)=0,\quad \begin{cases} f'(x)&gt;0, &amp; x^*-\delta&lt;x&lt;x^*\\ f'(x)&lt;0, &amp; x^*&lt;x&lt;x^*+\delta \end{cases}\;\Longrightarrow\;f(x^*)\ \text{為局部極大值}$$</div>
+    <p>想像由左至右沿著曲線走：斜率為正表示目標隨選擇增加而上升，斜率為負則表示下降。斜率由正轉負形成局部峰頂；由負轉正形成局部谷底。如果平穩點兩側斜率同號，曲線只是在水平處穿過，沒有轉向。這項判別針對平滑函數的內部點；端點或尖點須另行檢查。其中 $\delta&gt;0$ 為某個小距離；兩個不等號同時反過來，即得局部極小值的條件。</p>
+    <p class="jump-back"><a class="jump-link" href="#opt-one-glance" data-jump="opt-one-glance">↑ 回到重點</a></p>
+  </div>
+  <div class="lesson-idea" id="opt-one-curvature">
+    <div class="lesson-rule">$$f''(x)=\frac{d}{dx}f'(x),\qquad f'(x^*)=0,\quad f''(x^*)<0\Rightarrow\text{局部極大值},\quad f''(x^*)>0\Rightarrow\text{局部極小值}$$</div>
+    <p>二階導數衡量斜率如何改變。負值表示斜率逐漸減小；在零斜率處曲線向下彎，附近值低於平穩值。正值表示曲線向上彎，形成局部極小值。若二階導數為零，檢定沒有結論：可能是平坦的極大、極小，也可能是反曲點。反曲點必須真的在兩側發生凹凸性變化；單解出 $f''(x)=0$ 只找到候選點。注意：本站沿用經濟學慣例，「凸」指 $f''&gt;0$（即數學課本的「凹向上」），「凹」指 $f''&lt;0$（凹向下）。</p>
+    <p class="jump-back"><a class="jump-link" href="#opt-one-glance" data-jump="opt-one-glance">↑ 回到重點</a></p>
+  </div>
+  <div class="lesson-idea" id="opt-one-profit">
+    <div class="lesson-rule">$$\pi'(Q)=MR(Q)-MC(Q)=0,\qquad \pi''(Q)=R''(Q)-C''(Q)$$</div>
+    <p>利潤極大化的內部第一階條件是邊際收益等於邊際成本：多生產一單位所增加的收入與成本相等。但此等式本身不保證極大值。負的二階導數給出局部利潤極大值。若利潤函數在整個可行區間為嚴格凹函數，且平穩點位於區間內，這個平穩點也是該區間唯一的全域極大值。若反需求為 $P(Q)=a-bQ$ 且 $a,b>0$，解釋答案時要確認 $Q>0$、$P(Q)>0$。</p>
+    <p class="jump-back"><a class="jump-link" href="#opt-one-glance" data-jump="opt-one-glance">↑ 回到重點</a></p>
+  </div>
+  <div class="lesson-idea" id="opt-one-higher">
+    <div class="lesson-rule">$$f'(x^*)=f''(x^*)=\cdots=f^{(n-1)}(x^*)=0,\quad f^{(n)}(x^*)\ne0$$</div>
+    <p>二階導數為零時，繼續找到第一個非零導數。其階數為偶數時，正值給出局部極小值，負值給出局部極大值；階數為奇數時，中心兩側的主要變化項會變號，沒有極大或極小。本站的平滑冪函數例題中，後者是水平反曲點。這也說明四次方函數即使二階導數為零，仍可能有谷底；三次方的水平點則不是極端值。</p>
+    <p class="jump-back"><a class="jump-link" href="#opt-one-glance" data-jump="opt-one-glance">↑ 回到重點</a></p>
+  </div>
+  <div class="lesson-idea" id="opt-one-global">
+    <p>不要混淆目標值與抉擇變數。利潤曲線的峰頂決定特定 $Q^*$；被極大化的是 $\pi(Q^*)$，不是說產量本身必須最大。若有數個平穩點，應逐一判別。閉區間上的全域解須把各局部候選點與端點比較；無界範圍還須確認目標是否真能達到最大或最小值。如此才能把微分檢定接回原本的經濟決策。</p>
+    <p class="jump-back"><a class="jump-link" href="#opt-one-glance" data-jump="opt-one-glance">↑ 回到重點</a></p>
+  </div>
   <h3>範例詳解</h3>
   <details><summary>兩個平穩點</summary><p>設 $f(x)=2x^3-3x^2-12x+5$。則 $f'(x)=6x^2-6x-12=6(x+1)(x-2)$，所以平穩點為 $-1$ 與 $2$。在 $-1$ 兩側，斜率由正轉負，為局部極大值；在 $2$ 兩側由負轉正，為局部極小值。</p></details>
   <details><summary>可行產量下的利潤</summary><p>設 $P(Q)=31-2Q$、$C(Q)=3Q^2+5Q+2$。則 $MR=31-4Q$、$MC=6Q+5$，令兩者相等得 $Q^*=13/5$；該處價格 $129/5>0$。又 $\pi''=-10<0$ 在可行產量處處成立，故此點為局部極大值；嚴格凹性進一步保證它是價格為正的區間中的唯一全域極大值。</p></details>
   <details><summary>平坦點與曲度</summary><p>對 $g(x)=(x-3)^4+2$，$g'(3)=g''(3)=0$，但 $g^{(4)}(3)=24>0$，故 $x=3$ 是局部極小值。對 $h(x)=2(x+1)^3+5$，$h''(x)=12(x+1)$ 在 $x=-1$ 由負轉正，所以該點為反曲點，儘管 $h'(-1)=0$。</p></details>
-  <h3>常見錯誤</h3>
-  <p>不要將每個 $f'=0$ 的解都稱為極大值；須檢查斜率變號或足夠的曲度條件。$f''=0$ 並非反曲點的證明，仍須看兩側曲度。經濟題應遵守產量與價格的限制；只有在論證涵蓋整個可行範圍時，才使用全域最適的說法。</p>
+  <div class="lesson-idea" id="opt-one-mistakes">
+    <h3>常見錯誤</h3>
+    <p>不要將每個 $f'=0$ 的解都稱為極大值；須檢查斜率變號或足夠的曲度條件。$f''=0$ 並非反曲點的證明，仍須看兩側曲度。經濟題應遵守產量與價格的限制；只有在論證涵蓋整個可行範圍時，才使用全域最適的說法。</p>
+    <p class="jump-back"><a class="jump-link" href="#opt-one-glance" data-jump="opt-one-glance">↑ 回到重點</a></p>
+  </div>
   <p class="lesson-reading">延伸閱讀：Chiang &amp; Wainwright §9.1–9.4、§9.6</p>
 </article>

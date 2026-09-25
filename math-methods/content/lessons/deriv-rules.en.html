@@ -1,17 +1,35 @@
 <article class="lesson-card">
   <p class="eyebrow">DERIVATIVE RULES · §§7.2–7.3</p>
   <h2>Follow every changing part</h2>
+  <section class="lesson-glance" id="deriv-rules-glance">
+    <h3>At a glance</h3>
+    <ol>
+      <li><div class="glance-formula"><span class="glance-chunk">$\dfrac{d(uv)}{dx}=u'v+uv'$,</span> <span class="glance-chunk">$MR=P+QP'$</span></div><p>Both factors change. For revenue $R=P(Q)Q$, downward-sloping demand ($P'&lt;0$) puts marginal revenue below price. <a class="jump-link" href="#deriv-rules-product" data-jump="deriv-rules-product">Why? ↓</a></p></li>
+      <li><div class="glance-formula"><span class="glance-chunk">$\dfrac{d(u/v)}{dx}=\dfrac{u'v-uv'}{v^2}$,</span> <span class="glance-chunk">$AC'=\dfrac{MC-AC}{Q}$</span></div><p>The numerator starts with the top's derivative. Average cost rises when $MC&gt;AC$ and falls when $MC&lt;AC$. <a class="jump-link" href="#deriv-rules-quotient" data-jump="deriv-rules-quotient">Why? ↓</a></p></li>
+      <li><div class="glance-formula"><span class="glance-chunk">$\dfrac{dR}{dL}=\dfrac{dR}{dQ}\dfrac{dQ}{dL}$,</span> <span class="glance-chunk">$\dfrac{dx}{dy}=\dfrac{1}{dy/dx}$</span></div><p>Chain rule: multiply the links, so $dR/dL=MR\,MP_L$ is the MRP. The inverse rule needs a nonzero original slope. <a class="jump-link" href="#deriv-rules-chain" data-jump="deriv-rules-chain">Why? ↓</a></p></li>
+      <li class="glance-warn"><p>A product's derivative is not $u'v'$; keep the quotient numerator's order; never drop the inner derivative. <a class="jump-link" href="#deriv-rules-mistakes" data-jump="deriv-rules-mistakes">Common mistakes ↓</a></p></li>
+    </ol>
+  </section>
   <h3>Motivation</h3>
   <p>Revenue changes when a firm sells another unit, but its price may change too. Average cost divides total cost by output. These economic questions lead to the product and quotient rules; linked effects, such as labor changing output and output changing revenue, lead to the chain rule.</p>
   <p>Once basic derivatives are available, the next question is what happens when an economic quantity combines two changing functions. Total revenue is a first example: price depends on quantity, and revenue multiplies price by quantity. Selling one more unit adds revenue from that unit while changing the price received on existing units. Differentiating only one factor misses part of this effect. Average cost creates a related question in a different algebraic form: total cost is divided by output. The way its numerator and denominator change together explains why marginal cost determines whether average cost is rising or falling.</p>
   <p>Many economic relationships also run through more than one variable. Labor changes production, and production changes revenue. We want the effect of labor on revenue even if revenue is initially written as a function of output rather than labor. Following the links one by one yields the chain rule and an economically meaningful marginal revenue product. This is the same comparative-statics motivation seen earlier: identify the entire path from the input that changes to the outcome of interest. Finally, if a strictly monotone relationship can be reversed locally, the inverse-function rule translates one slope into the reciprocal slope of its inverse.</p>
   <h3>Key ideas</h3>
-  <div class="lesson-rule">$$\frac{d(uv)}{dx}=u'v+uv'$$</div>
-  <p>Both factors contribute to a product's change. For revenue $R=P(Q)Q$, this gives $MR=P+QP'$. With downward-sloping demand, the price change makes marginal revenue lower than price.</p>
-  <div class="lesson-rule">$$\frac{d(u/v)}{dx}=\frac{u'v-uv'}{v^2},\qquad AC' = \frac{MC-AC}{Q}\quad(Q>0)$$</div>
-  <p>The numerator's order follows from changing the top while holding the bottom, then accounting for the changing bottom. The average-cost identity says $AC$ rises where $MC>AC$ and falls where $MC<AC$.</p>
-  <div class="lesson-rule">$$\frac{dR}{dL}=\frac{dR}{dQ}\frac{dQ}{dL},\qquad \frac{dx}{dy}=\frac{1}{dy/dx}$$</div>
-  <p>The first formula follows both links from labor through output to revenue; $dR/dL$ is marginal revenue product (MRP). The reciprocal formula needs a locally invertible function and a nonzero original slope. The elasticity form of $MR$ appears at level 3 after the later elasticity material.</p>
+  <div class="lesson-idea" id="deriv-rules-product">
+    <div class="lesson-rule">$$\frac{d(uv)}{dx}=u'v+uv'$$</div>
+    <p>Both factors contribute to a product's change. For revenue $R=P(Q)Q$, this gives $MR=P+QP'$. With downward-sloping demand, the price change makes marginal revenue lower than price.</p>
+    <p class="jump-back"><a class="jump-link" href="#deriv-rules-glance" data-jump="deriv-rules-glance">↑ Back to summary</a></p>
+  </div>
+  <div class="lesson-idea" id="deriv-rules-quotient">
+    <div class="lesson-rule">$$\frac{d(u/v)}{dx}=\frac{u'v-uv'}{v^2},\qquad AC' = \frac{MC-AC}{Q}\quad(Q>0)$$</div>
+    <p>The numerator's order follows from changing the top while holding the bottom, then accounting for the changing bottom. The average-cost identity says $AC$ rises where $MC>AC$ and falls where $MC<AC$.</p>
+    <p class="jump-back"><a class="jump-link" href="#deriv-rules-glance" data-jump="deriv-rules-glance">↑ Back to summary</a></p>
+  </div>
+  <div class="lesson-idea" id="deriv-rules-chain">
+    <div class="lesson-rule">$$\frac{dR}{dL}=\frac{dR}{dQ}\frac{dQ}{dL},\qquad \frac{dx}{dy}=\frac{1}{dy/dx}$$</div>
+    <p>The first formula follows both links from labor through output to revenue; $dR/dL$ is marginal revenue product (MRP). The reciprocal formula needs a locally invertible function and a nonzero original slope. The elasticity form of $MR$ appears at level 3 after the later elasticity material.</p>
+    <p class="jump-back"><a class="jump-link" href="#deriv-rules-glance" data-jump="deriv-rules-glance">↑ Back to summary</a></p>
+  </div>
   <p>To understand the product rule, imagine a small change in $x$. The first factor changes while the second is approximately at its old level, and the second changes while the first is approximately at its old level. The extra product of the two small changes becomes negligible in the limit. This is why two terms remain. For inverse demand $P(Q)$, the resulting $MR=P+QP'$ places the familiar price term beside the price response. With a downward-sloping demand schedule, $P'<0$, so marginal revenue lies below price when $Q>0$.</p>
   <p>For average cost, start from $AC=C/Q$ on $Q>0$. Applying the quotient rule gives $AC'=(QMC-C)/Q^2=(MC-AC)/Q$. At a point where marginal cost is below average cost, the average falls as output rises; above it, the average rises. Their equality is a stationary point of average cost, but confirming a minimum needs a curvature or sign-change check. For the chain rule, write the intermediate variable explicitly: $L\to Q(L)\to R(Q)$. The marginal revenue product is $dR/dL=MR\,MP_L$. Reciprocal inverse slopes require a nonzero original derivative; they cannot be used at a flat or noninvertible point. The elasticity version of the marginal-revenue relation is reserved for the later elasticity material.</p>
   <p>The inverse rule is best understood by thinking about two ways to read the same local relationship. A price schedule may give price as a function of quantity, while another question asks how quantity changes with price. Where the schedule is one-to-one and its slope is nonzero, reversing the axes reverses the slope numerically. If the original slope is zero, its reciprocal is undefined; if the schedule turns back on itself, a single global inverse may not exist. Always state the relevant point and local branch before taking a reciprocal.</p>
@@ -19,6 +37,10 @@
   <details><summary>Revenue from a changing price</summary><p>If $P(Q)=35-3Q$, then $R(Q)=(35-3Q)Q$. Differentiate both factors: $MR=P+QP'=(35-3Q)-3Q=35-6Q$. At $Q=4$, $MR=11$.</p></details>
   <details><summary>Average cost and the MC crossing</summary><p>Let $C(Q)=27+5Q+3Q^2$ for $Q>0$. Then $AC=27/Q+5+3Q$ and $MC=5+6Q$. By the quotient rule, $AC'=(MC-AC)/Q=-27/Q^2+3$. Setting this to zero gives $Q=3$; $AC''=54/Q^3>0$, so average cost is minimized there.</p></details>
   <details><summary>Revenue through output</summary><p>Suppose $Q(L)=4L+2$ and $R(Q)=30Q-2Q^2$. First, $dR/dQ=30-4Q$ and $dQ/dL=4$. Thus $dR/dL=4(30-4Q)=4(30-4(4L+2))=88-64L$.</p></details>
-  <h3>Common mistakes</h3><p>Do not multiply $u'$ by $v'$ for a product, reverse the quotient numerator, or omit the inner derivative. For an inverse, check that the original function is locally one-to-one and its slope is nonzero.</p>
+  <div class="lesson-idea" id="deriv-rules-mistakes">
+    <h3>Common mistakes</h3>
+    <p>Do not multiply $u'$ by $v'$ for a product, reverse the quotient numerator, or omit the inner derivative. For an inverse, check that the original function is locally one-to-one and its slope is nonzero.</p>
+    <p class="jump-back"><a class="jump-link" href="#deriv-rules-glance" data-jump="deriv-rules-glance">↑ Back to summary</a></p>
+  </div>
   <p class="lesson-reading">Further reading: Chiang &amp; Wainwright §7.2–7.3</p>
 </article>

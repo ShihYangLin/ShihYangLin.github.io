@@ -1,23 +1,49 @@
 <article class="lesson-card">
   <p class="eyebrow">偏導函數 · §§7.4–7.6</p>
   <h2>究竟是哪個參數改變？</h2>
+  <section class="lesson-glance" id="partials-glance">
+    <h3>重點速覽</h3>
+    <ol>
+      <li><div class="glance-formula"><span class="glance-chunk">$f_x=\displaystyle\lim_{h\to0}\frac{f(x+h,y)-f(x,y)}{h}$</span></div><p>對一個自變數微分時，其他自變數視為常數；結果仍可能同時含有 $x$ 與 $y$。 <a class="jump-link" href="#partials-partial" data-jump="partials-partial">為什麼？↓</a></p></li>
+      <li><div class="glance-formula"><span class="glance-chunk">$P^*=\dfrac{a+c}{b+d}$，</span> <span class="glance-chunk">$Q^*=\dfrac{ad-bc}{b+d}$</span></div><p>先解出均衡，再對參數微分，例如 $\partial P^*/\partial a=1/(b+d)&gt;0$。 <a class="jump-link" href="#partials-market" data-jump="partials-market">為什麼？↓</a></p></li>
+      <li><div class="glance-formula"><span class="glance-chunk">$\dfrac{\partial Y^*}{\partial G}=\dfrac{1}{1-\beta(1-\delta)}$</span></div><p>先把模型化成 $Y^*$ 的顯式解再微分。$0&lt;\beta&lt;1$ 且 $0\le\delta&lt;1$ 時乘數大於一；所得稅使乘數變小。 <a class="jump-link" href="#partials-income" data-jump="partials-income">為什麼？↓</a></p></li>
+      <li><div class="glance-formula"><span class="glance-chunk">$|J|=u_xv_y-u_yv_x$</span></div><p>Jacobian 行列式恆為零表示兩函數相依；只在單一點為零，不能推論全域相依。 <a class="jump-link" href="#partials-jacobian" data-jump="partials-jacobian">為什麼？↓</a></p></li>
+      <li class="glance-warn"><p>比較靜態分析前先解出完整均衡；參數效果的正負號要看方程式，不看字母。 <a class="jump-link" href="#partials-mistakes" data-jump="partials-mistakes">常見錯誤 ↓</a></p></li>
+    </ol>
+  </section>
   <h3>動機</h3>
   <p>市場的均衡價格通常由多個參數共同決定：需求與供給各有截距及斜率。需求移動時，價格與數量會一起調整；供給移動時，調整方向又可能不同。單一自變數的普通導數無法指出是哪個參數改變。因此比較靜態分析先將均衡解寫成各獨立參數的函數，再只讓其中一個參數微幅變動，其餘保持固定。這個局部反應由均衡解在該點的偏導數衡量。</p>
   <p>個別市場方程式與整個市場的均衡解必須區分。只對需求式求導，描述的是需求曲線上的關係；對均衡解求導，才納入供需互動。國民所得模型也如此：政府支出直接進入所得恆等式，所得上升後又會帶動消費。課程先從曲面的兩個方向斜率開始，再計算市場與所得的顯式均衡解，最後將偏導函數排成 Jacobian 矩陣，檢查兩個函數是否提供獨立的變動資訊。</p>
   <h3>核心概念</h3>
-  <div class="lesson-rule">$$f_x=\lim_{h\to0}\frac{f(x+h,y)-f(x,y)}{h},\qquad f_y=\lim_{h\to0}\frac{f(x,y+h)-f(x,y)}{h}$$</div>
-  <p>想像 $x,y$ 平面上的一個曲面。固定 $y$ 所得到的截線，其 $x$ 方向斜率是 $f_x$；固定 $x$ 則得到 $f_y$。計算法則與先前微分類似，只是其他自變數均暫時當作常數。兩個偏導函數組成梯度 $(f_x,f_y)$。即使對 $x$ 微分，結果仍可能含有 $y$，因為不同 $y$ 截面的斜率本來可能不同。</p>
-  <div class="lesson-rule">$$Q_d=a-bP,\quad Q_s=-c+dP,\qquad P^*=\frac{a+c}{b+d},\quad Q^*=\frac{ad-bc}{b+d}$$</div>
-  <p>先令供需相等並求出顯式均衡，再計算偏導。若 $b,d>0$，則 $\partial P^*/\partial a=1/(b+d)>0$，需求截距提高會推高均衡價格。增加 $c$ 會使各價格下的供給減少，因此 $\partial Q^*/\partial c=-b/(b+d)<0$。效果符號須由方程式判斷，而非由參數名稱猜測。星號也提醒我們，所求的是整個市場的均衡反應。</p>
-  <div class="lesson-rule">$$Y=C_0+\beta(Y-T)+I+G,\quad T=T_0+\delta Y\quad\Longrightarrow\quad \frac{\partial Y^*}{\partial G}=\frac{1}{1-\beta(1-\delta)}$$</div>
-  <p>將稅收式代入消費，再把含 $Y$ 的項移到同側，最後對顯式解微分。在 $0<\beta<1$ 且 $0\le\delta<1$ 時，所得增加會誘發額外消費，乘數大於政府支出的直接效果；所得稅回饋則削弱此效果。這裡比較的是指定模型下相鄰的均衡狀態。</p>
-  <div class="lesson-rule">$$J=\begin{pmatrix}u_x&u_y\\v_x&v_y\end{pmatrix},\qquad |J|=u_xv_y-u_yv_x$$</div>
-  <p>Jacobian 矩陣將兩個函數對兩個自變數的偏導函數排列成矩陣。若一個函數由另一個函數變換而來，兩列梯度成比例，行列式會恆為零。但單獨某點算出零值，不能證明整個定義域皆有依存關係。因此練習明確要求判斷行列式是否恆為零。</p>
+  <div class="lesson-idea" id="partials-partial">
+    <div class="lesson-rule">$$f_x=\lim_{h\to0}\frac{f(x+h,y)-f(x,y)}{h},\qquad f_y=\lim_{h\to0}\frac{f(x,y+h)-f(x,y)}{h}$$</div>
+    <p>想像 $x,y$ 平面上的一個曲面。固定 $y$ 所得到的截線，其 $x$ 方向斜率是 $f_x$；固定 $x$ 則得到 $f_y$。計算法則與先前微分類似，只是其他自變數均暫時當作常數。兩個偏導函數組成梯度 $(f_x,f_y)$。即使對 $x$ 微分，結果仍可能含有 $y$，因為不同 $y$ 截面的斜率本來可能不同。</p>
+    <p class="jump-back"><a class="jump-link" href="#partials-glance" data-jump="partials-glance">↑ 回到重點</a></p>
+  </div>
+  <div class="lesson-idea" id="partials-market">
+    <div class="lesson-rule">$$Q_d=a-bP,\quad Q_s=-c+dP,\qquad P^*=\frac{a+c}{b+d},\quad Q^*=\frac{ad-bc}{b+d}$$</div>
+    <p>先令供需相等並求出顯式均衡，再計算偏導。若 $b,d>0$，則 $\partial P^*/\partial a=1/(b+d)>0$，需求截距提高會推高均衡價格。增加 $c$ 會使各價格下的供給減少，因此 $\partial Q^*/\partial c=-b/(b+d)<0$。效果符號須由方程式判斷，而非由參數名稱猜測。星號也提醒我們，所求的是整個市場的均衡反應。</p>
+    <p class="jump-back"><a class="jump-link" href="#partials-glance" data-jump="partials-glance">↑ 回到重點</a></p>
+  </div>
+  <div class="lesson-idea" id="partials-income">
+    <div class="lesson-rule">$$Y=C_0+\beta(Y-T)+I+G,\quad T=T_0+\delta Y\quad\Longrightarrow\quad \frac{\partial Y^*}{\partial G}=\frac{1}{1-\beta(1-\delta)}$$</div>
+    <p>將稅收式代入消費，再把含 $Y$ 的項移到同側，最後對顯式解微分。在 $0<\beta<1$ 且 $0\le\delta<1$ 時，所得增加會誘發額外消費，乘數大於政府支出的直接效果；所得稅回饋則削弱此效果。這裡比較的是指定模型下相鄰的均衡狀態。</p>
+    <p class="jump-back"><a class="jump-link" href="#partials-glance" data-jump="partials-glance">↑ 回到重點</a></p>
+  </div>
+  <div class="lesson-idea" id="partials-jacobian">
+    <div class="lesson-rule">$$J=\begin{pmatrix}u_x&u_y\\v_x&v_y\end{pmatrix},\qquad |J|=u_xv_y-u_yv_x$$</div>
+    <p>Jacobian 矩陣將兩個函數對兩個自變數的偏導函數排列成矩陣。若一個函數由另一個函數變換而來，兩列梯度成比例，行列式會恆為零。但單獨某點算出零值，不能證明整個定義域皆有依存關係。因此練習明確要求判斷行列式是否恆為零。</p>
+    <p class="jump-back"><a class="jump-link" href="#partials-glance" data-jump="partials-glance">↑ 回到重點</a></p>
+  </div>
   <h3>範例詳解</h3>
   <details><summary>生產曲面的兩個斜率</summary><p>令正投入的產量為 $Q(K,L)=6\sqrt{KL}$。固定勞動時，$MP_K=3\sqrt L/\sqrt K$；固定資本時，$MP_L=3\sqrt K/\sqrt L$。在 $(K,L)=(4,9)$，兩者分別為 $9/2$ 與 $2$。</p></details>
   <details><summary>市場移動</summary><p>若 $Q_d=23-2P$、$Q_s=-1+4P$，令兩者相等得 $P^*=4$、$Q^*=15$。顯式解滿足 $\partial P^*/\partial a=1/6$；供給參數 $c$ 對數量的效果是 $\partial Q^*/\partial c=-2/6=-1/3$。</p></details>
   <details><summary>所得回饋與 Jacobian 矩陣</summary><p>若 $C=C_0+(1/2)(Y-T)$、$T=T_0+Y/4$，代入後 $Y$ 的係數為 $5/8$，故政府支出乘數為 $8/5$。另若 $u=2x+y$、$v=3u^2$，則 $(v_x,v_y)=6u(2,1)$，Jacobian 行列式恆為零。</p></details>
   <p>每次計算反應時，先說清楚哪個參數在改變、哪些保持固定。這有助於把數值導數正確解釋為指定模型中兩個相鄰均衡的比較。</p>
-  <h3>常見錯誤</h3><p>求偏導時不要同時讓另一自變數變動。比較靜態分析要先解出完整均衡。供給參數的符號依題目方程式而定；某一點的 Jacobian 行列式為零，不能直接推論全域依存。</p>
+  <div class="lesson-idea" id="partials-mistakes">
+    <h3>常見錯誤</h3>
+    <p>求偏導時不要同時讓另一自變數變動。比較靜態分析要先解出完整均衡。供給參數的符號依題目方程式而定；某一點的 Jacobian 行列式為零，不能直接推論全域依存。</p>
+    <p class="jump-back"><a class="jump-link" href="#partials-glance" data-jump="partials-glance">↑ 回到重點</a></p>
+  </div>
   <p class="lesson-reading">延伸閱讀：Chiang &amp; Wainwright §7.4–7.6</p>
 </article>
