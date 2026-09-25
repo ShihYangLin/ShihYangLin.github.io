@@ -83,8 +83,8 @@ function marginalCost(rng, level) {
 }
 
 export const derivBasicsGenerators = [
-  { id: 'diff-quotient', title: both('Difference quotient', '差商'), levels: [1, 2], generate: diffQuotient },
-  { id: 'power-rule', title: both('Power rule', '冪次法則'), levels: [1, 2], generate: powerRule },
-  { id: 'tangent-slope', title: both('Tangent slope', '切線斜率'), levels: [2], generate: tangentSlope },
-  { id: 'marginal-cost', title: both('Marginal cost', '邊際成本'), levels: [2], generate: marginalCost }
+  { id: 'diff-quotient', title: both('Difference quotient', '差商'), levels: [1, 2], minDistinct: 40, generate: diffQuotient },
+  { id: 'power-rule', title: both('Power rule', '冪次法則'), levels: [1, 2], minDistinct: 40, generate: powerRule },
+  { id: 'tangent-slope', title: both('Tangent slope', '切線斜率'), levels: [2], minDistinct: 40, generate: tangentSlope },
+  { id: 'marginal-cost', title: both('Marginal cost', '邊際成本'), levels: [2], minDistinct: 40, generate: marginalCost }
 ];

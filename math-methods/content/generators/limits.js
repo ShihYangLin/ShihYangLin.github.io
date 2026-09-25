@@ -98,9 +98,9 @@ function continuity(rng, level) {
 }
 
 export const limitsGenerators = [
-  { id: 'poly-limit', title: both('Direct limits', '直接求極限'), levels: [1, 2], generate: polyLimit },
-  { id: 'removable', title: both('Removable holes', '可去除的缺口'), levels: [1, 2], generate: removable },
-  { id: 'one-sided', title: both('One-sided limits', '單邊極限'), levels: [2], generate: oneSided },
-  { id: 'at-infinity', title: both('Limits at infinity', '無窮遠處的極限'), levels: [2], generate: atInfinity },
-  { id: 'continuity', title: both('Continuity at a point', '一點的連續性'), levels: [3], generate: continuity }
+  { id: 'poly-limit', title: both('Direct limits', '直接求極限'), levels: [1, 2], minDistinct: 40, generate: polyLimit },
+  { id: 'removable', title: both('Removable holes', '可去除的缺口'), levels: [1, 2], minDistinct: 40, generate: removable },
+  { id: 'one-sided', title: both('One-sided limits', '單邊極限'), levels: [2], minDistinct: 40, generate: oneSided },
+  { id: 'at-infinity', title: both('Limits at infinity', '無窮遠處的極限'), levels: [2], minDistinct: 40, generate: atInfinity },
+  { id: 'continuity', title: both('Continuity at a point', '一點的連續性'), levels: [3], minDistinct: 40, generate: continuity }
 ];

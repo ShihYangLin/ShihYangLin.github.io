@@ -54,14 +54,34 @@ test('economic two-output examples satisfy FOCs, positive choices and negative d
 test('three-variable leading principal minors have the claimed definite sign pattern',()=>{
   for(let seed=0;seed<100;seed++){
     const p=generator('opt-multi','three-var').generate(createRng(seed),3);
-    const H=p.prompt.en.match(/H=\\begin\{pmatrix\}(-?\d+)&(-?\d+)&0\\\\(-?\d+)&(-?\d+)&0\\\\0&0&(-?\d+)\\end\{pmatrix\}/);
-    assert.ok(H);const [,a,b,b2,d,e]=H.map(Number);near(b,b2,'symmetric H');
-    near(value(p,'d1'),a,'D1');near(value(p,'d2'),a*d-b*b,'D2');near(value(p,'d3'),(a*d-b*b)*e,'D3');
-    assert.equal(p.fields.find(f=>f.key==='kind').answer,a<0&&a*d-b*b>0&&(a*d-b*b)*e<0?'max':'min');
+    const text=p.prompt.en.match(/H=\\begin\{pmatrix\}([^$]+)\\end\{pmatrix\}/)?.[1];
+    assert.ok(text);
+    const H=text.split('\\\\').map(row=>row.split('&').map(Number));
+    assert.equal(H.length,3);assert.ok(H.every(row=>row.length===3));
+    assert.ok(H[0][1]!==0&&H[0][2]!==0&&H[1][2]!==0,'L3 has three nonzero cross-partials');
+    near(H[0][1],H[1][0],'xy symmetry');near(H[0][2],H[2][0],'xz symmetry');near(H[1][2],H[2][1],'yz symmetry');
+    const [[a,b,c],[,d,e],[,,f]]=H;
+    const D2=a*d-b*b,D3=a*(d*f-e*e)-b*(b*f-e*c)+c*(b*e-d*c);
+    near(value(p,'d1'),a,'D1');near(value(p,'d2'),D2,'D2');near(value(p,'d3'),D3,'D3');
+    assert.equal(p.fields.find(f=>f.key==='kind').answer,a<0&&D2>0&&D3<0?'max':'min');
   }
 });
 
 function border(gx,gy,hxx,hxy,hyy){return 2*gx*gy*hxy-gy*gy*hxx-gx*gx*hyy;}
+test('Gate 3b bordered examples have nonzero multipliers and L3 cross-partials',()=>{
+  const gen=generator('lagrange','bordered-hessian');
+  for(const level of gen.levels)for(let seed=0;seed<300;seed++){
+    const problem=gen.generate(createRng(seed),level);
+    const multiplier=Number(problem.solution[0].en.match(/\\lambda\^\*=(\d+)/)?.[1]);
+    assert.ok(Number.isFinite(multiplier)&&multiplier!==0,`L${level} seed ${seed}`);
+    if(level===3){
+      const matrix=problem.solution[0].en.match(/\\bar H=\\begin\{pmatrix\}([^$]+)\\end\{pmatrix\}/)?.[1];
+      assert.ok(matrix,`L3 seed ${seed} matrix`);
+      const rows=matrix.split('\\\\').map(row=>row.split('&').map(Number));
+      assert.notEqual(rows[1][2],0,`L3 seed ${seed} cross-partial`);
+    }
+  }
+});
 test('constrained examples meet feasibility, FOCs, multiplier signs and bordered-Hessian rules',()=>{
   for(let seed=0;seed<100;seed++){
     for(const level of [1,2]){
@@ -73,24 +93,41 @@ test('constrained examples meet feasibility, FOCs, multiplier signs and bordered
       if(level===2)near(value(p,'det'),border(1,1,-2,0,-2),'linear border');
     }
     const u=generator('lagrange','cobb-douglas').generate(createRng(seed),2);
-    const x=value(u,'x'),y=value(u,'y'),lambda=value(u,'lambda'),a=u.prompt.en.includes('x^{2}')?2:1,b=1,px=a,py=1;
-    const B=Number(u.prompt.en.match(/g\(x,y\)=.*=(\d+)/)[1]);
-    near(px*x+py*y,B,'budget');near(a*x**(a-1)*y/px,lambda,'MU per price x');near(x**a/py,lambda,'MU per price y');
-    const det=border(px,py,a*(a-1)*x**(a-2)*y,a*x**(a-1),0);
+    const x=value(u,'x'),y=value(u,'y'),lambda=value(u,'lambda');
+    const utility=u.prompt.en.match(/U\(x,y\)=([^$]+)/)[1];
+    const a=Number(utility.match(/x\^\{(\d+)\}/)?.[1]||1),b=Number(utility.match(/y\^\{(\d+)\}/)?.[1]||1);
+    const budget=u.prompt.en.match(/g\(x,y\)=(\d*)x\+(\d*)y=(\d+)/),px=Number(budget[1]||1),py=Number(budget[2]||1),B=Number(budget[3]);
+    near(px*x+py*y,B,'budget');near(a*x**(a-1)*y**b/px,lambda,'MU per price x');near(b*x**a*y**(b-1)/py,lambda,'MU per price y');
+    const det=border(px,py,a*(a-1)*x**(a-2)*y**b,a*b*x**(a-1)*y**(b-1),b*(b-1)*x**a*y**(b-2));
     assert.ok(x>0&&y>0&&lambda>0&&det>0);near(value(u,'det'),det,'utility border');
-    const c=generator('lagrange','cost-min').generate(createRng(seed),2);
-    const L=value(c,'L'),K=value(c,'K'),mu=value(c,'lambda');
-    const Q=Number(c.prompt.en.match(/Q_0=(\d+)/)[1]),w=Number(c.prompt.en.match(/w=(\d+)/)[1]),r=Number(c.prompt.en.match(/r=(\d+)/)[1]);
-    near(L*K,Q,'output');near(w,mu*K,'labor FOC');near(r,mu*L,'capital FOC');
-    assert.ok(L>0&&K>0&&mu>0);near(value(c,'det'),border(K,L,0,-mu,0),'cost border');assert.ok(value(c,'det')<0);
+    for(const level of [2,3]){
+      const c=generator('lagrange','cost-min').generate(createRng(seed),level);
+      const L=value(c,'L'),K=value(c,'K'),mu=value(c,'lambda');
+      const Q=Number(c.prompt.en.match(/Q_0=(\d+)/)[1]),w=Number(c.prompt.en.match(/w=(\d+)/)[1]),r=Number(c.prompt.en.match(/r=(\d+)/)[1]);
+      const shownG=c.prompt.en.match(/g\(L,K\)=([^$]+)/)[1];
+      const g=shownG.replace(/L\^2K/, 'L^2*K').replace(/LK/, 'L*K');
+      const scope={L,K},gx=math.derivative(g,'L').evaluate(scope),gy=math.derivative(g,'K').evaluate(scope);
+      const gxx=math.derivative(math.derivative(g,'L'),'L').evaluate(scope),gxy=math.derivative(math.derivative(g,'L'),'K').evaluate(scope),gyy=math.derivative(math.derivative(g,'K'),'K').evaluate(scope);
+      near(math.evaluate(g,scope),Q,'output');near(w,mu*gx,'labor FOC');near(r,mu*gy,'capital FOC');
+      assert.ok(L>0&&K>0&&mu>0);near(value(c,'det'),border(gx,gy,-mu*gxx,-mu*gxy,-mu*gyy),'cost border');assert.ok(value(c,'det')<0);
+      if(level===3)assert.match(shownG,/L\^2K/,'L3 uses a nonconstant-returns technology');
+    }
     for(const level of [2,3]){
       const bh=generator('lagrange','bordered-hessian').generate(createRng(seed),level);
-      const m=bh.solution[0].en.match(/pmatrix\}0&(-?\d+)&(-?\d+)\\\\(-?\d+)&(-?\d+)&0\\\\(-?\d+)&0&(-?\d+)\\end/);
-      assert.ok(m);const [,gx,gy,gx2,hxx,gy2,hyy]=m.map(Number);near(gx,gx2,'border symmetry x');near(gy,gy2,'border symmetry y');
-      const D=border(gx,gy,hxx,0,hyy);near(value(bh,'det'),D,'border determinant');assert.equal(bh.fields.find(f=>f.key==='kind').answer,D>0?'max':'min');
+      const f=bh.prompt.en.match(/f\(x,y\)=([^$]+)/)[1];
+      const m=bh.prompt.en.match(/g\(x,y\)=(\d*)x\+(\d*)y=(\d+)/);
+      const gx=Number(m[1]||1),gy=Number(m[2]||1),constraint=Number(m[3]);
+      const point=bh.prompt.en.match(/stationary point is \$\((\d+),(\d+)\)\$/),x=Number(point[1]),y=Number(point[2]);
+      const lambda=Number(bh.solution[0].en.match(/\\lambda\^\*=(\d+)/)[1]);
+      const H=hessian(f,x,y);
+      near(gx*x+gy*y,constraint,'bordered feasibility');near(H.fx,lambda*gx,'bordered x FOC');near(H.fy,lambda*gy,'bordered y FOC');
+      assert.notEqual(lambda,0,'multiplier is nonzero');
+      const D=border(gx,gy,H.xx,H.xy,H.yy);near(value(bh,'det'),D,'border determinant');assert.equal(bh.fields.find(f=>f.key==='kind').answer,D>0?'max':'min');
+      if(level===3){assert.notEqual(H.xy,0,'L3 cross partial');near(value(bh,'lambda'),lambda,'L3 multiplier field');}
     }
     const sp=generator('lagrange','shadow-price').generate(createRng(seed),3);
     const Bsp=Number(sp.prompt.en.match(/B=(\d+)/)[1]),delta=Number(sp.prompt.en.match(/\\Delta B=(\d+)/)[1]),lambdaSp=Number(sp.prompt.en.match(/\\lambda\^\*=(\d+)/)[1]);
-    near(value(sp,'approx'),lambdaSp*delta,'first-order shadow');near(value(sp,'exact'),(Bsp+delta)**2/4-Bsp**2/4,'exact re-solve');assert.ok(value(sp,'exact')>value(sp,'approx'));
+    const scale=Number(sp.prompt.en.match(/U\(x,y\)=(\d*)xy/)[1]||1);
+    near(value(sp,'approx'),lambdaSp*delta,'first-order shadow');near(value(sp,'exact'),scale*((Bsp+delta)**2-Bsp**2)/4,'exact re-solve');assert.ok(value(sp,'exact')>value(sp,'approx'));
   }
 });

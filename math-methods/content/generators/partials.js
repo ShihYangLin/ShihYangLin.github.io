@@ -20,7 +20,7 @@ function partialBasic(rng, level) {
 }
 
 function marginalProducts(rng, level) {
-  const a = rng.int(1, 4), u = rng.int(1, 3), v = rng.int(1, 3), A = 2*a, K = u*u, L = v*v;
+  const a = rng.int(1, 6), u = rng.int(1, 4), v = rng.int(1, 4), A = 2*a, K = u*u, L = v*v;
   const mpk = `${a}*sqrt(L)/sqrt(K)`, mpl = `${a}*sqrt(K)/sqrt(L)`;
   return { id: 'partials/marginal-products', level, vars: ['K','L'], domain: { K: [0.5, 10], L: [0.5, 10] },
     prompt: both(`For positive inputs, output is $Q(K,L)=${A}\\sqrt{KL}$. Find $MP_K$, $MP_L$, and $MP_K$ at $(K,L)=(${K},${L})$.`, `對正的投入，產量為 $Q(K,L)=${A}\\sqrt{KL}$。求 $MP_K$、$MP_L$，及 $(K,L)=(${K},${L})$ 時的 $MP_K$。`),
@@ -42,13 +42,13 @@ function marketCs(rng, level) {
 }
 
 function nationalIncomeCs(rng, level) {
-  const m = rng.int(1, 3), tax = rng.int(0, 2), den = 16-4*m+m*tax;
+  const m = rng.int(1, 7), tax = rng.int(0, 6), den = 64-8*m+m*tax;
   return { id:'partials/national-income-cs',level,vars:[],domain:{},
-    prompt: both(`In $Y=C+I+G$, let $C=C_0+(${frac(m,4,true)})(Y-T)$ and $T=T_0+(${frac(tax,4,true)})Y$. Autonomous terms are fixed. Find the equilibrium spending multiplier $\\partial Y^*/\\partial G$${level===3?' and the tax-intercept effect $\\partial Y^*/\\partial T_0$':''}.`, `在 $Y=C+I+G$ 中，令 $C=C_0+(${frac(m,4,true)})(Y-T)$、$T=T_0+(${frac(tax,4,true)})Y$。固定其他自主項，求均衡支出乘數 $\\partial Y^*/\\partial G$${level===3?'，以及稅收截距效果 $\\partial Y^*/\\partial T_0$':''}。`),
-    fields:[field('g','number','$\\partial Y^*/\\partial G$ =','$\\partial Y^*/\\partial G$ =',`16/${den}`),...(level===3?[field('t','number','$\\partial Y^*/\\partial T_0$ =','$\\partial Y^*/\\partial T_0$ =',`-${4*m}/${den}`)]:[])],
+    prompt: both(`In $Y=C+I+G$, let $C=C_0+(${frac(m,8,true)})(Y-T)$ and $T=T_0+(${frac(tax,8,true)})Y$. Autonomous terms are fixed. Find the equilibrium spending multiplier $\\partial Y^*/\\partial G$${level===3?' and the tax-intercept effect $\\partial Y^*/\\partial T_0$':''}.`, `在 $Y=C+I+G$ 中，令 $C=C_0+(${frac(m,8,true)})(Y-T)$、$T=T_0+(${frac(tax,8,true)})Y$。固定其他自主項，求均衡支出乘數 $\\partial Y^*/\\partial G$${level===3?'，以及稅收截距效果 $\\partial Y^*/\\partial T_0$':''}。`),
+    fields:[field('g','number','$\\partial Y^*/\\partial G$ =','$\\partial Y^*/\\partial G$ =',`64/${den}`),...(level===3?[field('t','number','$\\partial Y^*/\\partial T_0$ =','$\\partial Y^*/\\partial T_0$ =',`-${8*m}/${den}`)]:[])],
     misconceptions:[error('g','1','A direct one-unit increase in $G$ triggers further consumption changes.', '$G$ 直接增加一單位後，還會引起消費的後續變動。')],
     hints:[both('Substitute the tax rule into consumption.', '先將稅收規則代入消費式。'),both('Collect all terms containing $Y$ on the left before differentiating the reduced form.', '先把所有含 $Y$ 的項移到左側，再對均衡顯式解微分。')],
-    solution:[both(`Substitution gives $[1-(${frac(m,4,true)})(1-${frac(tax,4,true)})]Y=C_0-(${frac(m,4,true)})T_0+I+G$.`, `代入後得 $[1-(${frac(m,4,true)})(1-${frac(tax,4,true)})]Y=C_0-(${frac(m,4,true)})T_0+I+G$。`),both(`The coefficient on $Y$ is $${frac(den,16,true)}$; hence $\\partial Y^*/\\partial G=${frac(16,den,true)}$.${level===3?` Likewise $\\partial Y^*/\\partial T_0=${frac(-4*m,den,true)}$.`:''}`, `$Y$ 的係數是 $${frac(den,16,true)}$，所以 $\\partial Y^*/\\partial G=${frac(16,den,true)}$。${level===3?`同理，$\\partial Y^*/\\partial T_0=${frac(-4*m,den,true)}$。`:''}`)] };
+    solution:[both(`Substitution gives $[1-(${frac(m,8,true)})(1-${frac(tax,8,true)})]Y=C_0-(${frac(m,8,true)})T_0+I+G$.`, `代入後得 $[1-(${frac(m,8,true)})(1-${frac(tax,8,true)})]Y=C_0-(${frac(m,8,true)})T_0+I+G$。`),both(`The coefficient on $Y$ is $${frac(den,64,true)}$; hence $\\partial Y^*/\\partial G=${frac(64,den,true)}$.${level===3?` Likewise $\\partial Y^*/\\partial T_0=${frac(-8*m,den,true)}$.`:''}`, `$Y$ 的係數是 $${frac(den,64,true)}$，所以 $\\partial Y^*/\\partial G=${frac(64,den,true)}$。${level===3?`同理，$\\partial Y^*/\\partial T_0=${frac(-8*m,den,true)}$。`:''}`)] };
 }
 
 function jacobian(rng, level) {
@@ -62,13 +62,13 @@ function jacobian(rng, level) {
     fields:[field('det','number','Jacobian at point =','該點的 Jacobian =',dependent?0:det),field('dependent','choice','Identically zero?','恆為零嗎？',dependent?'yes':'no',yesNo)],
     misconceptions:[error('dependent',dependent?'no':'yes','Decide from the determinant as a function, not from a single selected point.', '須檢查行列式作為函數是否恆為零，不能只看某一點。')],
     hints:[both('Place $u_x,u_y$ in the first row and $v_x,v_y$ in the second.', '第一列放 $u_x,u_y$，第二列放 $v_x,v_y$。'),both('Compute $u_xv_y-u_yv_x$; if $v$ is a function of $u$, its gradient is proportional.', '計算 $u_xv_y-u_yv_x$；若 $v$ 是 $u$ 的函數，兩者梯度會成比例。')],
-    solution:[both(dependent?`Here $v=${k}u^2$, so $(v_x,v_y)=${2*k}u(${a},${b})$.`:`The derivative rows are $(${a},${b})$ and $(${c},${d})$.`,dependent?`此處 $v=${k}u^2$，所以 $(v_x,v_y)=${2*k}u(${a},${b})$。`:`偏導數的兩列為 $(${a},${b})$ 與 $(${c},${d})$。`),both(dependent?'The rows are proportional everywhere; $|J|=0$ identically, including at the stated point.':`$|J|=${a}(${d})-${b}(${c})=${det}$ at every point, so it is not identically zero.`,dependent?'兩列處處成比例，$|J|=0$ 恆成立，在指定點也為零。':`每一點皆有 $|J|=${a}(${d})-${b}(${c})=${det}$，故不恆為零。`)]};
+    solution:[both(dependent?`Here $v=${k}u^2$, so $(v_x,v_y)=${2*k}u(${a},${b})$.`:`The derivative rows are $(${a},${b})$ and $(${c},${d})$.`,dependent?`此處 $v=${k}u^2$，所以 $(v_x,v_y)=${2*k}u(${a},${b})$。`:`偏導數的兩列為 $(${a},${b})$ 與 $(${c},${d})$。`),both(dependent?'The rows are proportional everywhere; $|J|=0$ identically, including at the stated point.':`$|J|=${a*d}-${b*c}=${det}$ at every point, so it is not identically zero.`,dependent?'兩列處處成比例，$|J|=0$ 恆成立，在指定點也為零。':`每一點皆有 $|J|=${a*d}-${b*c}=${det}$，故不恆為零。`)]};
 }
 
 export const partialsGenerators=[
- {id:'partial-basic',title:both('Partial derivatives','偏導數'),levels:[1,2],generate:partialBasic},
- {id:'marginal-products',title:both('Marginal products','邊際產量'),levels:[2],generate:marginalProducts},
- {id:'market-cs',title:both('Market comparative statics','市場比較靜態分析'),levels:[2,3],generate:marketCs},
- {id:'national-income-cs',title:both('Income multiplier','所得乘數'),levels:[2,3],generate:nationalIncomeCs},
- {id:'jacobian',title:both('Jacobian determinant','Jacobian 行列式'),levels:[3],generate:jacobian}
+ {id:'partial-basic',title:both('Partial derivatives','偏導數'),levels:[1,2],minDistinct: 40, generate:partialBasic},
+ {id:'marginal-products',title:both('Marginal products','邊際產量'),levels:[2],minDistinct: 40, generate:marginalProducts},
+ {id:'market-cs',title:both('Market comparative statics','市場比較靜態分析'),levels:[2,3],minDistinct: 40, generate:marketCs},
+ {id:'national-income-cs',title:both('Income multiplier','所得乘數'),levels:[2,3],minDistinct: 40, generate:nationalIncomeCs},
+ {id:'jacobian',title:both('Jacobian determinant','Jacobian 行列式'),levels:[3],minDistinct: 40, generate:jacobian}
 ];

@@ -1,4 +1,4 @@
-import { derivative, linear, polynomial, texProduct } from './format.js';
+import { derivative, frac, linear, polynomial, texProduct } from './format.js';
 const both=(en,zh)=>({en,zh});
 const field=(key,type,en,zh,answer,tol)=>({key,type,label:both(en,zh),answer:String(answer),...(tol?{tol}:{})});
 const error=(key,answer,en,zh)=>({key,answer:String(answer),feedback:both(en,zh)});
@@ -18,7 +18,7 @@ function maclaurinCoef(rng,level){
    hints:[both('Maclaurin means the center is zero.','Maclaurin 展開的中心是零。'),both(`The coefficient of $x^k$ is $${derivative('f',k,0)}/k!$.`,`$x^k$ 的係數是 $${derivative('f',k,0)}/k!$。`)],
    solution:[both(`At zero, $${derivative('f',k,0)}=${deriv}$.`,`在零點，$${derivative('f',k,0)}=${deriv}$。`),both(`Divide by $${k}!=${factorial(k)}$ to get coefficient $${coef}$. The full polynomial expansion is exact.`,`除以 $${k}!=${factorial(k)}$，係數為 $${coef}$；完整多項式展開是精確等式。`)]};
  }
- const A=rng.int(2,4),b=rng.int(1,3),coef=A*(-b)**k;
+  const A=rng.int(2,9),b=rng.int(1,7),coef=A*(-b)**k;
  return {id:'taylor/maclaurin-coef',level,vars:[],domain:{},
   prompt:both(`For $f(x)=\\frac{${A}}{1+${texProduct(b,'x')}}$ near $x=0$ with $|${texProduct(b,'x')}|<1$, find the coefficient of $x^{${k}}$ in its Maclaurin expansion.`,`對 $x=0$ 附近且 $|${texProduct(b,'x')}|<1$ 的 $f(x)=\\frac{${A}}{1+${texProduct(b,'x')}}$，求 Maclaurin 展開中 $x^{${k}}$ 的係數。`),
   fields:[field('coef','number',`Coefficient of $x^{${k}}$ =`,`$x^{${k}}$ 的係數 =`,coef)],
@@ -44,10 +44,10 @@ function taylorPoly(rng,level){
   shown=`${D*D}-${D}${shift(center)}+${shift(center)}^2`;
   derivatives=`$f(${center})=${D*D}$, $f'(${center})=-${D}$, $f''(${center})=2$`;
  }else{
-  const variant=rng.int(0,2);
-  if(variant===0){center=0;f='e^x';p='1+x+x^2/2';shown='1+x+\\frac{1}{2}x^2';derivatives="$f(0)=f'(0)=f''(0)=1$";domain={x:[-1,1]};}
-  else if(variant===1){center=1;f='\\ln x';p='(x-1)-(x-1)^2/2';shown='(x-1)-\\frac{1}{2}(x-1)^2';derivatives="$f(1)=0$, $f'(1)=1$, $f''(1)=-1$";}
-  else{center=4;f='\\sqrt{x}';p='2+(x-4)/4-(x-4)^2/64';shown='2+\\frac{1}{4}(x-4)-\\frac{1}{64}(x-4)^2';derivatives="$f(4)=2$, $f'(4)=1/4$, $f''(4)=-1/32$";domain={x:[2,6]};}
+  const variant=rng.int(0,2),a=rng.int(2,6),b=rng.int(1,5);
+  if(variant===0){center=0;f=`e^x+${a}x+${b}`;p=`${1+b}+${1+a}*x+x^2/2`;shown=`${1+b}+${1+a}x+\\frac{1}{2}x^2`;derivatives=`$f(0)=${1+b}$, $f'(0)=${1+a}$, $f''(0)=1$`;domain={x:[-1,1]};}
+  else if(variant===1){center=1;f=`\\ln x+${a}x+${b}`;p=`${a+b}+${a+1}*(x-1)-(x-1)^2/2`;shown=`${a+b}+${a+1}(x-1)-\\frac{1}{2}(x-1)^2`;derivatives=`$f(1)=${a+b}$, $f'(1)=${a+1}$, $f''(1)=-1$`;}
+  else{center=4;f=`\\sqrt{x}+${a}x+${b}`;p=`${2+4*a+b}+(${a}+1/4)*(x-4)-(x-4)^2/64`;shown=`${2+4*a+b}+(${a}+\\frac{1}{4})(x-4)-\\frac{1}{64}(x-4)^2`;derivatives=`$f(4)=${2+4*a+b}$, $f'(4)=${frac(4*a+1,4,true)}$, $f''(4)=-1/32$`;domain={x:[2,6]};}
  }
  const derivativesZh=derivatives.replace(/, and /g,'、').replace(/ and /g,'、');
  return {id:'taylor/taylor-poly',level,vars:['x'],domain,
@@ -59,25 +59,26 @@ function taylorPoly(rng,level){
 }
 
 function approxValue(rng,level){
- const variant=rng.int(0,3); let f,center,target,estimate,actual,calculation,calculationZh;
+ const variant=rng.int(0,3),a=rng.int(2,6),b=rng.int(1,5),h=rng.pick([1,1.25,1.5,1.75]);
+ let f,center,target,estimate,actual,calculation,calculationZh;
  if(variant===0){
-  const a=rng.int(1,3),c=rng.int(1,3),D=a+c;
-  center=a;target=a+0.5;f=`\\frac{${D**3}}{x+${c}}`;
-  estimate=D*D-D/2+0.25;actual=D**3/(D+0.5);
-  calculation=`$P_2(x)=${D*D}-${D}${shift(a)}+${shift(a)}^2$. With $x-x_0=0.5$, $P_2(${target})=${estimate}$.`;
-  calculationZh=`$P_2(x)=${D*D}-${D}${shift(a)}+${shift(a)}^2$。代入 $x-x_0=0.5$，得 $P_2(${target})=${estimate}$。`;
+  const c=rng.int(1,5),D=a+c;
+  center=a;target=a+h;f=`\\frac{${D**3}}{x+${c}}`;
+  estimate=D*D-D*h+h*h;actual=D**3/(D+h);
+  calculation=`$P_2(x)=${D*D}-${D}${shift(a)}+${shift(a)}^2$. With $x-x_0=${h}$, $P_2(${target})=${estimate}$.`;
+  calculationZh=`$P_2(x)=${D*D}-${D}${shift(a)}+${shift(a)}^2$。代入 $x-x_0=${h}$，得 $P_2(${target})=${estimate}$。`;
  }else if(variant===1){
-  center=0;target=0.5;f='e^x';estimate=1.625;actual=Math.exp(target);
-  calculation='$P_2(x)=1+x+\\frac{1}{2}x^2$. At $x=0.5$, $P_2(0.5)=1+0.5+0.125=1.625$.';
-  calculationZh='$P_2(x)=1+x+\\frac{1}{2}x^2$。代入 $x=0.5$，得 $P_2(0.5)=1.625$。';
+  center=0;target=h;f=`e^x+${a}x+${b}`;estimate=1+b+(1+a)*h+h*h/2;actual=Math.exp(h)+a*h+b;
+  calculation=`$P_2(x)=${1+b}+${1+a}x+\\frac{1}{2}x^2$. At $x=${target}$, $P_2(${target})=${estimate}$.`;
+  calculationZh=`$P_2(x)=${1+b}+${1+a}x+\\frac{1}{2}x^2$。代入 $x=${target}$，得 $P_2(${target})=${estimate}$。`;
  }else if(variant===2){
-  center=1;target=1.5;f='\\ln x';estimate=0.375;actual=Math.log(target);
-  calculation='$P_2(x)=(x-1)-\\frac{1}{2}(x-1)^2$. At $x=1.5$, $P_2(1.5)=0.5-0.125=0.375$.';
-  calculationZh='$P_2(x)=(x-1)-\\frac{1}{2}(x-1)^2$。代入 $x=1.5$，得 $P_2(1.5)=0.375$。';
+  center=1;target=1+h;f=`\\ln x+${a}x+${b}`;estimate=a+b+(a+1)*h-h*h/2;actual=Math.log(target)+a*target+b;
+  calculation=`$P_2(x)=${a+b}+${a+1}(x-1)-\\frac{1}{2}(x-1)^2$. At $x=${target}$, $P_2(${target})=${estimate}$.`;
+  calculationZh=`$P_2(x)=${a+b}+${a+1}(x-1)-\\frac{1}{2}(x-1)^2$。代入 $x=${target}$，得 $P_2(${target})=${estimate}$。`;
  }else{
-  center=4;target=5;f='\\sqrt x';estimate=2+1/4-1/64;actual=Math.sqrt(target);
-  calculation='$P_2(x)=2+\\frac{1}{4}(x-4)-\\frac{1}{64}(x-4)^2$. At $x=5$, $P_2(5)=2.234375$.';
-  calculationZh='$P_2(x)=2+\\frac{1}{4}(x-4)-\\frac{1}{64}(x-4)^2$。代入 $x=5$，得 $P_2(5)=2.234375$。';
+  center=4;target=4+h;f=`\\sqrt x+${a}x+${b}`;estimate=2+4*a+b+(a+0.25)*h-h*h/64;actual=Math.sqrt(target)+a*target+b;
+  calculation=`$P_2(x)=${2+4*a+b}+(${a}+\\frac{1}{4})(x-4)-\\frac{1}{64}(x-4)^2$. At $x=${target}$, $P_2(${target})=${estimate}$.`;
+  calculationZh=`$P_2(x)=${2+4*a+b}+(${a}+\\frac{1}{4})(x-4)-\\frac{1}{64}(x-4)^2$。代入 $x=${target}$，得 $P_2(${target})=${estimate}$。`;
  }
  return {id:'taylor/approx-value',level,vars:[],domain:{},
   prompt:both(`Use the second-order Taylor polynomial for $f(x)=${f}$ centered at $x_0=${center}$ to estimate $f(${target})$. Round the polynomial estimate to 3 decimals.${variant?' This uses derivatives from the exp-log module.':''}`,`用 $f(x)=${f}$ 在 $x_0=${center}$ 的二階 Taylor 多項式估計 $f(${target})$。將多項式估計值四捨五入至小數第 3 位。${variant?'本題使用指數與對數模組的導數知識。':''}`),
@@ -87,7 +88,7 @@ function approxValue(rng,level){
   solution:[both(`Taylor's formula gives ${calculation}`,`Taylor 公式給出 ${calculationZh}`),both(`The polynomial estimate rounds to $${estimate.toFixed(3)}$. The actual value is about $${actual.toFixed(3)}$; the difference is the omitted remainder.`,`多項式估計值四捨五入後為 $${estimate.toFixed(3)}$。原函數值約為 $${actual.toFixed(3)}$；差距來自省略的餘項。`)]};
 }
 export const taylorGenerators=[
- {id:'maclaurin-coef',title:both('Maclaurin coefficients','Maclaurin 係數'),levels:[1,2],generate:maclaurinCoef},
- {id:'taylor-poly',title:both('Taylor polynomial','Taylor 多項式'),levels:[2,3],generate:taylorPoly},
- {id:'approx-value',title:both('Approximate a value','函數值近似'),levels:[3],generate:approxValue}
+ {id:'maclaurin-coef',title:both('Maclaurin coefficients','Maclaurin 係數'),levels:[1,2],minDistinct: 40, generate:maclaurinCoef},
+ {id:'taylor-poly',title:both('Taylor polynomial','Taylor 多項式'),levels:[2,3],minDistinct: 40, generate:taylorPoly},
+ {id:'approx-value',title:both('Approximate a value','函數值近似'),levels:[3],minDistinct: 40, generate:approxValue}
 ];

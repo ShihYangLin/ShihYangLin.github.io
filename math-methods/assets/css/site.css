@@ -48,7 +48,7 @@ body {
 [lang="zh-Hant"] body { font-family: 'Noto Sans TC', 'Libre Franklin', sans-serif; }
 a { color: inherit; }
 button { font: inherit; }
-:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; box-shadow: 0 0 0 5px var(--bg); }
 
 .site-header { border-bottom: 1px solid var(--faint); background: var(--bg); }
 .header-inner, .footer-inner { max-width: 1120px; margin: 0 auto; padding: 0 32px; }
@@ -142,6 +142,13 @@ h2 { font-family: 'Newsreader', 'Noto Serif TC', serif; font-size: 31px; font-we
 .hint-region, .solution-region { max-width: 760px; margin-top: 20px; padding: 18px 22px; border: 1px solid var(--faint); background: var(--panel); }
 .solution-region h3 { margin: 0 0 10px; font-family: 'Newsreader', 'Noto Serif TC', serif; font-size: 23px; }
 .solution-region li { margin: 9px 0; }
+.solution-plot { max-width: 100%; margin: 24px 0 0; padding-top: 15px; border-top: 1px solid var(--faint); }
+.solution-plot svg { display: block; width: 100%; height: auto; background: var(--panel); overflow: visible; }
+.plot-axis { fill: none; stroke: var(--muted); stroke-width: 1; }
+.plot-curve { fill: none; stroke: var(--accent); stroke-width: 2.5; vector-effect: non-scaling-stroke; }
+.plot-point { fill: var(--panel); stroke: var(--ink); stroke-width: 2.5; vector-effect: non-scaling-stroke; }
+.plot-point-label, .plot-axis-label { fill: var(--ink); font: 12px 'IBM Plex Mono', monospace; }
+.solution-plot figcaption { color: var(--muted); font-size: 12px; }
 .typing-help { max-width: 760px; margin-top: 30px; padding-top: 15px; border-top: 1px solid var(--faint); color: var(--muted); }
 .typing-help summary { cursor: pointer; }
 .typing-help code { font-family: 'IBM Plex Mono', monospace; }

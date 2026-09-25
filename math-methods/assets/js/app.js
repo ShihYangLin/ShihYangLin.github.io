@@ -39,7 +39,7 @@ function renderMap(notice = false) {
       ${notice ? `<p class="route-notice" role="status">${t('unknownRoute')}</p>` : ''}
       <section class="hero" aria-labelledby="page-title">
         <p class="eyebrow">${t('heroEyebrow')}</p>
-        <h1 id="page-title">${t('heroTitle')}</h1>
+        <h1 id="page-title" tabindex="-1">${t('heroTitle')}</h1>
         <p class="hero-intro">${t('heroIntro')}</p>
         <p class="hero-count">${t('moduleCount')}</p>
       </section>
@@ -49,7 +49,7 @@ function renderMap(notice = false) {
 }
 
 let renderVersion = 0;
-async function renderModule(route) {
+async function renderModule(route, focus = false) {
   const lang = getLanguage();
   const version = ++renderVersion;
   const selected = route.kind === 'problem' ? route.module.generators.find(item => item.id === route.generator) : route.module.generators[0];
@@ -57,7 +57,7 @@ async function renderModule(route) {
   app.innerHTML = `<div class="page-shell interior-page">
     <a class="crumb" href="#/">← ${t('backToTopics')}</a>
     <p class="eyebrow">${t('sectionLabel')} · Chiang &amp; Wainwright ${escapeHtml(route.module.sections)}</p>
-    <h1>${escapeHtml(route.module.title[lang])}</h1>
+    <h1 tabindex="-1">${escapeHtml(route.module.title[lang])}</h1>
     <div id="lesson-slot"></div><div id="practice-slot"></div>
   </div>`;
   const lesson = app.querySelector('#lesson-slot');
@@ -78,6 +78,10 @@ async function renderModule(route) {
     const qa = new URLSearchParams(window.location.search).get('qa') || hashParams.get('qa');
     mountProblem(app.querySelector('#practice-slot'), route.module, selected, level, seed, qa);
   } else app.querySelector('#practice-slot').innerHTML = `<div class="placeholder-panel"><p>${t('moduleIntro')}</p></div>`;
+  if (focus) {
+    const target = route.kind === 'problem' ? app.querySelector('[data-answer], input[type="radio"]') : app.querySelector('h1');
+    target?.focus();
+  }
 }
 
 function renderProgress() {
@@ -87,7 +91,7 @@ function renderProgress() {
     const item = data[`${module.id}/${generator.id}`] || {};
     return `<tr><th><a href="#/${module.id}/${generator.id}">${escapeHtml(generator.title[lang])}</a></th><td>${item.attempts || 0}</td><td>${item.firstTryCorrect || 0}</td><td>${item.streak || 0}</td><td>${item.bestLevel || '—'}</td><td>${item.mastered ? t('mastered') : t('notStarted')}</td></tr>`;
   }).join('')}</tbody></table></div></section>`).join('');
-  app.innerHTML = `<div class="page-shell interior-page"><a class="crumb" href="#/">← ${t('backToTopics')}</a><p class="eyebrow">${t('progress')}</p><h1>${t('progressTitle')}</h1><p>${t('progressIntro')}</p>${rows}<div class="progress-actions"><button type="button" id="export-progress">${t('exportProgress')}</button><button type="button" id="reset-progress">${t('resetProgress')}</button></div><div id="reset-confirm" hidden><p>${t('confirmReset')}</p><button type="button" id="confirm-reset">${t('confirm')}</button><button type="button" id="cancel-reset">${t('cancel')}</button></div></div>`;
+  app.innerHTML = `<div class="page-shell interior-page"><a class="crumb" href="#/">← ${t('backToTopics')}</a><p class="eyebrow">${t('progress')}</p><h1 tabindex="-1">${t('progressTitle')}</h1><p>${t('progressIntro')}</p>${rows}<div class="progress-actions"><button type="button" id="export-progress">${t('exportProgress')}</button><button type="button" id="reset-progress">${t('resetProgress')}</button></div><div id="reset-confirm" hidden><p>${t('confirmReset')}</p><button type="button" id="confirm-reset">${t('confirm')}</button><button type="button" id="cancel-reset">${t('cancel')}</button></div></div>`;
   app.querySelector('#export-progress').addEventListener('click', () => {
     const blob = new Blob([exportProgress()], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -100,18 +104,22 @@ function renderProgress() {
   app.querySelector('#confirm-reset').addEventListener('click', () => { resetProgress(); renderProgress(); });
 }
 
-function render() {
+function render(focus = false) {
   const lang = getLanguage();
   document.title = `${t('siteTitle')} · Shih-Yang Lin`;
   document.querySelectorAll('[data-i18n]').forEach(element => { element.textContent = t(element.dataset.i18n); });
   document.querySelectorAll('[data-lang]').forEach(button => {
     button.setAttribute('aria-pressed', String(button.dataset.lang === lang));
+    button.setAttribute('aria-label', t(button.dataset.lang === 'en' ? 'englishButton' : 'chineseButton'));
   });
+  document.querySelector('.header-actions').setAttribute('aria-label', t('siteControls'));
+  document.querySelector('.language-switch').setAttribute('aria-label', t('languageControls'));
   const route = parseRoute(window.location.hash);
   if (route.kind === 'map' || route.kind === 'unknown' || route.kind === 'progress') renderVersion++;
   if (route.kind === 'map' || route.kind === 'unknown') renderMap(route.kind === 'unknown');
   else if (route.kind === 'progress') renderProgress();
-  else renderModule(route);
+  else renderModule(route, focus);
+  if (focus && (route.kind === 'map' || route.kind === 'unknown' || route.kind === 'progress')) app.querySelector('h1')?.focus();
   updateThemeButton();
 }
 
@@ -138,6 +146,6 @@ themeButton.addEventListener('click', () => {
   try { localStorage.setItem('mm-theme', document.documentElement.dataset.theme); } catch { /* Theme still works for this session. */ }
   updateThemeButton();
 });
-window.addEventListener('hashchange', render);
+window.addEventListener('hashchange', () => render(true));
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateThemeButton);
 render();

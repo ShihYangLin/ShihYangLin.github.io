@@ -71,6 +71,8 @@ function mathRenders(value, generated = false) {
     assert.doesNotMatch(math, /\^\{\([123]\)\}/, 'derivatives of orders 1–3 use primes');
     assert.doesNotMatch(math, /\\cdot(?!s)\s*(?:[A-Za-z]|\\(?:ln|sqrt)\b)/, 'multiplication dots precede numeric factors only');
     if (generated) {
+      assert.doesNotMatch(math, /(?<!\d)[+-]1\(/, 'omit signed unit coefficients before parentheses');
+      assert.doesNotMatch(math, /(\\frac\{[^}]+\}\{[^}]+\})=\1/, 'do not repeat the same fraction across an equality');
       assert.doesNotMatch(math, /(?<![\d.])1\\(?:sqrt|ln)\b|(?<![\d.])1e\^/, 'omit unit coefficients before functions');
       assert.doesNotMatch(math, /\d{3,}\^\{\\sqrt/, 'separate a coefficient from a numeric exponential base');
       for (const fraction of math.matchAll(/(?<![\d.^])(-?\d+)\s*\/\s*(\d+)(?![\d!])/g)) {
@@ -92,6 +94,30 @@ function mathRenders(value, generated = false) {
     katex.renderToString(math, { throwOnError: true, strict: 'error' });
   }
 }
+
+test('Gate 3b minDistinct applies to every generator and top-level prompts differ', () => {
+  for (const module of modules) for (const generator of module.generators) {
+    assert.ok(Object.hasOwn(generator, 'minDistinct'), `${module.id}/${generator.id} declares minDistinct`);
+    assert.ok(Number.isInteger(generator.minDistinct) && generator.minDistinct >= 40, `${module.id}/${generator.id} threshold`);
+    const counts = new Map();
+    for (const level of generator.levels) {
+      const prompts = { en: new Set(), zh: new Set() };
+      for (let seed = 0; seed < 300; seed++) {
+        const problem = generator.generate(createRng(seed), level);
+        prompts.en.add(problem.prompt.en); prompts.zh.add(problem.prompt.zh);
+      }
+      for (const lang of ['en', 'zh']) assert.ok(prompts[lang].size >= generator.minDistinct, `${module.id}/${generator.id} L${level} ${lang}: ${prompts[lang].size}`);
+      counts.set(level, prompts);
+    }
+    if (generator.levels.length > 1) {
+      const levels = [...generator.levels].sort((a, b) => a - b), top = levels.at(-1), prior = levels.at(-2);
+      for (let seed = 0; seed < 300; seed++) {
+        const upper = generator.generate(createRng(seed), top), lower = generator.generate(createRng(seed), prior);
+        for (const lang of ['en', 'zh']) assert.notEqual(upper.prompt[lang], lower.prompt[lang], `${module.id}/${generator.id} seed ${seed} ${lang} top-level prompt`);
+      }
+    }
+  }
+});
 
 test('Gate 2b numeric factors remain separate in timber and Jacobian templates', () => {
   const timber = modules.find(item => item.id === 'timing').generators.find(item => item.id === 'timber');

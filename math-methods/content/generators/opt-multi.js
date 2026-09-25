@@ -16,7 +16,7 @@ function soc(hxx, hxy, hyy, kind) {
 function quadratic(rng, forced) {
   const x = rng.int(1, 5), y = rng.int(1, 5), a = rng.int(1, 3), d = rng.int(1, 3), b = rng.int(0, 1), s = forced === 'min' ? 1 : -1;
   const hxx = 2 * s * a, hxy = s * b, hyy = 2 * s * d, D = soc(hxx, hxy, hyy, forced);
-  const expression = `${s < 0 ? '-' : ''}${a}(x-${x})^2${b ? `${s < 0 ? '-' : '+'}${b}(x-${x})(y-${y})` : ''}${s < 0 ? '-' : '+'}${d}(y-${y})^2+${rng.int(1, 8)}`;
+  const expression = `${s < 0 ? '-' : ''}${a===1?'':a}(x-${x})^2${b ? `${s < 0 ? '-' : '+'}(x-${x})(y-${y})` : ''}${s < 0 ? '-' : '+'}${d===1?'':d}(y-${y})^2+${rng.int(1, 8)}`;
   return { x, y, hxx, hxy, hyy, D, expression };
 }
 function foc(rng, level) {
@@ -41,8 +41,8 @@ function classify(rng, level) {
   const kind = rng.pick(['max','min','saddle','inconclusive']);
   let hxx, hxy, hyy, f;
   if (kind === 'max' || kind === 'min') { const q = quadratic(rng, kind); ({ hxx,hxy,hyy } = q); f=q.expression; }
-  else if (kind === 'saddle') { hxx=2;hxy=0;hyy=-2;f='(x-2)^2-(y-3)^2'; }
-  else { hxx=0;hxy=0;hyy=0;f='(x-2)^4+(y-3)^4'; }
+  else if (kind === 'saddle') { const x=rng.int(1,6),y=rng.int(1,6),a=rng.int(1,3),b=rng.int(1,3); hxx=2*a;hxy=0;hyy=-2*b;f=`${a===1?'':a}(x-${x})^2-${b===1?'':b}(y-${y})^2`; }
+  else { const x=rng.int(1,6),y=rng.int(1,6),a=rng.int(1,3),b=rng.int(1,3); hxx=0;hxy=0;hyy=0;f=`${a===1?'':a}(x-${x})^4+${b===1?'':b}(y-${y})^4`; }
   const D=soc(hxx,hxy,hyy,kind);
   return { id:'opt-multi/classify-2var',level,vars:[],domain:{},
     prompt:both(`At its stationary point, what conclusion does the Hessian test give for $f(x,y)=${f}$?`, `在駐點處，Hessian 檢定對 $f(x,y)=${f}$ 得出什麼結論？`),
@@ -73,21 +73,21 @@ function discrimination(rng, level) {
     solution:[both(`$MR_1=${A1}-${2*b1}Q_1$, $MR_2=${A2}-${2*b2}Q_2$, and $MC=${c}+2(Q_1+Q_2)$. Simultaneous equality gives $(Q_1^*,Q_2^*)=(${q1},${q2})$ and $MC^*=${mc}$.`, `$MR_1=${A1}-${2*b1}Q_1$、$MR_2=${A2}-${2*b2}Q_2$、$MC=${c}+2(Q_1+Q_2)$。同時相等得 $(Q_1^*,Q_2^*)=(${q1},${q2})$、$MC^*=${mc}$。`),both(`The Hessian has $D_1=${-2*(b1+d)}<0$ and $D_2=${D}>0$, hence profit is strictly concave. Both prices, $${A1-b1*q1}$ and $${A2-b2*q2}$, are positive.`, `Hessian 的 $D_1=${-2*(b1+d)}<0$、$D_2=${D}>0$，利潤嚴格凹；兩個價格 $${A1-b1*q1}$、$${A2-b2*q2}$ 皆為正。`)]};
 }
 function three(rng, level) {
-  const kind=rng.pick(['max','min']),s=kind==='max'?-1:1,a=2*rng.int(1,3),b=2*rng.int(1,3),c=2*rng.int(1,3),h=rng.int(0,1);
-  const D1=s*a,D2=a*b-h*h,D3=s*c*D2;
+  const kind=rng.pick(['max','min']),s=kind==='max'?-1:1,a=2*rng.int(2,5),b=2*rng.int(2,5),c=2*rng.int(2,5),h=rng.int(1,2),j=rng.int(1,2),k=rng.int(1,2);
+  const D1=s*a,D2=a*b-h*h,D3=s*a*b*c+2*h*j*k-s*a*k*k-s*b*j*j-s*c*h*h;
   if (!(D2>0 && (kind==='max'?D1<0&&D3<0:D1>0&&D3>0))) throw new Error('3D definiteness failed');
   return {id:'opt-multi/three-var',level,vars:[],domain:{},
-    prompt:both(`At a stationary point, $H=\\begin{pmatrix}${s*a}&${h}&0\\\\${h}&${s*b}&0\\\\0&0&${s*c}\\end{pmatrix}$. Find its three leading principal minors and classify the point.`, `在駐點處，$H=\\begin{pmatrix}${s*a}&${h}&0\\\\${h}&${s*b}&0\\\\0&0&${s*c}\\end{pmatrix}$。求三個領先主子式並判別。`),
+    prompt:both(`At a stationary point, $H=\\begin{pmatrix}${s*a}&${h}&${j}\\\\${h}&${s*b}&${k}\\\\${j}&${k}&${s*c}\\end{pmatrix}$. Find its three leading principal minors and classify the point.`, `在駐點處，$H=\\begin{pmatrix}${s*a}&${h}&${j}\\\\${h}&${s*b}&${k}\\\\${j}&${k}&${s*c}\\end{pmatrix}$。求三個領先主子式並判別。`),
     fields:[field('d1','number','$D_1$ =','$D_1$ =',D1),field('d2','number','$D_2$ =','$D_2$ =',D2),field('d3','number','$D_3$ =','$D_3$ =',D3),field('kind','choice','Local classification =','局部判別 =',kind,definite)],
     misconceptions:[error('d2',D2+1,'Subtract the squared off-diagonal entry in the second determinant.','第二主子式須減去非對角元素的平方。')],
     hints:[both('Take the upper-left blocks of sizes one, two, and three.','依序取左上角一、二、三階方塊。'),both('Positive definite uses $+,+,+$; negative definite uses $-,+,-$.','正定的符號是 $+,+,+$；負定是 $-,+,-$。')],
     solution:[both(`The minors are $D_1=${D1}$, $D_2=${D2}$, $D_3=${D3}$.`, `主子式為 $D_1=${D1}$、$D_2=${D2}$、$D_3=${D3}$。`),both(`Their signs are ${kind==='max'?'negative, positive, negative':'positive, positive, positive'}. Therefore the Hessian is ${kind==='max'?'negative':'positive'} definite and the stationary point is a strict local ${kind==='max'?'maximum':'minimum'}.`, `符號依序為${kind==='max'?'負、正、負':'正、正、正'}，故 Hessian ${kind==='max'?'負':'正'}定，駐點是嚴格相對${kind==='max'?'極大':'極小'}值。`)]};
 }
 export const optMultiGenerators=[
-  {id:'foc-2var',title:both('Two-variable stationary point','雙變數駐點'),levels:[1,2],generate:foc},
-  {id:'hessian',title:both('Hessian entries and determinant','Hessian 元素與行列式'),levels:[2],generate:hessian},
-  {id:'classify-2var',title:both('Classify a stationary point','判別駐點'),levels:[2],generate:classify},
-  {id:'multiproduct-firm',title:both('Multiproduct firm','多產品廠商'),levels:[3],generate:firm},
-  {id:'price-discrimination',title:both('Price discrimination','差別取價'),levels:[3],generate:discrimination},
-  {id:'three-var',title:both('Three-variable Hessian','三變數 Hessian'),levels:[3],generate:three}
+  {id:'foc-2var',title:both('Two-variable stationary point','雙變數駐點'),levels:[1,2],minDistinct: 40, generate:foc},
+  {id:'hessian',title:both('Hessian entries and determinant','Hessian 元素與行列式'),levels:[2],minDistinct: 40, generate:hessian},
+  {id:'classify-2var',title:both('Classify a stationary point','判別駐點'),levels:[2],minDistinct: 40, generate:classify},
+  {id:'multiproduct-firm',title:both('Multiproduct firm','多產品廠商'),levels:[3],minDistinct: 40, generate:firm},
+  {id:'price-discrimination',title:both('Price discrimination','差別取價'),levels:[3],minDistinct: 40, generate:discrimination},
+  {id:'three-var',title:both('Three-variable Hessian','三變數 Hessian'),levels:[3],minDistinct: 40, generate:three}
 ];

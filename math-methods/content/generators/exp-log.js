@@ -10,15 +10,15 @@ function logRules(rng,level){
     fields:[field('x','number','$x$ =','$x$ =',m)],misconceptions:[error('x',b*m,'First divide by the scale factor, then take logarithms and divide by the coefficient of $x$.','先除以比例係數，再取對數，最後除以 $x$ 的係數。')],
     hints:[both('Divide both sides by the same positive scale factor.','兩邊同除以正的比例係數。'),both('Natural logarithm reverses the natural exponential: $\\ln(e^u)=u$.','自然對數是自然指數的反函數：$\\ln(e^u)=u$。')],
     solution:[both(`Divide by $${a}$ to get $e^{${term(b,'x')}}=e^{${b*m}}$.`,`兩邊除以 $${a}$，得 $e^{${term(b,'x')}}=e^{${b*m}}$。`),both(`Taking natural logs yields $${term(b,'x')}=${b*m}$, hence $x=${m}$.`,`取自然對數得 $${term(b,'x')}=${b*m}$，故 $x=${m}$。`)]};
-  const n=rng.int(2,5);
+  const n=rng.int(3,9),power=rng.int(1,n-1),scale=rng.int(2,7);
   return {id:'exp-log/log-rules',level,vars:['x'],domain:{x:[0.5,4]},
-    prompt:both(`For $x>0$, simplify $\\ln(x^{${n}})-\\ln(x)$ as a single multiple of $\\ln x$.`,`對 $x>0$，將 $\\ln(x^{${n}})-\\ln(x)$ 化簡為 $\\ln x$ 的倍數。`),
-    fields:[field('ans','expr','Simplified expression =','化簡結果 =',`${n-1}*log(x)`)],misconceptions:[error('ans',`${n+1}*log(x)`,'The logarithm of a quotient subtracts the exponents.','對數商法則使指數相減。')],
+    prompt:both(`For $x>0$, simplify $\\ln(${scale}x^{${n}})-\\ln(${scale}x^{${power}})$ as a single multiple of $\\ln x$.`,`對 $x>0$，將 $\\ln(${scale}x^{${n}})-\\ln(${scale}x^{${power}})$ 化簡為 $\\ln x$ 的倍數。`),
+    fields:[field('ans','expr','Simplified expression =','化簡結果 =',`${n-power}*log(x)`)],misconceptions:[error('ans',`${n+power}*log(x)`,'The logarithm of a quotient subtracts the exponents.','對數商法則使指數相減。')],
     hints:[both('Use the power rule for logarithms.','使用對數的冪次法則。'),both('Subtract the two multiples of $\\ln x$.','把兩個 $\\ln x$ 的倍數相減。')],
-    solution:[both(`$\\ln(x^{${n}})=${texProduct(n, '\\ln x')}$ because $x>0$.`,`因為 $x>0$，$\\ln(x^{${n}})=${texProduct(n, '\\ln x')}$。`),both(`Thus $${texProduct(n, '\\ln x')}-\\ln x=${texProduct(n-1, '\\ln x')}$.`,`因此 $${texProduct(n, '\\ln x')}-\\ln x=${texProduct(n-1, '\\ln x')}$。`)]};
+    solution:[both(`$\\ln(${scale}x^{${n}})=\\ln ${scale}+${texProduct(n, '\\ln x')}$ because $x>0$.`,`因為 $x>0$，$\\ln(${scale}x^{${n}})=\\ln ${scale}+${texProduct(n, '\\ln x')}$。`),both(`The two $\\ln ${scale}$ terms cancel, leaving $${texProduct(n-power, '\\ln x')}$.`,`兩個 $\\ln ${scale}$ 項相消，得到 $${texProduct(n-power, '\\ln x')}$。`)]};
 }
 function diffExp(rng,level){
- const a=rng.int(2,5),b=rng.int(1,6),base=rng.int(2,5),inside=linear(a,'x',b),natural=level===1;
+ const a=rng.int(2,8),b=rng.int(1,9),base=rng.int(2,5),inside=linear(a,'x',b),natural=level===1;
  const f=natural?`e^{${inside}}`:`${base}^{${inside}}`;
  const answer=natural?`${a}*exp(${inside})`:`${a}*log(${base})*${base}^(${inside})`;
  const wrong=natural?`exp(${inside})`:`${a}*${base}^(${inside})`;
@@ -29,7 +29,7 @@ function diffExp(rng,level){
  solution:[both(`The inner function is $u=${inside}$, so $u'=${a}$.`,`內部函數為 $u=${inside}$，因此 $u'=${a}$。`),both(natural?`Therefore $f'(x)=${a}e^{${inside}}$.`:`Therefore $f'(x)=${a}(\\ln ${base})${base}^{${inside}}$.`,natural?`所以 $f'(x)=${a}e^{${inside}}$。`:`所以 $f'(x)=${a}(\\ln ${base})${base}^{${inside}}$。`)]};
 }
 function diffLog(rng,level){
- const a=rng.int(2,6),b=rng.int(2,7),base=rng.int(2,5),inside=linear(a,'x',b),natural=level===1;
+ const a=rng.int(2,8),b=rng.int(2,10),base=rng.int(2,5),inside=linear(a,'x',b),natural=level===1;
  const answer=natural?`${a}/(${inside})`:`${a}/((${inside})*log(${base}))`;
  return {id:'exp-log/diff-log',level,vars:['x'],domain:{x:[0.5,4]},
  prompt:both(`For $x>0$, differentiate $f(x)=${natural?`\\ln(${inside})`:`\\log_{${base}}(${inside})`}$.`,`對 $x>0$，求 $f(x)=${natural?`\\ln(${inside})`:`\\log_{${base}}(${inside})`}$ 的導數。`),
@@ -63,15 +63,15 @@ function growthRate(rng,level){
 }
 function elasticity(rng,level){
  const a=rng.int(30,50),b=rng.int(1,4),p=rng.int(2,5),q=a-b*p;
- if(level===2){const n=rng.int(1,4),A=rng.int(2,8);
+ if(level===2){const n=rng.int(1,8),A=rng.int(2,12);
  return {id:'exp-log/elasticity',level,vars:[],domain:{},prompt:both(`For $x>0$, $y=${A}x^{-${n}}$. Find the signed point elasticity $d\\ln y/d\\ln x$.`,`對 $x>0$，$y=${A}x^{-${n}}$。求帶符號的點彈性 $d\\ln y/d\\ln x$。`),fields:[field('eps','number','Signed elasticity =','帶符號彈性 =',-n)],misconceptions:[error('eps',n,'The signed elasticity is negative for this decreasing function.','函數遞減，帶符號彈性為負。')],hints:[both('Take the log of both sides.','兩邊取對數。'),both('Differentiate $\\ln y=\\ln A-n\\ln x$ with respect to $\\ln x$.','將 $\\ln y=\\ln A-n\\ln x$ 對 $\\ln x$ 微分。')],solution:[both(`$\\ln y=\\ln ${A}-${texProduct(n, '\\ln x')}$.`,`$\\ln y=\\ln ${A}-${texProduct(n, '\\ln x')}$。`),both(`Thus $d\\ln y/d\\ln x=-${n}$ at every positive $x$.`,`故對所有正的 $x$，$d\\ln y/d\\ln x=-${n}$。`)]};}
  return {id:'exp-log/elasticity',level,vars:[],domain:{},prompt:both(`Demand is $Q(P)=${a}-${term(b,'P')}$. At $P=${p}$, where $Q=${q}>0$, find the signed price elasticity $d\\ln Q/d\\ln P$.`,`需求為 $Q(P)=${a}-${term(b,'P')}$。在 $P=${p}$ 且 $Q=${q}>0$ 時，求帶符號的價格彈性 $d\\ln Q/d\\ln P$。`),fields:[field('eps','number','Signed elasticity =','帶符號彈性 =',frac(-b*p,q))],misconceptions:[error('eps',frac(b*p,q),'The demand slope is negative; retain its sign before taking any absolute value.','需求斜率為負；除非另要求絕對值，否則應保留負號。')],hints:[both('Point elasticity is slope times input divided by output.','點彈性等於斜率乘自變數再除以應變數。'),both('Use $(dQ/dP)(P/Q)$ at the stated point.','在指定點計算 $(dQ/dP)(P/Q)$。')],solution:[both(`$dQ/dP=-${b}$ and $Q(${p})=${q}$.`,`$dQ/dP=-${b}$，且 $Q(${p})=${q}$。`),both(`Hence $d\\ln Q/d\\ln P=(-${b})(${frac(p,q,true)})=${frac(-b*p,q,true)}$.`,`所以 $d\\ln Q/d\\ln P=(-${b})(${frac(p,q,true)})=${frac(-b*p,q,true)}$。`)]};
 }
 export const expLogGenerators=[
-{id:'log-rules',title:both('Logarithm rules','對數法則'),levels:[1,2],generate:logRules},
-{id:'compound',title:both('Compounding','複利計算'),levels:[1,2],generate:compound},
-{id:'diff-exp',title:both('Exponential derivatives','指數函數微分'),levels:[1,2],generate:diffExp},
-{id:'diff-log',title:both('Logarithmic derivatives','對數函數微分'),levels:[1,2],generate:diffLog},
-{id:'growth-rate',title:both('Instantaneous growth','瞬時成長率'),levels:[2,3],generate:growthRate},
-{id:'elasticity',title:both('Point elasticity','點彈性'),levels:[2,3],generate:elasticity}
+{id:'log-rules',title:both('Logarithm rules','對數法則'),levels:[1,2],minDistinct: 40, generate:logRules},
+{id:'compound',title:both('Compounding','複利計算'),levels:[1,2],minDistinct: 40, generate:compound},
+{id:'diff-exp',title:both('Exponential derivatives','指數函數微分'),levels:[1,2],minDistinct: 40, generate:diffExp},
+{id:'diff-log',title:both('Logarithmic derivatives','對數函數微分'),levels:[1,2],minDistinct: 40, generate:diffLog},
+{id:'growth-rate',title:both('Instantaneous growth','瞬時成長率'),levels:[2,3],minDistinct: 40, generate:growthRate},
+{id:'elasticity',title:both('Point elasticity','點彈性'),levels:[2,3],minDistinct: 40, generate:elasticity}
 ];

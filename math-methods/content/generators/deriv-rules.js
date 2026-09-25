@@ -115,10 +115,10 @@ function mcAc(rng, level) {
 }
 
 export const derivRulesGenerators = [
-  { id: 'product', title: both('Product rule', '乘法法則'), levels: [1, 2], generate: product },
-  { id: 'quotient', title: both('Quotient rule', '除法法則'), levels: [1, 2], generate: quotient },
-  { id: 'chain', title: both('Chain rule', '連鎖律'), levels: [1, 2, 3], generate: chain },
-  { id: 'inverse-fn', title: both('Inverse-function rule', '反函數法則'), levels: [2], generate: inverseFn },
-  { id: 'mr-from-demand', title: both('Marginal revenue', '邊際收益'), levels: [1, 2, 3], generate: mrFromDemand },
-  { id: 'mc-ac', title: both('MC and AC', '邊際成本與平均成本'), levels: [3], generate: mcAc }
+  { id: 'product', title: both('Product rule', '乘法法則'), levels: [1, 2], minDistinct: 40, generate: product },
+  { id: 'quotient', title: both('Quotient rule', '除法法則'), levels: [1, 2], minDistinct: 40, generate: quotient },
+  { id: 'chain', title: both('Chain rule', '連鎖律'), levels: [1, 2, 3], minDistinct: 40, generate: chain },
+  { id: 'inverse-fn', title: both('Inverse-function rule', '反函數法則'), levels: [2], minDistinct: 40, generate: inverseFn },
+  { id: 'mr-from-demand', title: both('Marginal revenue', '邊際收益'), levels: [1, 2, 3], minDistinct: 40, generate: mrFromDemand },
+  { id: 'mc-ac', title: both('MC and AC', '邊際成本與平均成本'), levels: [3], minDistinct: 40, generate: mcAc }
 ];

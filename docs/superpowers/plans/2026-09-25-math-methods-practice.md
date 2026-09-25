@@ -553,3 +553,11 @@ signs, λ, shadow-price exact re-solve). Required fixes:
    declares `minDistinct` (default 40 of 300 seeds; a lower value needs
    a code comment explaining why) and the harness enforces it.
    Cobb–Douglas must vary exponents, prices and income.
+
+### Gate 4 (final, approved 2026-09-25)
+
+Gate 3b fixes verified (rewritten L3 generators re-derived by hand;
+λ* ≠ 0; all 75 generator/level pairs ≥ 40 distinct prompts per 300
+seeds). Final visual QA by the reviewer: lessons, problem states,
+solution plots (light/dark), progress page, mobile. Known cosmetic
+leftovers: plot point labels can overlap the curve.

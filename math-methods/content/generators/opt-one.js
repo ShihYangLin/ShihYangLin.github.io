@@ -26,6 +26,7 @@ function criticalPoints(rng, level) {
   const { r1, r2, f, fp } = cubic(rng);
   return {
     id: 'opt-one/critical-points', level, vars: [], domain: {},
+    plot: { expr: f, variable: 'x', range: [r1-2, r2+2], axis: 'f(x)', points: [{ x: r1, kind: 'stationary' }, { x: r2, kind: 'stationary' }] },
     prompt: both(`For the smooth function $f(x)=${f}$ on $\\mathbb R$, find all stationary $x$ values, where $f\'(x)=0$. Enter a set.`, `對定義於 $\\mathbb R$ 的平滑函數 $f(x)=${f}$，求所有滿足 $f\'(x)=0$ 的駐點 $x$ 值，並以集合輸入。`),
     fields: [field('roots', 'set', 'Stationary $x$ values =', '駐點 $x$ 值 =', `{${r1},${r2}}`)],
     misconceptions: [error('roots', `{${r1}}`, 'The derivative is quadratic and has a second real root.', '導數為二次式，還有另一個實根。')],
@@ -39,6 +40,7 @@ function classify(rng, level) {
   const leftKind = sign > 0 ? 'max' : 'min', rightKind = sign > 0 ? 'min' : 'max';
   return {
     id: 'opt-one/classify', level, vars: [], domain: {},
+    plot: { expr: f, variable: 'x', range: [r1-2, r2+2], axis: 'f(x)', points: [{ x: r1, kind: leftKind }, { x: r2, kind: rightKind }] },
     prompt: both(`For $f(x)=${f}$ on $\\mathbb R$, find its stationary $x$ values and classify each with the second-derivative test. State local conclusions.`, `對定義於 $\\mathbb R$ 的 $f(x)=${f}$，求駐點 $x$ 值，並以二階導數檢定逐一判別；答案為局部結論。`),
     fields: [field('roots', 'set', 'Stationary $x$ values =', '駐點 $x$ 值 =', `{${r1},${r2}}`), field('left', 'choice', `At $x=${r1}$ =`, `在 $x=${r1}$ =`, leftKind, extrema), field('right', 'choice', `At $x=${r2}$ =`, `在 $x=${r2}$ =`, rightKind, extrema)],
     misconceptions: [error('left', rightKind, 'Check the sign of $f\'\'$ at the left root; the two roots have opposite curvature.', '請檢查左側駐點的二階導數符號；兩個駐點的曲率相反。')],
@@ -55,6 +57,7 @@ function profitMax(rng, level) {
   const profit = (b + d) * q * q - fixed, soc = -2 * (b + d);
   return {
     id: 'opt-one/profit-max', level, vars: [], domain: {},
+    plot: { expr: `Q*(${price})-(${cost})`, variable: 'Q', range: [0, Math.min(a/b, 2*q)], axis: 'π(Q)', points: [{ x: q, kind: 'optimum' }] },
     prompt: both(`A firm faces inverse demand $P(Q)=${price}$ and cost $C(Q)=${cost}$. On feasible output $0<Q<${frac(a,b,true)}$ (where price is positive), find the profit-maximizing interior $Q^*>0$ and the sign of $\\pi\'\'(Q^*)$.${level === 3 ? ' Also find maximum profit.' : ''}`, `廠商的反需求為 $P(Q)=${price}$，成本為 $C(Q)=${cost}$。在價格為正的可行產量 $0<Q<${frac(a,b,true)}$ 上，求利潤極大的內部產量 $Q^*>0$，以及 $\\pi\'\'(Q^*)$ 的符號。${level === 3 ? '另求最大利潤。' : ''}`),
     fields: [field('q', 'number', '$Q^*$ =', '$Q^*$ =', q), field('soc', 'choice', 'Sign of $\\pi\'\'(Q^*)$ =', '$\\pi\'\'(Q^*)$ 的符號 =', 'negative', [{ value: 'negative', label: both('Negative', '負') }, { value: 'positive', label: both('Positive', '正') }]), ...(level === 3 ? [field('profit', 'number', '$\\pi(Q^*)$ =', '$\\pi(Q^*)$ =', profit)] : [])],
     misconceptions: [error('q', `-${q}`, 'Output must be positive and satisfy the feasible price range.', '產量必須為正，且在價格非負的可行範圍內。')],
@@ -69,6 +72,7 @@ function inflection(rng, level) {
   const fpp = linear(6 * s, 'x', -6 * s * a), direction = s > 0 ? 'down-up' : 'up-down';
   return {
     id: 'opt-one/inflection', level, vars: [], domain: {},
+    plot: { expr: f, variable: 'x', range: [a-3, a+3], axis: 'f(x)', points: [{ x: a, kind: 'inflection' }] },
     prompt: both(`For $f(x)=${f}$, find the $x$ coordinate of its inflection point and describe the concavity change from left to right.`, `對 $f(x)=${f}$，求反曲點的 $x$ 座標，並說明由左至右的凹凸性變化。`),
     fields: [field('x', 'number', 'Inflection $x$ =', '反曲點 $x$ =', a), field('change', 'choice', 'Concavity changes =', '凹凸性變化 =', direction, curvature)],
     misconceptions: [error('x', a + 1, 'A zero of $f\'\'$ is at the center, not one unit to its right; verify signs on both sides.', '二階導數為零的中心點才是候選點；還要檢查其兩側符號。')],
@@ -93,9 +97,9 @@ function nthDerivative(rng, level) {
 }
 
 export const optOneGenerators = [
-  { id: 'critical-points', title: both('Stationary values', '駐點'), levels: [1], generate: criticalPoints },
-  { id: 'classify', title: both('Second-derivative test', '二階導數檢定'), levels: [2], generate: classify },
-  { id: 'profit-max', title: both('Profit maximization', '利潤極大化'), levels: [2, 3], generate: profitMax },
-  { id: 'inflection', title: both('Inflection point', '反曲點'), levels: [2], generate: inflection },
-  { id: 'nth-derivative', title: both('Higher-derivative test', '高階導數檢定'), levels: [3], generate: nthDerivative }
+  { id: 'critical-points', title: both('Stationary values', '駐點'), levels: [1], minDistinct: 40, generate: criticalPoints },
+  { id: 'classify', title: both('Second-derivative test', '二階導數檢定'), levels: [2], minDistinct: 40, generate: classify },
+  { id: 'profit-max', title: both('Profit maximization', '利潤極大化'), levels: [2, 3], minDistinct: 40, generate: profitMax },
+  { id: 'inflection', title: both('Inflection point', '反曲點'), levels: [2], minDistinct: 40, generate: inflection },
+  { id: 'nth-derivative', title: both('Higher-derivative test', '高階導數檢定'), levels: [3], minDistinct: 40, generate: nthDerivative }
 ];

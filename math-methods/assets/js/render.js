@@ -4,6 +4,7 @@ import { ambiguityNotice, checkMulti, matchMisconception, parseAnswer, parseSetE
 import { getLanguage, t } from './i18n.js';
 import { createRng } from './rng.js';
 import { breakStreak, recordAttempt } from './progress.js';
+import { plotSvg } from './plot.js';
 
 const escapeHtml = value => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
 export function localizedError(message, lang) {
@@ -55,7 +56,7 @@ export function mountProblem(host, module, selected, level, seed, qa = null) {
   const generators = module.generators;
   const generatorOptions = generators.map(item => `<option value="${escapeHtml(item.id)}" ${item.id === selected.id ? 'selected' : ''}>${escapeHtml(item.title[lang])}</option>`).join('');
   const levelOptions = selected.levels.map(value => `<option value="${value}" ${value === level ? 'selected' : ''}>${t('level')} ${value}</option>`).join('');
-  host.innerHTML = `<section class="practice" aria-labelledby="practice-title"><div class="practice-head"><div><p class="eyebrow">${t('practiceLabel')}</p><h2 id="practice-title">${escapeHtml(selected.title[lang])}</h2></div><div class="practice-selectors"><label>${t('generator')}<select id="generator-select">${generatorOptions}</select></label><label>${t('difficulty')}<select id="level-select">${levelOptions}</select></label></div></div><p class="problem-seed">${t('problemSeed')} ${seed}</p><div class="problem-prompt">${escapeHtml(problem.prompt[lang])}</div><form id="answer-form" novalidate>${problem.fields.map(field => fieldHtml(field, lang)).join('')}<div class="problem-actions"><button class="action-primary" type="submit">${t('check')}</button><button type="button" id="hint-button">${t('hint')}</button><button type="button" id="solution-button">${t('showSolution')}</button><button type="button" id="new-button">${t('newProblem')}</button></div></form><div id="feedback" class="problem-feedback" role="status" aria-live="polite"></div><div id="hint-region" class="hint-region" hidden></div><div id="solution-region" class="solution-region" hidden></div><details class="typing-help"><summary>${t('typingHelp')}</summary><p>${t('typingHelpBody')}</p><p><code>2x</code> · <code>3xy</code> · <code>ln(x)</code> · <code>sqrt(x)</code> · <code>e^x</code> · <code>{-1, 3}</code></p></details></section>`;
+  host.innerHTML = `<section class="practice" aria-labelledby="practice-title"><div class="practice-head"><div><p class="eyebrow">${t('practiceLabel')}</p><h2 id="practice-title">${escapeHtml(selected.title[lang])}</h2></div><div class="practice-selectors"><label>${t('generator')}<select id="generator-select">${generatorOptions}</select></label><label>${t('difficulty')}<select id="level-select">${levelOptions}</select></label></div></div><p class="problem-seed">${t('problemSeed')} ${seed}</p><div class="problem-prompt">${escapeHtml(problem.prompt[lang])}</div><form id="answer-form" novalidate>${problem.fields.map(field => fieldHtml(field, lang)).join('')}<div class="problem-actions"><button class="action-primary" type="submit">${t('check')}</button><button type="button" id="hint-button">${t('hint')}</button><button type="button" id="solution-button">${t('showSolution')}</button><button type="button" id="new-button">${t('newProblem')}</button></div></form><div id="feedback" class="problem-feedback" role="status" aria-live="polite" aria-atomic="true"></div><div id="hint-region" class="hint-region" role="status" aria-live="polite" hidden></div><div id="solution-region" class="solution-region" role="region" aria-label="${t('workedSolution')}" hidden></div><details class="typing-help"><summary>${t('typingHelp')}</summary><p>${t('typingHelpBody')}</p><p><code>2x</code> · <code>3xy</code> · <code>ln(x)</code> · <code>sqrt(x)</code> · <code>e^x</code> · <code>{-1, 3}</code></p></details></section>`;
   typeset(host.querySelector('.problem-prompt'));
   host.querySelectorAll('.answer-field label, .answer-field legend').forEach(typeset);
   const form = host.querySelector('#answer-form');
@@ -125,7 +126,7 @@ export function mountProblem(host, module, selected, level, seed, qa = null) {
     firstTry = false;
     const node = host.querySelector('#solution-region');
     node.hidden = false;
-    node.innerHTML = `<h3>${t('workedSolution')}</h3><ol>${problem.solution.map(step => `<li>${escapeHtml(step[lang])}</li>`).join('')}</ol>`;
+    node.innerHTML = `<h3>${t('workedSolution')}</h3><ol>${problem.solution.map(step => `<li>${escapeHtml(step[lang])}</li>`).join('')}</ol>${plotSvg(problem.plot, lang)}`;
     typeset(node);
   };
   host.querySelector('#hint-button').addEventListener('click', showHint);
