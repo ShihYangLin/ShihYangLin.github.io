@@ -2,7 +2,7 @@
 // "Get pre-filled link": `url` is its .../viewform address and `contextEntry` is the
 // `entry.<number>` key of the short-answer question that receives the page context.
 // While `url` is empty, the feedback links stay hidden.
-export const FEEDBACK_FORM = { url: '', contextEntry: '' };
+export const FEEDBACK_FORM = { url: 'https://docs.google.com/forms/d/e/1FAIpQLSewOzm_Zl512ukZei3aeVVfFegWPDC1UOq0DQhI-vUKsef9eQ/viewform', contextEntry: 'entry.514791395' };
 
 export function feedbackUrl(context, form = FEEDBACK_FORM) {
   if (!form.url) return null;
