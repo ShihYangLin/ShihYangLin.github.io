@@ -8,7 +8,7 @@
   <div class="lesson-rule">$$Z(x,y,\lambda)=f(x,y)+\lambda[c-g(x,y)],\quad f_x=\lambda g_x,\quad f_y=\lambda g_y,\quad g(x,y)=c$$</div>
   <p>前兩式平衡選擇帶來的邊際目標收益與耗用的限制資源；第三式確保可行。消費者內部最適時，$U_x/p_x=U_y/p_y=\lambda$，表示兩種商品的每元邊際效用相等。固定產量下極小化成本時，$w/Q_L=r/Q_K=\lambda$，表示取得額外邊際產量所需的支出相等。切點或平穩點只提供候選解，仍需曲度檢查。</p>
   <div class="lesson-rule">$$\bar H=\begin{pmatrix}0&amp;g_x&amp;g_y\\g_x&amp;Z_{xx}&amp;Z_{xy}\\g_y&amp;Z_{yx}&amp;Z_{yy}\end{pmatrix},\quad |\bar H|&gt;0\Rightarrow\text{局部極大},\quad |\bar H|&lt;0\Rightarrow\text{局部極小}$$</div>
-  <p>加邊 Hessian 矩陣左上角為零，上邊與左邊放限制式梯度，與教科書的排列一致。可行的小幅變動必須滿足 $g_xdx+g_ydy=0$；不符合這條件的方向無須檢驗。加邊 Hessian 行列式的符號與可行方向上的二階二次式相反。兩變數、一個等式限制時，行列式為正給出嚴格局部極大值，為負給出嚴格局部極小值；為零則無法判定。</p>
+  <p>本站的加邊 Hessian 矩陣左上角為零，上邊與左邊放限制式梯度；排列方式不同，行列式的正負號也可能不同。可行的小幅變動必須滿足 $g_xdx+g_ydy=0$；不符合這條件的方向無須檢驗。加邊 Hessian 行列式的符號與可行方向上的二階二次式相反。兩變數、一個等式限制時，行列式為正給出嚴格局部極大值，為負給出嚴格局部極小值；為零則無法判定。</p>
   <div class="lesson-rule">$$\lambda^*=\frac{d f^*(c)}{dc},\qquad \Delta f^*\approx\lambda^*\Delta c$$</div>
   <p>依本單元的符號約定，乘數是放寬限制式右側的影子價格。效用極大化時，它是額外預算的邊際效用；固定產量的成本極小化時，它是增加產量要求的邊際成本。上式是原限制值附近的一階近似。對有限變動，若最適值隨限制值呈彎曲變化，精確差額通常不等於這個線性估計；必須重新求解。若將限制式符號反轉，乘數符號也會反轉。</p>
   <p>Cobb–Douglas 效用提供明確的內部例子：正價格與正所得形成正象限的預算線，正指數下的等效用曲線提供唯一切點。生產問題中，正的 Cobb–Douglas 技術形成指定產量的等產量線；最低的等成本線在邊際產量與投入價格平衡處相切。最後仍須查驗可行路徑上的曲度與正的選擇值。Lagrange 方法整理這些條件，不能代替檢查。</p>
