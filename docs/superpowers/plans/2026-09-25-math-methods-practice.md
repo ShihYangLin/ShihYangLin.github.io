@@ -527,3 +527,29 @@ problems. `opt-one` and `taylor` math verified. Required fixes:
    (`4t^2`, `2x`, `2\ln t`, not `4\cdot t^2`, `2\cdot x`). Also
    `MP_K=1(2)/3` → compute `2/3` directly. Add a harness test for
    `\cdot` followed by a letter or `\ln`/`\sqrt`.
+
+### Gate 3b (approved with required fixes, 2026-09-25)
+
+Every reference answer in `opt-multi` and `lagrange` was re-derived by
+the reviewer and is correct (FOCs, Hessian / bordered-Hessian values and
+signs, λ, shadow-price exact re-solve). Required fixes:
+1. `lagrange/bordered-hessian` picks constraints through the
+   unconstrained optimum, so λ* = 0 and the constraint does not bind.
+   Require λ* ≠ 0 (assert in the generator and test it).
+2. Levels that produce identical problems: `lagrange/cost-min` L2 = L3,
+   `lagrange/bordered-hessian` L2 = L3. L3 must be harder (e.g.
+   cost-min with `Q = A K^α L^β`, α + β ≠ 1 allowed; bordered-hessian
+   with a nonlinear objective or asking for λ too). Harness test: for
+   the same seed, a generator's top level must not produce the same
+   prompt as the level below.
+3. `opt-multi/three-var` uses diagonal Hessians only; L3 needs nonzero
+   off-diagonal entries so the minors require real computation.
+4. Display: `-1(x-4)` unit coefficient (extend the unit-coefficient test
+   to `-1(` and `+1(`); `\frac{33}{4}=\frac{33}{4}` duplicated equality.
+5. **Variety**: students pressing "New problem" see repeats quickly.
+   Distinct prompts per 300 seeds: cobb-douglas 8, log-rules L2 4,
+   taylor-poly L3 3, national-income-cs 9, approx-value 12,
+   shadow-price 15, cost-min 16, maclaurin-coef L2 18. Each generator
+   declares `minDistinct` (default 40 of 300 seeds; a lower value needs
+   a code comment explaining why) and the harness enforces it.
+   Cobb–Douglas must vary exponents, prices and income.
