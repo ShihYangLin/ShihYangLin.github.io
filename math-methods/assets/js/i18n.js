@@ -30,7 +30,7 @@ export const strings = {
     progressTitle: '學習進度', progressIntro: '進度儲存在此瀏覽器。某題型最高級別連續三次首次作答正確，即標記為精熟。',
     themeToDark: '切換為深色模式', themeToLight: '切換為淺色模式', siteControls: '網站操作', languageControls: '語言', englishButton: '切換為英文', chineseButton: '切換為繁體中文',
     moduleCount: '10 個主題 · 2 個類別',
-    practiceLabel: '練習', generator: '題型', difficulty: '難度', level: '級別', problemSeed: '題目種子',
+    practiceLabel: '練習', generator: '題型', difficulty: '難度', level: '級別', problemSeed: '題號',
     check: '檢查答案', hint: '提示', showSolution: '顯示詳解', newProblem: '新題目',
     correct: '答對了', incorrect: '再試一次，檢查每個步驟。', invalid: '請輸入有效答案。', uncheckable: '無法判斷，請化簡答案後再試。',
     workedSolution: '解題步驟', typingHelp: '如何輸入數學式', typingHelpBody: '用 ^ 表示次方、括號分組，並以 * 或相鄰符號表示乘法。ln 與 log 代表自然對數；log(x,b) 的底數為 b。',

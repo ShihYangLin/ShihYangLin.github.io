@@ -1,8 +1,8 @@
 import { linear, polynomial, term, texPowers } from './format.js';
 
 const both = (en, zh) => ({ en, zh });
-const expr = (key, label, answer) => ({ key, type: 'expr', label: both(label, ({ 'Difference quotient =': '差商 =', 'Slope =': '斜率 =' })[label] || label), answer });
-const number = (key, label, answer) => ({ key, type: 'number', label: both(label, ({ 'Difference quotient =': '差商 =', 'Slope =': '斜率 =' })[label] || label), answer: String(answer) });
+const expr = (key, label, answer) => ({ key, type: 'expr', label: both(label, ({ 'Difference quotient =': '差異商數 =', 'Slope =': '斜率 =' })[label] || label), answer });
+const number = (key, label, answer) => ({ key, type: 'number', label: both(label, ({ 'Difference quotient =': '差異商數 =', 'Slope =': '斜率 =' })[label] || label), answer: String(answer) });
 const misconception = (key, answer, en, zh) => ({ key, answer: String(answer), feedback: both(en, zh) });
 
 function diffQuotient(rng, level) {
@@ -12,9 +12,9 @@ function diffQuotient(rng, level) {
   const derivative = linear(2*a, 'x', b);
   return {
     id: 'deriv-basics/diff-quotient', level, vars: ['x', 'h'], domain: { x: [0.5, 4], h: [0.2, 2] },
-    prompt: both(`For $f(x)=${f}$, simplify $[f(x+h)-f(x)]/h$ for $h\\ne0$${level === 2 ? ' and find its limit as $h\\to0$' : ''}.`, `已知 $f(x)=${f}$，化簡 $h\\ne0$ 時的差商 $[f(x+h)-f(x)]/h$${level === 2 ? '，並求 $h\\to0$ 時的極限' : ''}。`),
+    prompt: both(`For $f(x)=${f}$, simplify $[f(x+h)-f(x)]/h$ for $h\\ne0$${level === 2 ? ' and find its limit as $h\\to0$' : ''}.`, `已知 $f(x)=${f}$，化簡 $h\\ne0$ 時的差異商數 $[f(x+h)-f(x)]/h$${level === 2 ? '，並求 $h\\to0$ 時的極限' : ''}。`),
     fields: [expr('quotient', 'Difference quotient =', quotient), ...(level === 2 ? [expr('derivative', "$f'(x)$ =", derivative)] : [])],
-    misconceptions: [misconception('quotient', derivative, 'That is the derivative after taking the limit; the finite quotient still contains $h$.', '這是取極限後的導數；有限差商仍含有 $h$。')],
+    misconceptions: [misconception('quotient', derivative, 'That is the derivative after taking the limit; the finite quotient still contains $h$.', '這是取極限後的導數；有限差異商數仍含有 $h$。')],
     hints: [both('Expand $f(x+h)$ before subtracting $f(x)$.', '先展開 $f(x+h)$，再減去 $f(x)$。'), both('After cancellation, every remaining term contains $h$; divide by $h$ before taking a limit.', '消去相同項後，其餘各項都含 $h$；先除以 $h$，再取極限。')],
     solution: [both(`$f(x+h)=${a}(x+h)^2+${b === 1 ? '' : b}(x+h)+${c}$. Subtracting $f(x)$ leaves $${2*a}xh+${a}h^2+${term(b, 'h')}$.`, `$f(x+h)=${a}(x+h)^2+${b === 1 ? '' : b}(x+h)+${c}$。減去 $f(x)$ 後得 $${2*a}xh+${a}h^2+${term(b, 'h')}$。`), both(`Divide by $h\\ne0$: $[f(x+h)-f(x)]/h=${quotient}$.${level === 2 ? ` Letting $h\\to0$ gives $f'(x)=${derivative}$.` : ''}`, `除以 $h\\ne0$：$[f(x+h)-f(x)]/h=${quotient}$。${level === 2 ? `令 $h\\to0$，得 $f'(x)=${derivative}$。` : ''}`)]
   };
@@ -49,7 +49,7 @@ function powerRule(rng, level) {
     fields: [expr('ans', "$f'(x)$ =", answer)],
     misconceptions: [misconception('ans', wrong, 'Multiply by the exponent and reduce the exponent by one.', '要乘上原指數，並將指數減一。')],
     hints: [both('Differentiate each term separately; a constant has derivative zero.', '逐項微分；常數項的導數為零。'), both('Apply $d(ax^n)/dx=anx^{n-1}$, including for negative or fractional $n$.', '使用 $d(ax^n)/dx=anx^{n-1}$；負數或分數指數也適用。')],
-    solution: [both(steps, stepsZh), both(`The derivative function is $f'(x)=${texPowers(answer)}$.`, `導數函數為 $f'(x)=${texPowers(answer)}$。`)]
+    solution: [both(steps, stepsZh), both(`The derivative function is $f'(x)=${texPowers(answer)}$.`, `導函數為 $f'(x)=${texPowers(answer)}$。`)]
   };
 }
 
@@ -83,7 +83,7 @@ function marginalCost(rng, level) {
 }
 
 export const derivBasicsGenerators = [
-  { id: 'diff-quotient', title: both('Difference quotient', '差商'), levels: [1, 2], minDistinct: 40, generate: diffQuotient },
+  { id: 'diff-quotient', title: both('Difference quotient', '差異商數'), levels: [1, 2], minDistinct: 40, generate: diffQuotient },
   { id: 'power-rule', title: both('Power rule', '冪次法則'), levels: [1, 2], minDistinct: 40, generate: powerRule },
   { id: 'tangent-slope', title: both('Tangent slope', '切線斜率'), levels: [2], minDistinct: 40, generate: tangentSlope },
   { id: 'marginal-cost', title: both('Marginal cost', '邊際成本'), levels: [2], minDistinct: 40, generate: marginalCost }

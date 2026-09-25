@@ -62,7 +62,7 @@ function chain(rng, level) {
     fields: [expr('ans', "$f'(x)$ =", answer)],
     misconceptions: [misconception('ans', wrong, 'You differentiated the outside but omitted the derivative of the inside.', '你已對外層微分，但漏乘內層函數的導數。')],
     hints: [both(`Set $u=${inside}$.`, `令 $u=${inside}$。`), both('Differentiate the outside with respect to $u$, then multiply by $du/dx$.', '先對 $u$ 微分外層，再乘以 $du/dx$。')],
-    solution: [both(`The inner derivative is $du/dx=${derivative}$.`, `內層導數為 $du/dx=${derivative}$。`), both(`By the chain rule, $f\\prime(x)=${isRoot ? `\\frac{${derivative}}{2\\sqrt{${inside}}}` : `${m}(${inside})^{${m-1}}(${derivative})`}$.`, `依連鎖律，$f\\prime(x)=${isRoot ? `\\frac{${derivative}}{2\\sqrt{${inside}}}` : `${m}(${inside})^{${m-1}}(${derivative})`}$。`)]
+    solution: [both(`The inner derivative is $du/dx=${derivative}$.`, `內層函數的導數為 $du/dx=${derivative}$。`), both(`By the chain rule, $f\\prime(x)=${isRoot ? `\\frac{${derivative}}{2\\sqrt{${inside}}}` : `${m}(${inside})^{${m-1}}(${derivative})`}$.`, `依連鎖法則，$f\\prime(x)=${isRoot ? `\\frac{${derivative}}{2\\sqrt{${inside}}}` : `${m}(${inside})^{${m-1}}(${derivative})`}$。`)]
   };
 }
 
@@ -117,7 +117,7 @@ function mcAc(rng, level) {
 export const derivRulesGenerators = [
   { id: 'product', title: both('Product rule', '乘法法則'), levels: [1, 2], minDistinct: 40, generate: product },
   { id: 'quotient', title: both('Quotient rule', '除法法則'), levels: [1, 2], minDistinct: 40, generate: quotient },
-  { id: 'chain', title: both('Chain rule', '連鎖律'), levels: [1, 2, 3], minDistinct: 40, generate: chain },
+  { id: 'chain', title: both('Chain rule', '連鎖法則'), levels: [1, 2, 3], minDistinct: 40, generate: chain },
   { id: 'inverse-fn', title: both('Inverse-function rule', '反函數法則'), levels: [2], minDistinct: 40, generate: inverseFn },
   { id: 'mr-from-demand', title: both('Marginal revenue', '邊際收益'), levels: [1, 2, 3], minDistinct: 40, generate: mrFromDemand },
   { id: 'mc-ac', title: both('MC and AC', '邊際成本與平均成本'), levels: [3], minDistinct: 40, generate: mcAc }

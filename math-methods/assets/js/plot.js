@@ -2,7 +2,7 @@
 const esc = value => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[char]);
 const labels = {
   en: { stationary: 'stationary', max: 'local max', min: 'local min', optimum: 'optimum', inflection: 'inflection', caption: 'Curve and marked point(s); positions are approximate.' },
-  zh: { stationary: '駐點', max: '相對極大', min: '相對極小', optimum: '最適點', inflection: '反曲點', caption: '函數曲線與標記點；位置為近似值。' }
+  zh: { stationary: '平穩點', max: '局部極大', min: '局部極小', optimum: '最適點', inflection: '反曲點', caption: '函數曲線與標記點；位置為近似值。' }
 };
 
 export function plotSvg(plot, lang, mathEngine = globalThis.math) {

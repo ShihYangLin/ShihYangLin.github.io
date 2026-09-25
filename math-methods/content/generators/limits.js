@@ -46,7 +46,7 @@ function removable(rng, level) {
     fields: [number('ans', 'Limit =', value)],
     misconceptions: [misconception('ans', 0, 'A $0/0$ substitution is indeterminate; cancel the common factor for nearby $x$.', '直接代入得 $0/0$，並非極限值；須在附近的 $x$ 約去公因式。')],
     hints: [both('Direct substitution gives $0/0$, so simplify first.', '直接代入會得到 $0/0$，應先化簡。'), both(level === 1 ? 'Cancel the common factor $x-a$ for $x\\ne a$.' : 'Factor $x^2-a^2=(x-a)(x+a)$, then cancel.', level === 1 ? '在 $x\\ne a$ 時約去公因式 $x-a$。' : '先用 $x^2-a^2=(x-a)(x+a)$ 因式分解，再約分。')],
-    solution: [both(level === 1 ? `For $x\\ne${point}$, cancel $${factor}$ to obtain $f(x)=${other}$.` : `Factor $x^2-${point*point}=(x-${point})(x+${point})$; cancelling gives $f(x)=${other}$ for $x\\ne${point}$.`, level === 1 ? `在 $x\\ne${point}$ 時約去 $${factor}$，得到 $f(x)=${other}$。` : `將 $x^2-${point*point}$ 分解為 $(x-${point})(x+${point})$，在 $x\\ne${point}$ 時約分得 $f(x)=${other}$。`), both(`Nearby values approach $${value}$ as $x\\to${point}$; the original function is still undefined at the hole.`, `當 $x\\to${point}$，附近函數值趨近 $${value}$；原函數在缺口處仍未定義。`)]
+    solution: [both(level === 1 ? `For $x\\ne${point}$, cancel $${factor}$ to obtain $f(x)=${other}$.` : `Factor $x^2-${point*point}=(x-${point})(x+${point})$; cancelling gives $f(x)=${other}$ for $x\\ne${point}$.`, level === 1 ? `在 $x\\ne${point}$ 時約去 $${factor}$，得到 $f(x)=${other}$。` : `將 $x^2-${point*point}$ 分解為 $(x-${point})(x+${point})$，在 $x\\ne${point}$ 時約分得 $f(x)=${other}$。`), both(`Nearby values approach $${value}$ as $x\\to${point}$; the original function is still undefined at that point.`, `當 $x\\to${point}$，附近函數值趨近 $${value}$；原函數在該點仍未定義。`)]
   };
 }
 
@@ -99,7 +99,7 @@ function continuity(rng, level) {
 
 export const limitsGenerators = [
   { id: 'poly-limit', title: both('Direct limits', '直接求極限'), levels: [1, 2], minDistinct: 40, generate: polyLimit },
-  { id: 'removable', title: both('Removable holes', '可去除的缺口'), levels: [1, 2], minDistinct: 40, generate: removable },
+  { id: 'removable', title: both('Removable discontinuities', '可移除不連續點'), levels: [1, 2], minDistinct: 40, generate: removable },
   { id: 'one-sided', title: both('One-sided limits', '單邊極限'), levels: [2], minDistinct: 40, generate: oneSided },
   { id: 'at-infinity', title: both('Limits at infinity', '無窮遠處的極限'), levels: [2], minDistinct: 40, generate: atInfinity },
   { id: 'continuity', title: both('Continuity at a point', '一點的連續性'), levels: [3], minDistinct: 40, generate: continuity }

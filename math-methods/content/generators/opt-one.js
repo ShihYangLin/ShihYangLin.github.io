@@ -4,10 +4,10 @@ const both = (en, zh) => ({ en, zh });
 const field = (key, type, en, zh, answer, options) => ({ key, type, label: both(en, zh), answer: String(answer), ...(options ? { options } : {}) });
 const error = (key, answer, en, zh) => ({ key, answer: String(answer), feedback: both(en, zh) });
 const extrema = [
-  { value: 'max', label: both('Local maximum', '相對極大值') },
-  { value: 'min', label: both('Local minimum', '相對極小值') }
+  { value: 'max', label: both('Local maximum', '局部極大值') },
+  { value: 'min', label: both('Local minimum', '局部極小值') }
 ];
-const higher = [...extrema, { value: 'inflection', label: both('Stationary inflection', '駐點反曲點') }];
+const higher = [...extrema, { value: 'inflection', label: both('Stationary inflection', '水平反曲點') }];
 const curvature = [
   { value: 'up-down', label: both('Convex to concave', '由凸轉凹') },
   { value: 'down-up', label: both('Concave to convex', '由凹轉凸') }
@@ -27,11 +27,11 @@ function criticalPoints(rng, level) {
   return {
     id: 'opt-one/critical-points', level, vars: [], domain: {},
     plot: { expr: f, variable: 'x', range: [r1-2, r2+2], axis: 'f(x)', points: [{ x: r1, kind: 'stationary' }, { x: r2, kind: 'stationary' }] },
-    prompt: both(`For the smooth function $f(x)=${f}$ on $\\mathbb R$, find all stationary $x$ values, where $f\'(x)=0$. Enter a set.`, `對定義於 $\\mathbb R$ 的平滑函數 $f(x)=${f}$，求所有滿足 $f\'(x)=0$ 的駐點 $x$ 值，並以集合輸入。`),
-    fields: [field('roots', 'set', 'Stationary $x$ values =', '駐點 $x$ 值 =', `{${r1},${r2}}`)],
+    prompt: both(`For the smooth function $f(x)=${f}$ on $\\mathbb R$, find all stationary points (their $x$ values), where $f\'(x)=0$. Enter a set.`, `對定義於 $\\mathbb R$ 的平滑函數 $f(x)=${f}$，求所有滿足 $f\'(x)=0$ 的平穩點 $x$ 值，並以集合輸入。`),
+    fields: [field('roots', 'set', 'Stationary-point $x$ values =', '平穩點 $x$ 值 =', `{${r1},${r2}}`)],
     misconceptions: [error('roots', `{${r1}}`, 'The derivative is quadratic and has a second real root.', '導數為二次式，還有另一個實根。')],
     hints: [both('Differentiate before looking for a high or low value.', '先求導數，再尋找高點或低點。'), both('Factor the derivative; both linear factors can be zero.', '將導數因式分解；兩個一次因式都可能為零。')],
-    solution: [both(`Differentiation gives $f\'(x)=${fp}$.`, `微分得 $f\'(x)=${fp}$。`), both(`This factors as $f\'(x)=${fp.startsWith('-') ? '-' : ''}6(${linear(1, 'x', -r1)})(${linear(1, 'x', -r2)})$. Hence the stationary $x$ values are $\\{${r1},${r2}\\}$.`, `因式分解得 $f\'(x)=${fp.startsWith('-') ? '-' : ''}6(${linear(1, 'x', -r1)})(${linear(1, 'x', -r2)})$，所以駐點 $x$ 值為 $\\{${r1},${r2}\\}$。`)]
+    solution: [both(`Differentiation gives $f\'(x)=${fp}$.`, `微分得 $f\'(x)=${fp}$。`), both(`This factors as $f\'(x)=${fp.startsWith('-') ? '-' : ''}6(${linear(1, 'x', -r1)})(${linear(1, 'x', -r2)})$. Hence the stationary points (their $x$ values) are $\\{${r1},${r2}\\}$.`, `因式分解得 $f\'(x)=${fp.startsWith('-') ? '-' : ''}6(${linear(1, 'x', -r1)})(${linear(1, 'x', -r2)})$，所以平穩點 $x$ 值為 $\\{${r1},${r2}\\}$。`)]
   };
 }
 
@@ -41,11 +41,11 @@ function classify(rng, level) {
   return {
     id: 'opt-one/classify', level, vars: [], domain: {},
     plot: { expr: f, variable: 'x', range: [r1-2, r2+2], axis: 'f(x)', points: [{ x: r1, kind: leftKind }, { x: r2, kind: rightKind }] },
-    prompt: both(`For $f(x)=${f}$ on $\\mathbb R$, find its stationary $x$ values and classify each with the second-derivative test. State local conclusions.`, `對定義於 $\\mathbb R$ 的 $f(x)=${f}$，求駐點 $x$ 值，並以二階導數檢定逐一判別；答案為局部結論。`),
-    fields: [field('roots', 'set', 'Stationary $x$ values =', '駐點 $x$ 值 =', `{${r1},${r2}}`), field('left', 'choice', `At $x=${r1}$ =`, `在 $x=${r1}$ =`, leftKind, extrema), field('right', 'choice', `At $x=${r2}$ =`, `在 $x=${r2}$ =`, rightKind, extrema)],
-    misconceptions: [error('left', rightKind, 'Check the sign of $f\'\'$ at the left root; the two roots have opposite curvature.', '請檢查左側駐點的二階導數符號；兩個駐點的曲率相反。')],
-    hints: [both('First solve $f\'(x)=0$ for both candidates.', '先解 $f\'(x)=0$，找出兩個候選點。'), both('A negative $f\'\'$ at a stationary point gives a local maximum; a positive value gives a local minimum.', '駐點處二階導數為負是相對極大值，為正是相對極小值。')],
-    solution: [both(`$f\'(x)=${fp}= ${sign > 0 ? '' : '-'}6(${linear(1, 'x', -r1)})(${linear(1, 'x', -r2)})$, so the stationary values are $\\{${r1},${r2}\\}$.`, `$f\'(x)=${fp}= ${sign > 0 ? '' : '-'}6(${linear(1, 'x', -r1)})(${linear(1, 'x', -r2)})$，故駐點值為 $\\{${r1},${r2}\\}$。`), both(`$f\'\'(x)=${fpp}$, giving $f\'\'(${r1})=${left}$ and $f\'\'(${r2})=${right}$. Therefore $x=${r1}$ is a local ${leftKind === 'max' ? 'maximum' : 'minimum'} and $x=${r2}$ a local ${rightKind === 'max' ? 'maximum' : 'minimum'}.`, `$f\'\'(x)=${fpp}$，得 $f\'\'(${r1})=${left}$、$f\'\'(${r2})=${right}$。因此 $x=${r1}$ 為相對${leftKind === 'max' ? '極大' : '極小'}值，$x=${r2}$ 為相對${rightKind === 'max' ? '極大' : '極小'}值。`)]
+    prompt: both(`For $f(x)=${f}$ on $\\mathbb R$, find its stationary points (their $x$ values) and classify each with the second-derivative test. State local conclusions.`, `對定義於 $\\mathbb R$ 的 $f(x)=${f}$，求平穩點 $x$ 值，並以二階導數檢定逐一判別；答案為局部結論。`),
+    fields: [field('roots', 'set', 'Stationary-point $x$ values =', '平穩點 $x$ 值 =', `{${r1},${r2}}`), field('left', 'choice', `At $x=${r1}$ =`, `在 $x=${r1}$ =`, leftKind, extrema), field('right', 'choice', `At $x=${r2}$ =`, `在 $x=${r2}$ =`, rightKind, extrema)],
+    misconceptions: [error('left', rightKind, 'Check the sign of $f\'\'$ at the left root; the two roots have opposite curvature.', '請檢查左側平穩點的二階導數符號；兩個平穩點的曲度相反。')],
+    hints: [both('First solve $f\'(x)=0$ for both candidates.', '先解 $f\'(x)=0$，找出兩個候選點。'), both('A negative $f\'\'$ at a stationary point gives a local maximum; a positive value gives a local minimum.', '平穩點處二階導數為負是局部極大值，為正是局部極小值。')],
+    solution: [both(`$f\'(x)=${fp}= ${sign > 0 ? '' : '-'}6(${linear(1, 'x', -r1)})(${linear(1, 'x', -r2)})$, so the stationary-point $x$ values are $\\{${r1},${r2}\\}$.`, `$f\'(x)=${fp}= ${sign > 0 ? '' : '-'}6(${linear(1, 'x', -r1)})(${linear(1, 'x', -r2)})$，故平穩點 $x$ 值為 $\\{${r1},${r2}\\}$。`), both(`$f\'\'(x)=${fpp}$, giving $f\'\'(${r1})=${left}$ and $f\'\'(${r2})=${right}$. Therefore $x=${r1}$ is a local ${leftKind === 'max' ? 'maximum' : 'minimum'} and $x=${r2}$ a local ${rightKind === 'max' ? 'maximum' : 'minimum'}.`, `$f\'\'(x)=${fpp}$，得 $f\'\'(${r1})=${left}$、$f\'\'(${r2})=${right}$。因此 $x=${r1}$ 為局部${leftKind === 'max' ? '極大' : '極小'}值，$x=${r2}$ 為局部${rightKind === 'max' ? '極大' : '極小'}值。`)]
   };
 }
 
@@ -61,8 +61,8 @@ function profitMax(rng, level) {
     prompt: both(`A firm faces inverse demand $P(Q)=${price}$ and cost $C(Q)=${cost}$. On feasible output $0<Q<${frac(a,b,true)}$ (where price is positive), find the profit-maximizing interior $Q^*>0$ and the sign of $\\pi\'\'(Q^*)$.${level === 3 ? ' Also find maximum profit.' : ''}`, `廠商的反需求為 $P(Q)=${price}$，成本為 $C(Q)=${cost}$。在價格為正的可行產量 $0<Q<${frac(a,b,true)}$ 上，求利潤極大的內部產量 $Q^*>0$，以及 $\\pi\'\'(Q^*)$ 的符號。${level === 3 ? '另求最大利潤。' : ''}`),
     fields: [field('q', 'number', '$Q^*$ =', '$Q^*$ =', q), field('soc', 'choice', 'Sign of $\\pi\'\'(Q^*)$ =', '$\\pi\'\'(Q^*)$ 的符號 =', 'negative', [{ value: 'negative', label: both('Negative', '負') }, { value: 'positive', label: both('Positive', '正') }]), ...(level === 3 ? [field('profit', 'number', '$\\pi(Q^*)$ =', '$\\pi(Q^*)$ =', profit)] : [])],
     misconceptions: [error('q', `-${q}`, 'Output must be positive and satisfy the feasible price range.', '產量必須為正，且在價格非負的可行範圍內。')],
-    hints: [both('Write profit as revenue minus cost and differentiate.', '將利潤寫為收益減成本，再求導。'), both('At an interior solution set $MR=MC$; use $\\pi\'\'=R\'\'-C\'\'$ for the SOC.', '內部解令 $MR=MC$；二階條件使用 $\\pi\'\'=R\'\'-C\'\'$。')],
-    solution: [both(`$R(Q)=Q(${price})$, so $MR=${mr}$ and $MC=${mc}$. The first-order condition $MR=MC$ gives $Q^*=${q}$.`, `$R(Q)=Q(${price})$，故 $MR=${mr}$、$MC=${mc}$。一階條件 $MR=MC$ 得 $Q^*=${q}$。`), both(`$\\pi\'\'(Q)=${soc}<0$ throughout the feasible interval, so $Q^*=${q}$ is a local maximum. Strict concavity makes it the unique global maximum on that interval; $P(${q})=${a - b * q}>0$.${level === 3 ? ` Profit is $\\pi(${q})=${profit}$.` : ''}`, `$\\pi\'\'(Q)=${soc}<0$ 在可行區間內處處成立，故 $Q^*=${q}$ 為局部極大值。嚴格凹性也保證它是該區間唯一的全域極大值；$P(${q})=${a - b * q}>0$。${level === 3 ? `利潤為 $\\pi(${q})=${profit}$。` : ''}`)]
+    hints: [both('Write profit as revenue minus cost and differentiate.', '將利潤寫為收益減成本，再求導。'), both('At an interior solution set $MR=MC$; use $\\pi\'\'=R\'\'-C\'\'$ for the SOC.', '內部解令 $MR=MC$；第二階條件使用 $\\pi\'\'=R\'\'-C\'\'$。')],
+    solution: [both(`$R(Q)=Q(${price})$, so $MR=${mr}$ and $MC=${mc}$. The first-order condition $MR=MC$ gives $Q^*=${q}$.`, `$R(Q)=Q(${price})$，故 $MR=${mr}$、$MC=${mc}$。第一階條件 $MR=MC$ 得 $Q^*=${q}$。`), both(`$\\pi\'\'(Q)=${soc}<0$ throughout the feasible interval, so $Q^*=${q}$ is a local maximum. Strict concavity makes it the unique global maximum on that interval; $P(${q})=${a - b * q}>0$.${level === 3 ? ` Profit is $\\pi(${q})=${profit}$.` : ''}`, `$\\pi\'\'(Q)=${soc}<0$ 在可行區間內處處成立，故 $Q^*=${q}$ 為局部極大值。嚴格凹性也保證它是該區間唯一的全域極大值；$P(${q})=${a - b * q}>0$。${level === 3 ? `利潤為 $\\pi(${q})=${profit}$。` : ''}`)]
   };
 }
 
@@ -88,16 +88,16 @@ function nthDerivative(rng, level) {
   const factorial = Array.from({ length: n }, (_, i) => i + 1).reduce((x, y) => x * y, 1);
   return {
     id: 'opt-one/nth-derivative', level, vars: [], domain: {},
-    prompt: both(`At the stationary point $x=${a}$ of $f(x)=${sign < 0 ? '-' : ''}(${center})^{${n}}+${c}$, the second derivative is zero. Use the first nonzero derivative to classify the point locally.`, `在 $f(x)=${sign < 0 ? '-' : ''}(${center})^{${n}}+${c}$ 的駐點 $x=${a}$，二階導數為零。請用第一個非零的高階導數判別其局部性質。`),
+    prompt: both(`At the stationary point $x=${a}$ of $f(x)=${sign < 0 ? '-' : ''}(${center})^{${n}}+${c}$, the second derivative is zero. Use the first nonzero derivative to classify the point locally.`, `在 $f(x)=${sign < 0 ? '-' : ''}(${center})^{${n}}+${c}$ 的平穩點 $x=${a}$，二階導數為零。請用第一個非零的高階導數判別其局部性質。`),
     fields: [field('kind', 'choice', 'Local classification =', '局部判別 =', kind, higher)],
     misconceptions: [error('kind', kind === 'max' ? 'min' : 'max', 'A zero second derivative is inconclusive; use the parity and sign of the first nonzero derivative.', '二階導數為零時無法直接判別；須看第一個非零導數的階數奇偶與符號。')],
-    hints: [both('Derivatives of orders below the displayed power vanish at the center.', '低於所示冪次的各階導數在中心點均為零。'), both('An even first nonzero order gives an extremum; an odd order gives a stationary inflection.', '第一個非零導數階數為偶數時是極值；奇數時為駐點反曲點。')],
-    solution: [both(`$f\'(${a})=\\cdots=${derivative('f', n - 1, a)}=0$, while $${derivative('f', n, a)}=${sign * factorial}$.`, `$f\'(${a})=\\cdots=${derivative('f', n - 1, a)}=0$，但 $${derivative('f', n, a)}=${sign * factorial}$。`), both(n % 2 ? `The first nonzero order is odd: $(${linear(1, 'x', -a)})^{${n}}$ changes sign across $x=${a}$. This is a stationary inflection, not an extremum.` : `The first nonzero order is even and its sign is ${sign > 0 ? 'positive' : 'negative'}, so $x=${a}$ is a local ${kind === 'min' ? 'minimum' : 'maximum'}.`, n % 2 ? `第一個非零導數的階數為奇數；$(${linear(1, 'x', -a)})^{${n}}$ 在 $x=${a}$ 兩側變號，因此是駐點反曲點，並非極值。` : `第一個非零導數的階數為偶數，且符號為${sign > 0 ? '正' : '負'}，故 $x=${a}$ 是相對${kind === 'min' ? '極小' : '極大'}值。`)]
+    hints: [both('Derivatives of orders below the displayed power vanish at the center.', '低於所示冪次的各階導數在中心點均為零。'), both('An even first nonzero order gives an extremum; an odd order gives a stationary inflection.', '第一個非零導數階數為偶數時是極端值；奇數時為水平反曲點。')],
+    solution: [both(`$f\'(${a})=\\cdots=${derivative('f', n - 1, a)}=0$, while $${derivative('f', n, a)}=${sign * factorial}$.`, `$f\'(${a})=\\cdots=${derivative('f', n - 1, a)}=0$，但 $${derivative('f', n, a)}=${sign * factorial}$。`), both(n % 2 ? `The first nonzero order is odd: $(${linear(1, 'x', -a)})^{${n}}$ changes sign across $x=${a}$. This is a stationary inflection, not an extremum.` : `The first nonzero order is even and its sign is ${sign > 0 ? 'positive' : 'negative'}, so $x=${a}$ is a local ${kind === 'min' ? 'minimum' : 'maximum'}.`, n % 2 ? `第一個非零導數的階數為奇數；$(${linear(1, 'x', -a)})^{${n}}$ 在 $x=${a}$ 兩側變號，因此是水平反曲點，並非極端值。` : `第一個非零導數的階數為偶數，且符號為${sign > 0 ? '正' : '負'}，故 $x=${a}$ 是局部${kind === 'min' ? '極小' : '極大'}值。`)]
   };
 }
 
 export const optOneGenerators = [
-  { id: 'critical-points', title: both('Stationary values', '駐點'), levels: [1], minDistinct: 40, generate: criticalPoints },
+  { id: 'critical-points', title: both('Stationary points', '平穩點'), levels: [1], minDistinct: 40, generate: criticalPoints },
   { id: 'classify', title: both('Second-derivative test', '二階導數檢定'), levels: [2], minDistinct: 40, generate: classify },
   { id: 'profit-max', title: both('Profit maximization', '利潤極大化'), levels: [2, 3], minDistinct: 40, generate: profitMax },
   { id: 'inflection', title: both('Inflection point', '反曲點'), levels: [2], minDistinct: 40, generate: inflection },
