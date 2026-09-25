@@ -5,7 +5,6 @@ import { mountProblem, typeset } from './render.js';
 import { readProgress, resetProgress, exportProgress } from './progress.js';
 
 const app = document.getElementById('app');
-const themeButton = document.getElementById('theme-toggle');
 
 function escapeHtml(value) {
   return String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
@@ -40,7 +39,6 @@ function renderMap(notice = false) {
       <section class="hero" aria-labelledby="page-title">
         <p class="eyebrow">${t('heroEyebrow')}</p>
         <h1 id="page-title" tabindex="-1">${t('heroTitle')}</h1>
-        <p class="hero-intro">${t('heroIntro')}</p>
         <p class="hero-count">${t('moduleCount')}</p>
       </section>
       <section class="topic-section" aria-labelledby="calculus-title"><div class="section-heading"><span class="section-number">01 /</span><h2 id="calculus-title">${t('groupCalculus')}</h2></div><div class="module-list">${cards('calculus')}</div></section>
@@ -120,32 +118,12 @@ function render(focus = false) {
   else if (route.kind === 'progress') renderProgress();
   else renderModule(route, focus);
   if (focus && (route.kind === 'map' || route.kind === 'unknown' || route.kind === 'progress')) app.querySelector('h1')?.focus();
-  updateThemeButton();
-}
-
-function effectiveTheme() {
-  const explicit = document.documentElement.dataset.theme;
-  return explicit || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-}
-
-function updateThemeButton() {
-  const dark = effectiveTheme() === 'dark';
-  themeButton.textContent = dark ? '☼' : '☾';
-  themeButton.setAttribute('aria-label', dark ? t('themeToLight') : t('themeToDark'));
-  themeButton.setAttribute('title', dark ? t('themeToLight') : t('themeToDark'));
 }
 
 initLanguage();
-try {
-  const savedTheme = localStorage.getItem('mm-theme');
-  if (savedTheme === 'light' || savedTheme === 'dark') document.documentElement.dataset.theme = savedTheme;
-} catch { /* Theme still follows the system preference. */ }
+// The theme follows the system setting, like the main site; drop the old manual override.
+try { localStorage.removeItem('mm-theme'); } catch { /* Nothing stored. */ }
 document.querySelectorAll('[data-lang]').forEach(button => button.addEventListener('click', () => { setLanguage(button.dataset.lang); render(); }));
-themeButton.addEventListener('click', () => {
-  document.documentElement.dataset.theme = effectiveTheme() === 'dark' ? 'light' : 'dark';
-  try { localStorage.setItem('mm-theme', document.documentElement.dataset.theme); } catch { /* Theme still works for this session. */ }
-  updateThemeButton();
-});
 // Lesson jump links scroll within the page; following their href would trigger the hash router.
 app.addEventListener('click', event => {
   const link = event.target.closest('a[data-jump]');
@@ -159,5 +137,4 @@ app.addEventListener('click', event => {
   target.classList.add('is-jump-target');
 });
 window.addEventListener('hashchange', () => render(true));
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateThemeButton);
 render();
